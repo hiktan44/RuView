@@ -119,20 +119,20 @@ export class SettingsPanel {
     this.container.innerHTML = `
       <div class="settings-panel">
         <div class="settings-header">
-          <h3>Pose Detection Settings</h3>
+          <h3>Poz Algılama Ayarları</h3>
           <div class="settings-actions">
-            <button class="btn btn-sm" id="reset-settings-${this.containerId}">Reset</button>
-            <button class="btn btn-sm" id="export-settings-${this.containerId}">Export</button>
-            <button class="btn btn-sm" id="import-settings-${this.containerId}">Import</button>
+            <button class="btn btn-sm" id="reset-settings-${this.containerId}">Sıfırla</button>
+            <button class="btn btn-sm" id="export-settings-${this.containerId}">Dışa Aktar</button>
+            <button class="btn btn-sm" id="import-settings-${this.containerId}">İçe Aktar</button>
           </div>
         </div>
         
         <div class="settings-content">
           <!-- Connection Settings -->
           <div class="settings-section">
-            <h4>Connection</h4>
+            <h4>Bağlantı</h4>
             <div class="setting-row">
-              <label for="zone-select-${this.containerId}">Zone:</label>
+              <label for="zone-select-${this.containerId}">Bölge:</label>
               <select id="zone-select-${this.containerId}" class="setting-select">
                 ${this.settings.zones.map(zone => 
                   `<option value="${zone}">${zone.replace('_', ' ').toUpperCase()}</option>`
@@ -140,30 +140,30 @@ export class SettingsPanel {
               </select>
             </div>
             <div class="setting-row">
-              <label for="auto-reconnect-${this.containerId}">Auto Reconnect:</label>
+              <label for="auto-reconnect-${this.containerId}">Otomatik Yeniden Bağlan:</label>
               <input type="checkbox" id="auto-reconnect-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="connection-timeout-${this.containerId}">Timeout (ms):</label>
+              <label for="connection-timeout-${this.containerId}">Zaman Aşımı (ms):</label>
               <input type="number" id="connection-timeout-${this.containerId}" class="setting-input" min="1000" max="30000" step="1000">
             </div>
           </div>
 
           <!-- Detection Settings -->
           <div class="settings-section">
-            <h4>Detection</h4>
+            <h4>Algılama</h4>
             <div class="setting-row">
-              <label for="confidence-threshold-${this.containerId}">Confidence Threshold:</label>
+              <label for="confidence-threshold-${this.containerId}">Güven Eşiği:</label>
               <input type="range" id="confidence-threshold-${this.containerId}" class="setting-range" min="0" max="1" step="0.1">
               <span id="confidence-value-${this.containerId}" class="setting-value">0.3</span>
             </div>
             <div class="setting-row">
-              <label for="keypoint-confidence-${this.containerId}">Keypoint Confidence:</label>
+              <label for="keypoint-confidence-${this.containerId}">Anahtar Nokta Güveni:</label>
               <input type="range" id="keypoint-confidence-${this.containerId}" class="setting-range" min="0" max="1" step="0.1">
               <span id="keypoint-confidence-value-${this.containerId}" class="setting-value">0.1</span>
             </div>
             <div class="setting-row">
-              <label for="max-persons-${this.containerId}">Max Persons:</label>
+              <label for="max-persons-${this.containerId}">Maks Kişi:</label>
               <input type="number" id="max-persons-${this.containerId}" class="setting-input" min="1" max="20">
             </div>
             <div class="setting-row">
@@ -174,162 +174,162 @@ export class SettingsPanel {
 
           <!-- Rendering Settings -->
           <div class="settings-section">
-            <h4>Rendering</h4>
+            <h4>Görselleştirme</h4>
             <div class="setting-row">
-              <label for="render-mode-${this.containerId}">Mode:</label>
+              <label for="render-mode-${this.containerId}">Mod:</label>
               <select id="render-mode-${this.containerId}" class="setting-select">
-                <option value="skeleton">Skeleton</option>
-                <option value="keypoints">Keypoints</option>
-                <option value="heatmap">Heatmap</option>
-                <option value="dense">Dense</option>
+                <option value="skeleton">İskelet</option>
+                <option value="keypoints">Anahtar Noktalar</option>
+                <option value="heatmap">Isı Haritası</option>
+                <option value="dense">Yoğun</option>
               </select>
             </div>
             <div class="setting-row">
-              <label for="show-keypoints-${this.containerId}">Show Keypoints:</label>
+              <label for="show-keypoints-${this.containerId}">Anahtar Noktaları Göster:</label>
               <input type="checkbox" id="show-keypoints-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="show-skeleton-${this.containerId}">Show Skeleton:</label>
+              <label for="show-skeleton-${this.containerId}">İskeleti Göster:</label>
               <input type="checkbox" id="show-skeleton-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="show-bounding-box-${this.containerId}">Show Bounding Box:</label>
+              <label for="show-bounding-box-${this.containerId}">Sınır Kutusu Göster:</label>
               <input type="checkbox" id="show-bounding-box-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="show-confidence-${this.containerId}">Show Confidence:</label>
+              <label for="show-confidence-${this.containerId}">Güveni Göster:</label>
               <input type="checkbox" id="show-confidence-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="show-zones-${this.containerId}">Show Zones:</label>
+              <label for="show-zones-${this.containerId}">Bölgeleri Göster:</label>
               <input type="checkbox" id="show-zones-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="show-debug-info-${this.containerId}">Show Debug Info:</label>
+              <label for="show-debug-info-${this.containerId}">Hata Ayıklama Bilgisi:</label>
               <input type="checkbox" id="show-debug-info-${this.containerId}" class="setting-checkbox">
             </div>
           </div>
 
           <!-- Color Settings -->
           <div class="settings-section">
-            <h4>Colors</h4>
+            <h4>Renkler</h4>
             <div class="setting-row">
-              <label for="skeleton-color-${this.containerId}">Skeleton:</label>
+              <label for="skeleton-color-${this.containerId}">İskelet:</label>
               <input type="color" id="skeleton-color-${this.containerId}" class="setting-color">
             </div>
             <div class="setting-row">
-              <label for="keypoint-color-${this.containerId}">Keypoints:</label>
+              <label for="keypoint-color-${this.containerId}">Anahtar Noktalar:</label>
               <input type="color" id="keypoint-color-${this.containerId}" class="setting-color">
             </div>
             <div class="setting-row">
-              <label for="bounding-box-color-${this.containerId}">Bounding Box:</label>
+              <label for="bounding-box-color-${this.containerId}">Sınır Kutusu:</label>
               <input type="color" id="bounding-box-color-${this.containerId}" class="setting-color">
             </div>
           </div>
 
           <!-- Performance Settings -->
           <div class="settings-section">
-            <h4>Performance</h4>
+            <h4>Performans</h4>
             <div class="setting-row">
-              <label for="enable-validation-${this.containerId}">Enable Validation:</label>
+              <label for="enable-validation-${this.containerId}">Doğrulamayı Etkinleştir:</label>
               <input type="checkbox" id="enable-validation-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="enable-performance-tracking-${this.containerId}">Performance Tracking:</label>
+              <label for="enable-performance-tracking-${this.containerId}">Performans Takibi:</label>
               <input type="checkbox" id="enable-performance-tracking-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="enable-debug-logging-${this.containerId}">Debug Logging:</label>
+              <label for="enable-debug-logging-${this.containerId}">Hata Ayıklama Günlüğü:</label>
               <input type="checkbox" id="enable-debug-logging-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="enable-smoothing-${this.containerId}">Enable Smoothing:</label>
+              <label for="enable-smoothing-${this.containerId}">Yumuşatmayı Etkinleştir:</label>
               <input type="checkbox" id="enable-smoothing-${this.containerId}" class="setting-checkbox">
             </div>
           </div>
 
           <!-- Advanced Settings -->
           <div class="settings-section advanced-section" id="advanced-section-${this.containerId}" style="display: none;">
-            <h4>Advanced</h4>
+            <h4>Gelişmiş</h4>
             <div class="setting-row">
-              <label for="heartbeat-interval-${this.containerId}">Heartbeat Interval (ms):</label>
+              <label for="heartbeat-interval-${this.containerId}">Nabız Aralığı (ms):</label>
               <input type="number" id="heartbeat-interval-${this.containerId}" class="setting-input" min="5000" max="60000" step="5000">
             </div>
             <div class="setting-row">
-              <label for="max-reconnect-attempts-${this.containerId}">Max Reconnect Attempts:</label>
+              <label for="max-reconnect-attempts-${this.containerId}">Maks Yeniden Bağlanma Denemesi:</label>
               <input type="number" id="max-reconnect-attempts-${this.containerId}" class="setting-input" min="1" max="20">
             </div>
           </div>
           
           <!-- Model Settings -->
           <div class="settings-section">
-            <h4>Model Configuration</h4>
+            <h4>Model Yapılandırması</h4>
             <div class="setting-row">
-              <label for="default-model-path-${this.containerId}">Default Model Path:</label>
+              <label for="default-model-path-${this.containerId}">Varsayılan Model Yolu:</label>
               <input type="text" id="default-model-path-${this.containerId}" class="setting-input setting-input-wide" placeholder="data/models/">
             </div>
             <div class="setting-row">
-              <label for="auto-load-model-${this.containerId}">Auto-load Model on Startup:</label>
+              <label for="auto-load-model-${this.containerId}">Başlangıçta Modeli Otomatik Yükle:</label>
               <input type="checkbox" id="auto-load-model-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="inference-device-${this.containerId}">Inference Device:</label>
+              <label for="inference-device-${this.containerId}">Çıkarım Cihazı:</label>
               <select id="inference-device-${this.containerId}" class="setting-select">
                 <option value="CPU">CPU</option>
                 <option value="GPU">GPU</option>
               </select>
             </div>
             <div class="setting-row">
-              <label for="inference-threads-${this.containerId}">Inference Threads:</label>
+              <label for="inference-threads-${this.containerId}">Çıkarım İş Parçacığı:</label>
               <input type="number" id="inference-threads-${this.containerId}" class="setting-input" min="1" max="16">
             </div>
             <div class="setting-row">
-              <label for="progressive-loading-${this.containerId}">Progressive Loading:</label>
+              <label for="progressive-loading-${this.containerId}">Aşamalı Yükleme:</label>
               <input type="checkbox" id="progressive-loading-${this.containerId}" class="setting-checkbox">
             </div>
           </div>
 
           <!-- Training Settings -->
           <div class="settings-section">
-            <h4>Training Configuration</h4>
+            <h4>Eğitim Yapılandırması</h4>
             <div class="setting-row">
-              <label for="default-epochs-${this.containerId}">Default Epochs:</label>
+              <label for="default-epochs-${this.containerId}">Varsayılan Epok:</label>
               <input type="number" id="default-epochs-${this.containerId}" class="setting-input" min="1" max="10000">
             </div>
             <div class="setting-row">
-              <label for="default-batch-size-${this.containerId}">Default Batch Size:</label>
+              <label for="default-batch-size-${this.containerId}">Varsayılan Yığın Boyutu:</label>
               <input type="number" id="default-batch-size-${this.containerId}" class="setting-input" min="1" max="512">
             </div>
             <div class="setting-row">
-              <label for="default-learning-rate-${this.containerId}">Default Learning Rate:</label>
+              <label for="default-learning-rate-${this.containerId}">Varsayılan Öğrenme Oranı:</label>
               <input type="number" id="default-learning-rate-${this.containerId}" class="setting-input" min="0.000001" max="1" step="0.0001">
             </div>
             <div class="setting-row">
-              <label for="early-stopping-patience-${this.containerId}">Early Stopping Patience:</label>
+              <label for="early-stopping-patience-${this.containerId}">Erken Durdurma Sabrı:</label>
               <input type="number" id="early-stopping-patience-${this.containerId}" class="setting-input" min="1" max="100">
             </div>
             <div class="setting-row">
-              <label for="checkpoint-directory-${this.containerId}">Checkpoint Directory:</label>
+              <label for="checkpoint-directory-${this.containerId}">Kontrol Noktası Dizini:</label>
               <input type="text" id="checkpoint-directory-${this.containerId}" class="setting-input setting-input-wide" placeholder="data/models/">
             </div>
             <div class="setting-row">
-              <label for="auto-export-on-completion-${this.containerId}">Auto-export on Completion:</label>
+              <label for="auto-export-on-completion-${this.containerId}">Tamamlandığında Otomatik Dışa Aktar:</label>
               <input type="checkbox" id="auto-export-on-completion-${this.containerId}" class="setting-checkbox">
             </div>
             <div class="setting-row">
-              <label for="recording-directory-${this.containerId}">Recording Directory:</label>
+              <label for="recording-directory-${this.containerId}">Kayıt Dizini:</label>
               <input type="text" id="recording-directory-${this.containerId}" class="setting-input setting-input-wide" placeholder="data/recordings/">
             </div>
           </div>
 
           <div class="settings-toggle">
-            <button class="btn btn-sm" id="toggle-advanced-${this.containerId}">Show Advanced</button>
+            <button class="btn btn-sm" id="toggle-advanced-${this.containerId}">Gelişmişi Göster</button>
           </div>
         </div>
         
         <div class="settings-footer">
           <div class="settings-status" id="settings-status-${this.containerId}">
-            Settings loaded
+            Ayarlar yüklendi
           </div>
         </div>
       </div>

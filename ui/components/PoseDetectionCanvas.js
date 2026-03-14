@@ -87,25 +87,25 @@ export class PoseDetectionCanvas {
       <div class="pose-detection-canvas-wrapper">
         <div class="pose-canvas-header">
           <div class="pose-canvas-title">
-            <h3>Human Pose Detection</h3>
+            <h3>İnsan Poz Algılama</h3>
             <div class="connection-status">
               <span class="status-indicator" id="status-indicator-${this.containerId}"></span>
-              <span class="status-text" id="status-text-${this.containerId}">Disconnected</span>
+              <span class="status-text" id="status-text-${this.containerId}">Bağlantı Yok</span>
             </div>
           </div>
           <div class="pose-canvas-controls" id="controls-${this.containerId}" ${!this.config.enableControls ? 'style="display:none"' : ''}>
-            <button class="btn btn-start" id="start-btn-${this.containerId}">&#9654; Start</button>
-            <button class="btn btn-stop" id="stop-btn-${this.containerId}" disabled>&#9632; Stop</button>
-            <button class="btn btn-reconnect" id="reconnect-btn-${this.containerId}" disabled>&#8635; Reconnect</button>
+            <button class="btn btn-start" id="start-btn-${this.containerId}">&#9654; Başlat</button>
+            <button class="btn btn-stop" id="stop-btn-${this.containerId}" disabled>&#9632; Durdur</button>
+            <button class="btn btn-reconnect" id="reconnect-btn-${this.containerId}" disabled>&#8635; Yeniden Bağlan</button>
             <button class="btn btn-demo" id="demo-btn-${this.containerId}">&#9881; Demo</button>
             <select class="mode-select" id="mode-select-${this.containerId}">
-              <option value="skeleton">Skeleton</option>
-              <option value="keypoints">Keypoints</option>
-              <option value="heatmap">Heatmap</option>
-              <option value="dense">Dense</option>
+              <option value="skeleton">İskelet</option>
+              <option value="keypoints">Anahtar Noktalar</option>
+              <option value="heatmap">Isı Haritası</option>
+              <option value="dense">Yoğun</option>
             </select>
-            <button class="btn btn-trail" id="trail-btn-${this.containerId}">&#9676; Trail</button>
-            <button class="btn btn-settings" id="settings-btn-${this.containerId}">&#9881; Settings</button>
+            <button class="btn btn-trail" id="trail-btn-${this.containerId}">&#9676; İz</button>
+            <button class="btn btn-settings" id="settings-btn-${this.containerId}">&#9881; Ayarlar</button>
           </div>
         </div>
         <div class="pose-canvas-container">

@@ -256,18 +256,18 @@ export class DashboardHUD {
       <div class="hud-top-left">
         <div class="hud-row">
           <span class="hud-status-dot disconnected" id="hud-status-dot"></span>
-          <span class="hud-value" id="hud-conn-status">Disconnected</span>
+          <span class="hud-value" id="hud-conn-status">Bağlantı Yok</span>
         </div>
         <div class="hud-row">
-          <span class="hud-label">Latency</span>
+          <span class="hud-label">Gecikme</span>
           <span class="hud-value" id="hud-latency">-- ms</span>
         </div>
         <div class="hud-row">
-          <span class="hud-label">Messages</span>
+          <span class="hud-label">Mesajlar</span>
           <span class="hud-value" id="hud-msg-count">0</span>
         </div>
         <div class="hud-row">
-          <span class="hud-label">Uptime</span>
+          <span class="hud-label">Çalışma Süresi</span>
           <span class="hud-value" id="hud-uptime">0s</span>
         </div>
       </div>
@@ -276,7 +276,7 @@ export class DashboardHUD {
       <div class="hud-top-right">
         <div class="hud-fps high" id="hud-fps">-- FPS</div>
         <div class="hud-row">
-          <span class="hud-label">Frame</span>
+          <span class="hud-label">Kare</span>
           <span class="hud-value" id="hud-frame-time">-- ms</span>
         </div>
       </div>
@@ -284,11 +284,11 @@ export class DashboardHUD {
       <!-- Bottom-left: detection info -->
       <div class="hud-bottom-left">
         <div class="hud-row">
-          <span class="hud-label">Persons</span>
+          <span class="hud-label">Kişiler</span>
           <span class="hud-person-count hud-value" id="hud-person-count">0</span>
         </div>
         <div class="hud-row">
-          <span class="hud-label">Confidence</span>
+          <span class="hud-label">Güven</span>
           <span class="hud-value" id="hud-confidence">0%</span>
         </div>
         <div class="hud-confidence-bar">
@@ -306,7 +306,7 @@ export class DashboardHUD {
 
       <!-- Controls hint -->
       <div class="hud-controls-hint">
-        Drag to orbit | Scroll to zoom | Right-click to pan
+        Sürükleyerek döndür | Kaydırarak yakınlaştır | Sağ tık ile kaydır
       </div>
     `;
 
@@ -368,22 +368,22 @@ export class DashboardHUD {
 
     // Banner
     if (state.isRealData) {
-      this._els.banner.textContent = 'REAL DATA - LIVE STREAM';
+      this._els.banner.textContent = 'GERÇEK VERİ - CANLI YAYIN';
       this._els.banner.className = 'hud-banner real';
     } else {
-      this._els.banner.textContent = 'MOCK DATA - DEMO MODE';
+      this._els.banner.textContent = 'MOCK VERİ - DEMO MODU';
       this._els.banner.className = 'hud-banner mock';
     }
 
     // Connection status
     this._els.statusDot.className = `hud-status-dot ${state.connectionStatus}`;
     const statusText = {
-      connected: 'Connected',
-      disconnected: 'Disconnected',
-      connecting: 'Connecting...',
-      error: 'Error'
+      connected: 'Bağlı',
+      disconnected: 'Bağlantı Yok',
+      connecting: 'Bağlanıyor...',
+      error: 'Hata'
     };
-    this._els.connStatus.textContent = statusText[state.connectionStatus] || 'Unknown';
+    this._els.connStatus.textContent = statusText[state.connectionStatus] || 'Bilinmiyor';
 
     // Latency
     this._els.latency.textContent = state.latency > 0 ? `${state.latency.toFixed(0)} ms` : '-- ms';
