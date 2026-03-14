@@ -20,7 +20,7 @@ class WiFiDensePoseApp {
   // Initialize application
   async init() {
     try {
-      console.log('Initializing WiFi DensePose UI...');
+      console.log('WiFi DensePose UI başlatılıyor...');
       
       // Set up error handling
       this.setupErrorHandling();
@@ -35,11 +35,11 @@ class WiFiDensePoseApp {
       this.setupEventListeners();
       
       this.isInitialized = true;
-      console.log('WiFi DensePose UI initialized successfully');
+      console.log('WiFi DensePose UI başarıyla başlatıldı');
       
     } catch (error) {
-      console.error('Failed to initialize application:', error);
-      this.showGlobalError('Failed to initialize application. Please refresh the page.');
+      console.error('Uygulama başlatılamadı:', error);
+      this.showGlobalError('Uygulama başlatılamadı. Lütfen sayfayı yenileyin.');
     }
   }
 
@@ -58,23 +58,23 @@ class WiFiDensePoseApp {
     const useMock = await backendDetector.shouldUseMockServer();
     
     if (useMock) {
-      console.log('🧪 Initializing with mock server for testing');
+      console.log('🧪 Test için mock sunucu ile başlatılıyor');
       // Import and start mock server only when needed
       const { mockServer } = await import('./utils/mock-server.js');
       mockServer.start();
       
       // Show notification to user
-      this.showBackendStatus('Mock server active - testing mode', 'warning');
+      this.showBackendStatus('Mock sunucu aktif - test modu', 'warning');
     } else {
-      console.log('🔌 Connecting to backend...');
+      console.log('🔌 Backend\'e bağlanılıyor...');
 
       try {
         const health = await healthService.checkLiveness();
-        console.log('✅ Backend responding:', health);
-        this.showBackendStatus('Connected to Rust sensing server', 'success');
+        console.log('✅ Backend yanıt veriyor:', health);
+        this.showBackendStatus('Rust algılama sunucusuna bağlandı', 'success');
       } catch (error) {
-        console.warn('⚠️ Backend not available:', error.message);
-        this.showBackendStatus('Backend unavailable — start sensing-server', 'warning');
+        console.warn('⚠️ Backend mevcut değil:', error.message);
+        this.showBackendStatus('Backend mevcut değil — sensing-server başlatın', 'warning');
       }
 
       // Start the sensing WebSocket service early so the dashboard and
@@ -246,11 +246,11 @@ class WiFiDensePoseApp {
   handleVisibilityChange() {
     if (document.hidden) {
       // Pause updates when page is hidden
-      console.log('Page hidden, pausing updates');
+      console.log('Sayfa gizli, güncellemeler duraklatıldı');
       healthService.stopHealthMonitoring();
     } else {
       // Resume updates when page is visible
-      console.log('Page visible, resuming updates');
+      console.log('Sayfa görünür, güncellemeler devam ediyor');
       healthService.startHealthMonitoring();
     }
   }
@@ -259,15 +259,15 @@ class WiFiDensePoseApp {
   setupErrorHandling() {
     window.addEventListener('error', (event) => {
       if (event.error) {
-        console.error('Global error:', event.error);
-        this.showGlobalError('An unexpected error occurred');
+        console.error('Genel hata:', event.error);
+        this.showGlobalError('Beklenmeyen bir hata oluştu');
       }
     });
 
     window.addEventListener('unhandledrejection', (event) => {
       if (event.reason) {
-        console.error('Unhandled promise rejection:', event.reason);
-        this.showGlobalError('An unexpected error occurred');
+        console.error('İşlenmeyen promise reddi:', event.reason);
+        this.showGlobalError('Beklenmeyen bir hata oluştu');
       }
     });
   }
@@ -315,7 +315,7 @@ class WiFiDensePoseApp {
 
   // Clean up resources
   cleanup() {
-    console.log('Cleaning up application resources...');
+    console.log('Uygulama kaynakları temizleniyor...');
     
     // Dispose all components
     Object.values(this.components).forEach(component => {

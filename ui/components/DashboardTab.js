@@ -10,6 +10,14 @@ export class DashboardTab {
     this.statsElements = {};
     this.healthSubscription = null;
     this.statsInterval = null;
+    
+    // Yeni özellikler
+    this.heatmapData = [];
+    this.heatmapCtx = null;
+    this.vitalData = { breathing: [], heart: [] };
+    this.stickmanCtx = null;
+    this.currentPose = null;
+    this.theme = 'light';
   }
 
   // Initialize component
@@ -17,6 +25,11 @@ export class DashboardTab {
     this.cacheElements();
     await this.loadInitialData();
     this.startMonitoring();
+    this.initHeatmap();
+    this.initVitalSigns();
+    this.initStickman();
+    this.initThemeToggle();
+    this.initExportModal();
   }
 
   // Cache DOM elements
@@ -420,6 +433,495 @@ export class DashboardTab {
     }
   }
 
+  // ========================================
+  // ISI HARITASI (HEATMAP)
+  // ========================================
+  initHeatmap() {
+    const canvas = document.getElementById('heatmapCanvas');
+    if (!canvas) return;
+    
+    this.heatmapCtx = canvas.getContext('2d');
+    this.heatmapData = Array(20).fill(null).map(() => Array(15).fill(0));
+    
+    // Sıfırlama butonu
+    const resetBtn = document.getElementById('resetHeatmap');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        this.heatmapData = Array(20).fill(null).map(() => Array(15).fill(0));
+        this.drawHeatmap();
+      });
+    }
+    
+    // Simülasyon için rastgele veri
+    this.heatmapInterval = setInterval(() => {
+      this.updateHeatmap();
+    }, 500);
+    
+    this.drawHeatmap();
+  }
+
+  updateHeatmap() {
+    // Rastgele hareket simülasyonu
+    const x = Math.floor(Math.random() * 20);
+    const y = Math.floor(Math.random() * 15);
+    this.heatmapData[x][y] = Math.min(1, this.heatmapData[x][y] + 0.3);
+    
+    // Yayılma efekti
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 15; j++) {
+        this.heatmapData[i][j] *= 0.98;
+      }
+    }
+    
+    this.drawHeatmap();
+  }
+
+  drawHeatmap() {
+    if (!this.heatmapCtx) return;
+    
+    const canvas = this.heatmapCtx.canvas;
+    const cellWidth = canvas.width / 20;
+    const cellHeight = canvas.height / 15;
+    
+    this.heatmapCtx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 15; j++) {
+        const value = this.heatmapData[i][j];
+        const color = this.getHeatmapColor(value);
+        this.heatmapCtx.fillStyle = color;
+        this.heatmapCtx.fillRect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+      }
+    }
+  }
+
+  getHeatmapColor(value) {
+    // Yeşil -> Sarı -> Kırmızı gradyan
+    const r = Math.floor(255 * Math.min(1, value * 2));
+    const g = Math.floor(255 * Math.max(0, 1 - Math.abs(value - 0.5) * 2));
+    const b = Math.floor(255 * Math.max(0, 1 - value * 2));
+    return `rgba(${r}, ${g}, ${b}, ${0.3 + value * 0.7})`;
+  }
+
+  // ========================================
+  // VITAL İŞARETLER
+  // ========================================
+  initVitalSigns() {
+    const breathingCanvas = document.getElementById('breathingWave');
+    const heartCanvas = document.getElementById('heartWave');
+    
+    if (breathingCanvas) {
+      this.breathingCtx = breathingCanvas.getContext('2d');
+    }
+    if (heartCanvas) {
+      this.heartCtx = heartCanvas.getContext('2d');
+    }
+    
+    // Simülasyon
+    this.vitalInterval = setInterval(() => {
+      this.updateVitalSigns();
+    }, 100);
+  }
+
+  updateVitalSigns() {
+    const time = Date.now() / 1000;
+    
+    // Nefes (0.2 Hz = 12 BPM)
+    const breathing = Math.sin(time * 0.2 * Math.PI * 2) * 0.5 + 0.5;
+    this.vitalData.breathing.push(breathing);
+    if (this.vitalData.breathing.length > 75) this.vitalData.breathing.shift();
+    
+    // Kalp (1.2 Hz = 72 BPM)
+    const heart = Math.sin(time * 1.2 * Math.PI * 2) * 0.5 + 0.5;
+    this.vitalData.heart.push(heart);
+    if (this.vitalData.heart.length > 75) this.vitalData.heart.shift();
+    
+    // Değerleri güncelle
+    const breathingRate = document.getElementById('breathingRate');
+    const heartRate = document.getElementById('heartRate');
+    
+    if (breathingRate) {
+      const bpm = Math.floor(12 + Math.random() * 6);
+      breathingRate.textContent = `${bpm} BPM`;
+    }
+    if (heartRate) {
+      const bpm = Math.floor(68 + Math.random() * 10);
+      heartRate.textContent = `${bpm} BPM`;
+    }
+    
+    // Çiz
+    this.drawVitalWave('breathing');
+    this.drawVitalWave('heart');
+  }
+
+  drawVitalWave(type) {
+    const ctx = type === 'breathing' ? this.breathingCtx : this.heartCtx;
+    const data = this.vitalData[type];
+    
+    if (!ctx || !data.length) return;
+    
+    const canvas = ctx.canvas;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.beginPath();
+    ctx.strokeStyle = type === 'breathing' ? '#21a0c5' : '#e74c3c';
+    ctx.lineWidth = 2;
+    
+    for (let i = 0; i < data.length; i++) {
+      const x = (i / data.length) * canvas.width;
+      const y = canvas.height - (data[i] * canvas.height * 0.8) - canvas.height * 0.1;
+      
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    
+    ctx.stroke();
+  }
+
+  // ========================================
+  // ÇÖP ADAM (STICKMAN)
+  // ========================================
+  initStickman() {
+    const canvas = document.getElementById('stickmanCanvas');
+    if (!canvas) return;
+    
+    this.stickmanCtx = canvas.getContext('2d');
+    
+    // Poz verisi simülasyonu
+    this.stickmanInterval = setInterval(() => {
+      this.updateStickman();
+    }, 100);
+    
+    this.drawStickman();
+  }
+
+  updateStickman() {
+    const time = Date.now() / 1000;
+    
+    // Rastgele poz simülasyonu
+    this.currentPose = {
+      head: { x: 150, y: 50 },
+      neck: { x: 150, y: 80 },
+      leftShoulder: { x: 120, y: 90 },
+      rightShoulder: { x: 180, y: 90 },
+      leftElbow: { x: 100 + Math.sin(time) * 20, y: 130 + Math.cos(time) * 10 },
+      rightElbow: { x: 200 + Math.sin(time + 1) * 20, y: 130 + Math.cos(time + 1) * 10 },
+      leftWrist: { x: 90 + Math.sin(time * 1.5) * 30, y: 170 + Math.cos(time * 1.5) * 15 },
+      rightWrist: { x: 210 + Math.sin(time * 1.5 + 1) * 30, y: 170 + Math.cos(time * 1.5 + 1) * 15 },
+      spine: { x: 150, y: 150 },
+      leftHip: { x: 130, y: 200 },
+      rightHip: { x: 170, y: 200 },
+      leftKnee: { x: 125 + Math.sin(time * 0.8) * 10, y: 280 + Math.abs(Math.sin(time * 0.8)) * 20 },
+      rightKnee: { x: 175 + Math.sin(time * 0.8 + Math.PI) * 10, y: 280 + Math.abs(Math.sin(time * 0.8 + Math.PI)) * 20 },
+      leftAnkle: { x: 120 + Math.sin(time * 0.8) * 15, y: 350 },
+      rightAnkle: { x: 180 + Math.sin(time * 0.8 + Math.PI) * 15, y: 350 },
+      confidence: 0.85 + Math.random() * 0.1
+    };
+    
+    this.drawStickman();
+    
+    // Bilgileri güncelle
+    const confEl = document.getElementById('poseConfidence');
+    const personEl = document.getElementById('posePerson');
+    
+    if (confEl) confEl.textContent = `${Math.floor(this.currentPose.confidence * 100)}%`;
+    if (personEl) personEl.textContent = '1';
+  }
+
+  drawStickman() {
+    if (!this.stickmanCtx || !this.currentPose) {
+      // Başlangıç durumu
+      this.stickmanCtx = document.getElementById('stickmanCanvas')?.getContext('2d');
+      if (!this.stickmanCtx) return;
+      
+      // Varsayılan poz
+      this.currentPose = {
+        head: { x: 150, y: 50 },
+        neck: { x: 150, y: 80 },
+        leftShoulder: { x: 120, y: 90 },
+        rightShoulder: { x: 180, y: 90 },
+        leftElbow: { x: 100, y: 130 },
+        rightElbow: { x: 200, y: 130 },
+        leftWrist: { x: 90, y: 170 },
+        rightWrist: { x: 210, y: 170 },
+        spine: { x: 150, y: 150 },
+        leftHip: { x: 130, y: 200 },
+        rightHip: { x: 170, y: 200 },
+        leftKnee: { x: 125, y: 280 },
+        rightKnee: { x: 175, y: 280 },
+        leftAnkle: { x: 120, y: 350 },
+        rightAnkle: { x: 180, y: 350 },
+        confidence: 0.9
+      };
+    }
+    
+    const ctx = this.stickmanCtx;
+    const canvas = ctx.canvas;
+    
+    // Temizle
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const pose = this.currentPose;
+    
+    // Bağlantı çizgileri
+    ctx.strokeStyle = '#21a0c5';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    
+    // Baş-Boyun
+    ctx.beginPath();
+    ctx.moveTo(pose.head.x, pose.head.y);
+    ctx.lineTo(pose.neck.x, pose.neck.y);
+    ctx.stroke();
+    
+    // Gövde
+    ctx.beginPath();
+    ctx.moveTo(pose.neck.x, pose.neck.y);
+    ctx.lineTo(pose.spine.x, pose.spine.y);
+    ctx.stroke();
+    
+    // Omuzlar
+    ctx.beginPath();
+    ctx.moveTo(pose.leftShoulder.x, pose.leftShoulder.y);
+    ctx.lineTo(pose.rightShoulder.x, pose.rightShoulder.y);
+    ctx.stroke();
+    
+    // Sol Kol
+    ctx.beginPath();
+    ctx.moveTo(pose.leftShoulder.x, pose.leftShoulder.y);
+    ctx.lineTo(pose.leftElbow.x, pose.leftElbow.y);
+    ctx.lineTo(pose.leftWrist.x, pose.leftWrist.y);
+    ctx.stroke();
+    
+    // Sağ Kol
+    ctx.beginPath();
+    ctx.moveTo(pose.rightShoulder.x, pose.rightShoulder.y);
+    ctx.lineTo(pose.rightElbow.x, pose.rightElbow.y);
+    ctx.lineTo(pose.rightWrist.x, pose.rightWrist.y);
+    ctx.stroke();
+    
+    // Kalça
+    ctx.beginPath();
+    ctx.moveTo(pose.leftHip.x, pose.leftHip.y);
+    ctx.lineTo(pose.rightHip.x, pose.rightHip.y);
+    ctx.stroke();
+    
+    // Gövde-Kalça
+    ctx.beginPath();
+    ctx.moveTo(pose.spine.x, pose.spine.y);
+    ctx.lineTo((pose.leftHip.x + pose.rightHip.x) / 2, (pose.leftHip.y + pose.rightHip.y) / 2);
+    ctx.stroke();
+    
+    // Sol Bacak
+    ctx.beginPath();
+    ctx.moveTo(pose.leftHip.x, pose.leftHip.y);
+    ctx.lineTo(pose.leftKnee.x, pose.leftKnee.y);
+    ctx.lineTo(pose.leftAnkle.x, pose.leftAnkle.y);
+    ctx.stroke();
+    
+    // Sağ Bacak
+    ctx.beginPath();
+    ctx.moveTo(pose.rightHip.x, pose.rightHip.y);
+    ctx.lineTo(pose.rightKnee.x, pose.rightKnee.y);
+    ctx.lineTo(pose.rightAnkle.x, pose.rightAnkle.y);
+    ctx.stroke();
+    
+    // Eklem noktaları
+    ctx.fillStyle = '#e74c3c';
+    const joints = [
+      pose.head, pose.neck, pose.leftShoulder, pose.rightShoulder,
+      pose.leftElbow, pose.rightElbow, pose.leftWrist, pose.rightWrist,
+      pose.spine, pose.leftHip, pose.rightHip,
+      pose.leftKnee, pose.rightKnee, pose.leftAnkle, pose.rightAnkle
+    ];
+    
+    joints.forEach(joint => {
+      ctx.beginPath();
+      ctx.arc(joint.x, joint.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    
+    // Baş (daha büyük)
+    ctx.beginPath();
+    ctx.arc(pose.head.x, pose.head.y - 15, 18, 0, Math.PI * 2);
+    ctx.strokeStyle = '#21a0c5';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // ========================================
+  // TEMA DEĞİŞTİRME
+  // ========================================
+  initThemeToggle() {
+    const themeBtn = document.getElementById('themeToggle');
+    if (!themeBtn) return;
+    
+    // Kayıtlı temayı yükle
+    const savedTheme = localStorage.getItem('ruview-theme') || 'light';
+    this.setTheme(savedTheme);
+    
+    themeBtn.addEventListener('click', () => {
+      this.toggleTheme();
+    });
+  }
+
+  toggleTheme() {
+    this.theme = this.theme === 'light' ? 'dark' : 'light';
+    this.setTheme(this.theme);
+  }
+
+  setTheme(theme) {
+    this.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('ruview-theme', theme);
+    
+    const themeIcon = document.querySelector('.theme-icon');
+    if (themeIcon) {
+      themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+    }
+  }
+
+  // ========================================
+  // VERİ DIŞA AKTARMA
+  // ========================================
+  initExportModal() {
+    const exportBtn = document.getElementById('exportData');
+    if (!exportBtn) return;
+    
+    // Modal oluştur
+    this.createExportModal();
+    
+    exportBtn.addEventListener('click', () => {
+      this.showExportModal();
+    });
+  }
+
+  createExportModal() {
+    const modal = document.createElement('div');
+    modal.id = 'exportModal';
+    modal.className = 'export-modal';
+    modal.innerHTML = `
+      <div class="export-modal-content">
+        <div class="export-modal-header">
+          <h3>Veri Dışa Aktarma</h3>
+          <button class="export-modal-close">&times;</button>
+        </div>
+        <div class="export-options">
+          <div class="export-option" data-format="csv">
+            <span class="export-option-icon">📊</span>
+            <div class="export-option-text">
+              <h4>CSV Formatı</h4>
+              <p>Poz verilerini tablo olarak indir</p>
+            </div>
+          </div>
+          <div class="export-option" data-format="json">
+            <span class="export-option-icon">📋</span>
+            <div class="export-option-text">
+              <h4>JSON Formatı</h4>
+              <p>Tam veri yapısını indir</p>
+            </div>
+          </div>
+          <div class="export-option" data-format="image">
+            <span class="export-option-icon">🖼️</span>
+            <div class="export-option-text">
+              <h4>Görüntü</h4>
+              <p>Görselleştirmeyi PNG olarak kaydet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Kapatma
+    modal.querySelector('.export-modal-close').addEventListener('click', () => {
+      this.hideExportModal();
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.hideExportModal();
+    });
+    
+    // Format seçimi
+    modal.querySelectorAll('.export-option').forEach(option => {
+      option.addEventListener('click', () => {
+        this.exportData(option.dataset.format);
+        this.hideExportModal();
+      });
+    });
+  }
+
+  showExportModal() {
+    const modal = document.getElementById('exportModal');
+    if (modal) modal.classList.add('active');
+  }
+
+  hideExportModal() {
+    const modal = document.getElementById('exportModal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  exportData(format) {
+    const data = {
+      timestamp: new Date().toISOString(),
+      pose: this.currentPose,
+      vitalSigns: {
+        breathing: this.vitalData.breathing.slice(-50),
+        heart: this.vitalData.heart.slice(-50)
+      },
+      heatmap: this.heatmapData
+    };
+    
+    let content, filename, type;
+    
+    switch (format) {
+      case 'csv':
+        content = this.convertToCSV(data);
+        filename = 'ruview-data.csv';
+        type = 'text/csv';
+        break;
+      case 'json':
+        content = JSON.stringify(data, null, 2);
+        filename = 'ruview-data.json';
+        type = 'application/json';
+        break;
+      case 'image':
+        this.exportAsImage();
+        return;
+    }
+    
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  convertToCSV(data) {
+    let csv = 'Zaman,Nefes,Kalp\n';
+    const breathing = data.vitalSigns.breathing;
+    const heart = data.vitalSigns.heart;
+    
+    for (let i = 0; i < Math.max(breathing.length, heart.length); i++) {
+      csv += `${i},${breathing[i] || ''},${heart[i] || ''}\n`;
+    }
+    
+    return csv;
+  }
+
+  exportAsImage() {
+    const canvas = document.getElementById('stickmanCanvas');
+    if (!canvas) return;
+    
+    const link = document.createElement('a');
+    link.download = 'ruview-pose.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+
   // Clean up
   dispose() {
     if (this.healthSubscription) {
@@ -430,6 +932,15 @@ export class DashboardTab {
 
     if (this.statsInterval) {
       clearInterval(this.statsInterval);
+    }
+    if (this.heatmapInterval) {
+      clearInterval(this.heatmapInterval);
+    }
+    if (this.vitalInterval) {
+      clearInterval(this.vitalInterval);
+    }
+    if (this.stickmanInterval) {
+      clearInterval(this.stickmanInterval);
     }
 
     healthService.stopHealthMonitoring();

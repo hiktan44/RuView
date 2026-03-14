@@ -2424,3 +2424,313 @@ canvas {
 .pose-trail-btn:hover {
   background: rgba(var(--color-primary-rgb), 0.2);
 }
+
+/* ========================================
+   YENİ ÖZELLİK STİLLERİ
+   ======================================== */
+
+/* Header Kontrolleri */
+.header-controls {
+  display: flex;
+  gap: var(--space-8);
+  margin: var(--space-8) 0;
+}
+
+.btn--icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.btn--icon:hover {
+  background: var(--color-secondary-hover);
+  border-color: var(--color-primary);
+}
+
+/* Isı Haritası Paneli */
+.heatmap-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  margin: var(--space-20) 0;
+}
+
+.heatmap-panel h3 {
+  margin: 0 0 var(--space-16) 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+}
+
+.heatmap-container {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: var(--radius-base);
+  overflow: hidden;
+}
+
+#heatmapCanvas {
+  display: block;
+  width: 100%;
+  height: 300px;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-12);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.legend-low, .legend-high {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.legend-gradient {
+  width: 100px;
+  height: 12px;
+  background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c);
+  border-radius: var(--radius-sm);
+}
+
+.heatmap-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+}
+
+.heatmap-info {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Vital İşaretler Paneli */
+.vital-signs-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  margin: var(--space-20) 0;
+}
+
+.vital-signs-panel h3 {
+  margin: 0 0 var(--space-16) 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+}
+
+.vital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-16);
+}
+
+.vital-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  background: linear-gradient(135deg, rgba(33, 128, 141, 0.05) 0%, rgba(33, 128, 141, 0.02) 100%);
+  border: 1px solid rgba(33, 128, 141, 0.15);
+  border-radius: var(--radius-md);
+}
+
+.vital-icon {
+  font-size: 28px;
+}
+
+.vital-info {
+  flex: 1;
+}
+
+.vital-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.vital-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.vital-wave {
+  opacity: 0.8;
+}
+
+.vital-wave canvas {
+  display: block;
+}
+
+/* Çöp Adam Paneli */
+.stickman-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  margin: var(--space-20) 0;
+}
+
+.stickman-panel h3 {
+  margin: 0 0 var(--space-16) 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+}
+
+.stickman-container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-20);
+}
+
+#stickmanCanvas {
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+  border-radius: var(--radius-base);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pose-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.pose-stat {
+  padding: var(--space-12);
+  background: rgba(33, 128, 141, 0.1);
+  border-radius: var(--radius-base);
+}
+
+.pose-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.pose-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* Karanlık Tema */
+[data-theme="dark"] {
+  --color-background: #0d1117;
+  --color-surface: #161b22;
+  --color-text: #c9d1d9;
+  --color-text-secondary: #8b949e;
+  --color-border: #30363d;
+  --color-card-border: #21262d;
+}
+
+[data-theme="dark"] .heatmap-container {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+}
+
+[data-theme="dark"] #stickmanCanvas {
+  background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+}
+
+/* Dışa Aktarma Modal */
+.export-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.export-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.export-modal-content {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+
+.export-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-20);
+}
+
+.export-modal-header h3 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.export-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.export-option:hover {
+  border-color: var(--color-primary);
+  background: rgba(33, 128, 141, 0.05);
+}
+
+.export-option-icon {
+  font-size: 24px;
+}
+
+.export-option-text h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+}
+
+.export-option-text p {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}

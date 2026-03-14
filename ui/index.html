@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi DensePose: Human Tracking Through Walls</title>
+    <title>WiFi DensePose: Duvar Arkası İnsan Takibi</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,15 @@
         <!-- Header -->
         <header class="header">
             <h1>WiFi DensePose</h1>
-            <p class="subtitle">Human Tracking Through Walls Using WiFi Signals</p>
+            <p class="subtitle">WiFi Sinyalleri ile Duvar Arkası İnsan Takibi</p>
+            <div class="header-controls">
+                <button id="themeToggle" class="btn btn--icon" title="Tema Değiştir">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button id="exportData" class="btn btn--icon" title="Veri Dışa Aktar">
+                    <span class="export-icon">📥</span>
+                </button>
+            </div>
             <div class="header-info">
                 <span class="api-version"></span>
                 <span class="api-environment"></span>
@@ -21,25 +29,25 @@
 
         <!-- Navigation -->
         <nav class="nav-tabs">
-            <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
-            <button class="nav-tab" data-tab="hardware">Hardware</button>
-            <button class="nav-tab" data-tab="demo">Live Demo</button>
-            <button class="nav-tab" data-tab="architecture">Architecture</button>
-            <button class="nav-tab" data-tab="performance">Performance</button>
-            <button class="nav-tab" data-tab="applications">Applications</button>
-            <button class="nav-tab" data-tab="sensing">Sensing</button>
-            <button class="nav-tab" data-tab="training">Training</button>
-            <a href="observatory.html" class="nav-tab" style="text-decoration:none">Observatory</a>
+            <button class="nav-tab active" data-tab="dashboard">Kontrol Paneli</button>
+            <button class="nav-tab" data-tab="hardware">Donanım</button>
+            <button class="nav-tab" data-tab="demo">Canlı Demo</button>
+            <button class="nav-tab" data-tab="architecture">Mimari</button>
+            <button class="nav-tab" data-tab="performance">Performans</button>
+            <button class="nav-tab" data-tab="applications">Uygulamalar</button>
+            <button class="nav-tab" data-tab="sensing">Algılama</button>
+            <button class="nav-tab" data-tab="training">Eğitim</button>
+            <a href="observatory.html" class="nav-tab" style="text-decoration:none">Gözlemevi</a>
         </nav>
 
         <!-- Dashboard Tab -->
         <section id="dashboard" class="tab-content active">
             <div class="hero-section">
-                <h2>Revolutionary WiFi-Based Human Pose Detection</h2>
+                <h2>Devrim Niteliğinde WiFi Tabanlı İnsan Poz Algılama</h2>
                 <p class="hero-description">
-                    AI can track your full-body movement through walls using just WiFi signals. 
-                    Researchers at Carnegie Mellon have trained a neural network to turn basic WiFi 
-                    signals into detailed wireframe models of human bodies.
+                    Yapay zeka, sadece WiFi sinyallerini kullanarak duvarların arkasından tam vücut hareketlerinizi takip edebilir.
+                    Carnegie Mellon araştırmacıları, temel WiFi sinyallerini insan vücudunun detaylı tel kafes modellerine dönüştüren
+                    bir sinir ağı eğitti.
                 </p>
                 
                 <!-- Error container -->
@@ -47,30 +55,30 @@
 
                 <!-- Live Status Panel -->
                 <div class="live-status-panel">
-                    <h3>System Status</h3>
+                    <h3>Sistem Durumu</h3>
                     <div class="status-grid">
                         <div class="component-status" data-component="api">
-                            <span class="component-name">API Server</span>
+                            <span class="component-name">API Sunucusu</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="hardware">
-                            <span class="component-name">Hardware</span>
+                            <span class="component-name">Donanım</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="inference">
-                            <span class="component-name">Inference</span>
+                            <span class="component-name">Çıkarım</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="streaming">
-                            <span class="component-name">Streaming</span>
+                            <span class="component-name">Yayın</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="datasource" id="dashboard-datasource">
-                            <span class="component-name">Data Source</span>
+                            <span class="component-name">Veri Kaynağı</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
@@ -79,24 +87,24 @@
 
                 <!-- System Metrics -->
                 <div class="system-metrics-panel">
-                    <h3>System Metrics</h3>
+                    <h3>Sistem Metrikleri</h3>
                     <div class="metrics-grid">
                         <div class="metric-item">
-                            <span class="metric-label">CPU Usage</span>
+                            <span class="metric-label">İşlemci Kullanımı</span>
                             <div class="progress-bar" data-type="cpu">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
                             <span class="cpu-usage">0%</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">Memory Usage</span>
+                            <span class="metric-label">Bellek Kullanımı</span>
                             <div class="progress-bar" data-type="memory">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
                             <span class="memory-usage">0%</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">Disk Usage</span>
+                            <span class="metric-label">Disk Kullanımı</span>
                             <div class="progress-bar" data-type="disk">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
@@ -107,73 +115,135 @@
 
                 <!-- Features Status -->
                 <div class="features-panel">
-                    <h3>Features</h3>
+                    <h3>Özellikler</h3>
                     <div class="features-status"></div>
                 </div>
 
                 <!-- Live Statistics -->
                 <div class="live-stats-panel">
-                    <h3>Live Statistics</h3>
+                    <h3>Canlı İstatistikler</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-label">Active Persons</span>
+                            <span class="stat-label">Aktif Kişiler</span>
                             <span class="person-count">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Avg Confidence</span>
+                            <span class="stat-label">Ort. Güven</span>
                             <span class="avg-confidence">0%</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Total Detections</span>
+                            <span class="stat-label">Toplam Algılama</span>
                             <span class="detection-count">0</span>
                         </div>
                     </div>
                     
                     <div class="zones-panel">
-                        <h4>Zone Occupancy</h4>
+                        <h4>Bölge Doluluk</h4>
                         <div class="zones-summary"></div>
+                    </div>
+                </div>
+
+                <!-- Isı Haritası Paneli -->
+                <div class="heatmap-panel">
+                    <h3>Hareket Isı Haritası</h3>
+                    <div class="heatmap-container">
+                        <canvas id="heatmapCanvas" width="400" height="300"></canvas>
+                        <div class="heatmap-legend">
+                            <span class="legend-low">Düşük</span>
+                            <div class="legend-gradient"></div>
+                            <span class="legend-high">Yüksek</span>
+                        </div>
+                    </div>
+                    <div class="heatmap-controls">
+                        <button id="resetHeatmap" class="btn btn--secondary">Sıfırla</button>
+                        <span class="heatmap-info">Aktivite yoğunluğu</span>
+                    </div>
+                </div>
+
+                <!-- Vital İşaretler Paneli -->
+                <div class="vital-signs-panel">
+                    <h3>Yaşamsal İşaretler</h3>
+                    <div class="vital-grid">
+                        <div class="vital-item">
+                            <div class="vital-icon">🫁</div>
+                            <div class="vital-info">
+                                <span class="vital-label">Nefes Hızı</span>
+                                <span class="vital-value" id="breathingRate">-- BPM</span>
+                            </div>
+                            <div class="vital-wave">
+                                <canvas id="breathingWave" width="150" height="40"></canvas>
+                            </div>
+                        </div>
+                        <div class="vital-item">
+                            <div class="vital-icon">❤️</div>
+                            <div class="vital-info">
+                                <span class="vital-label">Kalp Atışı</span>
+                                <span class="vital-value" id="heartRate">-- BPM</span>
+                            </div>
+                            <div class="vital-wave">
+                                <canvas id="heartWave" width="150" height="40"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Çöp Adam Görselleştirme -->
+                <div class="stickman-panel">
+                    <h3>Poz Görselleştirme</h3>
+                    <div class="stickman-container">
+                        <canvas id="stickmanCanvas" width="300" height="400"></canvas>
+                        <div class="pose-info">
+                            <div class="pose-stat">
+                                <span class="pose-label">Güven:</span>
+                                <span class="pose-value" id="poseConfidence">--%</span>
+                            </div>
+                            <div class="pose-stat">
+                                <span class="pose-label">Kişi:</span>
+                                <span class="pose-value" id="posePerson">--</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="key-benefits">
                     <div class="benefit-card">
                         <div class="benefit-icon">🏠</div>
-                        <h3>Through Walls</h3>
-                        <p>Works through solid barriers with no line of sight required</p>
+                        <h3>Duvar Arkası</h3>
+                        <p>Görüş hattı gerektirmeden katı engellerin arkasından çalışır</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">🔒</div>
-                        <h3>Privacy-Preserving</h3>
-                        <p>No cameras or visual recording - just WiFi signal analysis</p>
+                        <h3>Gizlilik Koruyan</h3>
+                        <p>Kamera veya görsel kayıt yok - sadece WiFi sinyal analizi</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">⚡</div>
-                        <h3>Real-Time</h3>
-                        <p>Maps 24 body regions in real-time at 100Hz sampling rate</p>
+                        <h3>Gerçek Zamanlı</h3>
+                        <p>100Hz örnekleme hızında 24 vücut bölgesini gerçek zamanlı eşler</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">💰</div>
-                        <h3>Low Cost</h3>
-                        <p>Built using $30 commercial WiFi hardware</p>
+                        <h3>Düşük Maliyet</h3>
+                        <p>30 dolarlık ticari WiFi donanımı ile yapıldı</p>
                     </div>
                 </div>
 
                 <div class="system-stats">
                     <div class="stat" data-stat="body-regions">
                         <span class="stat-value">24</span>
-                        <span class="stat-label">Body Regions</span>
+                        <span class="stat-label">Vücut Bölgesi</span>
                     </div>
                     <div class="stat" data-stat="sampling-rate">
                         <span class="stat-value">100Hz</span>
-                        <span class="stat-label">Sampling Rate</span>
+                        <span class="stat-label">Örnekleme Hızı</span>
                     </div>
                     <div class="stat" data-stat="accuracy">
                         <span class="stat-value">87.2%</span>
-                        <span class="stat-label">Accuracy (AP@50)</span>
+                        <span class="stat-label">Doğruluk (AP@50)</span>
                     </div>
                     <div class="stat" data-stat="hardware-cost">
                         <span class="stat-value">$30</span>
-                        <span class="stat-label">Hardware Cost</span>
+                        <span class="stat-label">Donanım Maliyeti</span>
                     </div>
                 </div>
             </div>
@@ -181,12 +251,12 @@
 
         <!-- Hardware Tab -->
         <section id="hardware" class="tab-content">
-            <h2>Hardware Configuration</h2>
+            <h2>Donanım Yapılandırması</h2>
             
             <div class="hardware-grid">
                 <div class="antenna-section">
-                    <h3>3×3 Antenna Array</h3>
-                    <p class="help-text">Click antennas to toggle their state</p>
+                    <h3>3×3 Anten Dizisi</h3>
+                    <p class="help-text">Antenleri değiştirmek için tıklayın</p>
                     <div class="antenna-array">
                         <div class="antenna-grid">
                             <div class="antenna tx active" data-type="TX1"></div>
@@ -202,11 +272,11 @@
                         <div class="antenna-legend">
                             <div class="legend-item">
                                 <div class="legend-color tx"></div>
-                                <span>Transmitters (3)</span>
+                                <span>Vericiler (3)</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color rx"></div>
-                                <span>Receivers (6)</span>
+                                <span>Alıcılar (6)</span>
                             </div>
                         </div>
                         <div class="array-status"></div>
@@ -214,38 +284,38 @@
                 </div>
 
                 <div class="config-section">
-                    <h3>WiFi Configuration</h3>
+                    <h3>WiFi Yapılandırması</h3>
                     <div class="config-grid">
                         <div class="config-item">
-                            <label>Frequency</label>
+                            <label>Frekans</label>
                             <div class="config-value">2.4GHz ± 20MHz</div>
                         </div>
                         <div class="config-item">
-                            <label>Subcarriers</label>
+                            <label>Taşıyıcılar</label>
                             <div class="config-value">30</div>
                         </div>
                         <div class="config-item">
-                            <label>Sampling Rate</label>
+                            <label>Örnekleme Hızı</label>
                             <div class="config-value">100 Hz</div>
                         </div>
                         <div class="config-item">
-                            <label>Total Cost</label>
+                            <label>Toplam Maliyet</label>
                             <div class="config-value">$30</div>
                         </div>
                     </div>
 
                     <div class="csi-data">
-                        <h4>Real-time CSI Data</h4>
+                        <h4>Gerçek Zamanlı CSI Verisi</h4>
                         <div class="csi-display">
                             <div class="csi-row">
-                                <span>Amplitude:</span>
+                                <span>Genlik:</span>
                                 <div class="csi-bar">
                                     <div class="csi-fill amplitude" style="width: 75%"></div>
                                 </div>
                                 <span class="csi-value">0.75</span>
                             </div>
                             <div class="csi-row">
-                                <span>Phase:</span>
+                                <span>Faz:</span>
                                 <div class="csi-bar">
                                     <div class="csi-fill phase" style="width: 60%"></div>
                                 </div>
@@ -259,50 +329,50 @@
 
         <!-- Demo Tab -->
         <section id="demo" class="tab-content">
-            <h2>Live Demonstration</h2>
+            <h2>Canlı Demonstrasyon</h2>
             
             <div class="demo-controls">
-                <button id="startDemo" class="btn btn--primary">Start Stream</button>
-                <button id="stopDemo" class="btn btn--secondary" disabled>Stop Stream</button>
+                <button id="startDemo" class="btn btn--primary">Yayını Başlat</button>
+                <button id="stopDemo" class="btn btn--secondary" disabled>Yayını Durdur</button>
                 <div class="demo-status">
-                    <span class="status status--info" id="demoStatus">Ready</span>
+                    <span class="status status--info" id="demoStatus">Hazır</span>
                 </div>
             </div>
 
             <div class="demo-grid">
                 <div class="signal-panel">
-                    <h3>WiFi Signal Analysis</h3>
+                    <h3>WiFi Sinyal Analizi</h3>
                     <div class="signal-display">
                         <canvas id="signalCanvas" width="400" height="200"></canvas>
                     </div>
                     <div class="signal-metrics">
                         <div class="metric">
-                            <span>Signal Strength:</span>
+                            <span>Sinyal Gücü:</span>
                             <span id="signalStrength">-45 dBm</span>
                         </div>
                         <div class="metric">
-                            <span>Processing Latency:</span>
+                            <span>İşlem Gecikmesi:</span>
                             <span id="latency">12 ms</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="pose-panel">
-                    <h3>Human Pose Detection</h3>
+                    <h3>İnsan Poz Algılama</h3>
                     <div class="pose-display">
                         <canvas id="poseCanvas" width="400" height="300"></canvas>
                     </div>
                     <div class="detection-info">
                         <div class="info-item">
-                            <span>Persons Detected:</span>
+                            <span>Algılanan Kişi:</span>
                             <span id="personCount">0</span>
                         </div>
                         <div class="info-item">
-                            <span>Confidence:</span>
+                            <span>Güven:</span>
                             <span id="confidence">0.0%</span>
                         </div>
                         <div class="info-item">
-                            <span>Keypoints:</span>
+                            <span>Anahtar Noktalar:</span>
                             <span id="keypoints">0/0</span>
                         </div>
                     </div>
@@ -312,7 +382,7 @@
 
         <!-- Architecture Tab -->
         <section id="architecture" class="tab-content">
-            <h2>System Architecture</h2>
+            <h2>Sistem Mimarisi</h2>
             
             <div class="architecture-flow">
                 <img src="https://pplx-res.cloudinary.com/image/upload/v1748813853/gpt4o_images/m7zztcttnue7vaxclvuw.png" 
@@ -321,28 +391,28 @@
                 <div class="flow-steps">
                     <div class="step-card" data-step="1">
                         <div class="step-number">1</div>
-                        <h3>CSI Input</h3>
-                        <p>Channel State Information collected from WiFi antenna array</p>
+                        <h3>CSI Girişi</h3>
+                        <p>WiFi anten dizisinden toplanan Kanal Durum Bilgisi</p>
                     </div>
                     <div class="step-card" data-step="2">
                         <div class="step-number">2</div>
-                        <h3>Phase Sanitization</h3>
-                        <p>Remove hardware-specific noise and normalize signal phase</p>
+                        <h3>Faz Temizleme</h3>
+                        <p>Donanıma özgü gürültüyü kaldır ve sinyal fazını normalleştir</p>
                     </div>
                     <div class="step-card" data-step="3">
                         <div class="step-number">3</div>
-                        <h3>Modality Translation</h3>
-                        <p>Convert WiFi signals to visual representation using CNN</p>
+                        <h3>Modalite Dönüşümü</h3>
+                        <p>WiFi sinyallerini CNN kullanarak görsel temsile dönüştür</p>
                     </div>
                     <div class="step-card" data-step="4">
                         <div class="step-number">4</div>
                         <h3>DensePose-RCNN</h3>
-                        <p>Extract human pose keypoints and body part segmentation</p>
+                        <p>İnsan poz anahtar noktalarını ve vücut bölmesi parçalarını çıkar</p>
                     </div>
                     <div class="step-card" data-step="5">
                         <div class="step-number">5</div>
-                        <h3>Wireframe Output</h3>
-                        <p>Generate final human pose wireframe visualization</p>
+                        <h3>Tel Kafes Çıktı</h3>
+                        <p>Son insan poz tel kafes görselleştirmesini oluştur</p>
                     </div>
                 </div>
             </div>
@@ -350,7 +420,7 @@
 
         <!-- Performance Tab -->
         <section id="performance" class="tab-content">
-            <h2>Performance Analysis</h2>
+            <h2>Performans Analizi</h2>
             
             <div class="performance-chart">
                 <img src="https://pplx-res.cloudinary.com/image/upload/v1748813924/pplx_code_interpreter/af6ef268_nsauu6.jpg" 
@@ -359,10 +429,10 @@
 
             <div class="performance-grid">
                 <div class="performance-card">
-                    <h3>WiFi-based (Same Layout)</h3>
+                    <h3>WiFi Tabanlı (Aynı Düzen)</h3>
                     <div class="metric-list">
                         <div class="metric-item">
-                            <span>Average Precision:</span>
+                            <span>Ortalama Kesinlik:</span>
                             <span class="metric-value">43.5%</span>
                         </div>
                         <div class="metric-item">
@@ -377,10 +447,10 @@
                 </div>
 
                 <div class="performance-card">
-                    <h3>Image-based (Reference)</h3>
+                    <h3>Görüntü Tabanlı (Referans)</h3>
                     <div class="metric-list">
                         <div class="metric-item">
-                            <span>Average Precision:</span>
+                            <span>Ortalama Kesinlik:</span>
                             <span class="metric-value success">84.7%</span>
                         </div>
                         <div class="metric-item">
@@ -395,24 +465,24 @@
                 </div>
 
                 <div class="limitations-section">
-                    <h3>Advantages & Limitations</h3>
+                    <h3>Avantajlar & Sınırlamalar</h3>
                     <div class="pros-cons">
                         <div class="pros">
-                            <h4>Advantages</h4>
+                            <h4>Avantajlar</h4>
                             <ul>
-                                <li>Through-wall detection</li>
-                                <li>Privacy preserving</li>
-                                <li>Lighting independent</li>
-                                <li>Low cost hardware</li>
-                                <li>Uses existing WiFi</li>
+                                <li>Duvar arkası algılama</li>
+                                <li>Gizlilik koruyan</li>
+                                <li>Işıktan bağımsız</li>
+                                <li>Düşük maliyetli donanım</li>
+                                <li>Mevcut WiFi'ı kullanır</li>
                             </ul>
                         </div>
                         <div class="cons">
-                            <h4>Limitations</h4>
+                            <h4>Sınırlamalar</h4>
                             <ul>
-                                <li>Performance drops in different layouts</li>
-                                <li>Requires WiFi-compatible devices</li>
-                                <li>Training requires synchronized data</li>
+                                <li>Farklı düzenlerde performans düşer</li>
+                                <li>WiFi uyumlu cihazlar gerektirir</li>
+                                <li>Eğitim senkronize veri gerektirir</li>
                             </ul>
                         </div>
                     </div>
@@ -422,68 +492,68 @@
 
         <!-- Applications Tab -->
         <section id="applications" class="tab-content">
-            <h2>Real-World Applications</h2>
+            <h2>Gerçek Dünya Uygulamaları</h2>
             
             <div class="applications-grid">
                 <div class="app-card">
                     <div class="app-icon">👴</div>
-                    <h3>Elderly Care Monitoring</h3>
-                    <p>Monitor elderly individuals for falls or emergencies without invading privacy. Track movement patterns and detect anomalies in daily routines.</p>
+                    <h3>Yaşlı Bakım İzleme</h3>
+                    <p>Gizliliği ihlal etmeden yaşlı bireyleri düş veya acil durumlar için izleyin. Hareket kalıplarını takip edin ve günlük rutinlerdeki anormallikleri tespit edin.</p>
                     <div class="app-features">
-                        <span class="feature-tag">Fall Detection</span>
-                        <span class="feature-tag">Activity Monitoring</span>
-                        <span class="feature-tag">Emergency Alert</span>
+                        <span class="feature-tag">Düş Algılama</span>
+                        <span class="feature-tag">Aktivite İzleme</span>
+                        <span class="feature-tag">Acil Uyarı</span>
                     </div>
                 </div>
 
                 <div class="app-card">
                     <div class="app-icon">🏠</div>
-                    <h3>Home Security Systems</h3>
-                    <p>Detect intruders and monitor home security without visible cameras. Track multiple persons and identify suspicious movement patterns.</p>
+                    <h3>Ev Güvenlik Sistemleri</h3>
+                    <p>Görünür kamera olmadan davetsiz misafirleri tespit edin ve ev güvenliğini izleyin. Birden çok kişiyi takip edin ve şüpheli hareket kalıplarını belirleyin.</p>
                     <div class="app-features">
-                        <span class="feature-tag">Intrusion Detection</span>
-                        <span class="feature-tag">Multi-person Tracking</span>
-                        <span class="feature-tag">Invisible Monitoring</span>
+                        <span class="feature-tag">İzinsiz Giriş Algılama</span>
+                        <span class="feature-tag">Çok Kişili Takip</span>
+                        <span class="feature-tag">Görünmez İzleme</span>
                     </div>
                 </div>
 
                 <div class="app-card">
                     <div class="app-icon">🏥</div>
-                    <h3>Healthcare Patient Monitoring</h3>
-                    <p>Monitor patients in hospitals and care facilities. Track vital signs through movement analysis and detect health emergencies.</p>
+                    <h3>Sağlık Hasta İzleme</h3>
+                    <p>Hastanelerde ve bakım tesislerinde hastaları izleyin. Hareket analizi ile yaşamsal belirtileri takip edin ve sağlık acil durumlarını tespit edin.</p>
                     <div class="app-features">
-                        <span class="feature-tag">Vital Sign Analysis</span>
-                        <span class="feature-tag">Movement Tracking</span>
-                        <span class="feature-tag">Health Alerts</span>
+                        <span class="feature-tag">Yaşamsal Belirti Analizi</span>
+                        <span class="feature-tag">Hareket Takibi</span>
+                        <span class="feature-tag">Sağlık Uyarıları</span>
                     </div>
                 </div>
 
                 <div class="app-card">
                     <div class="app-icon">🏢</div>
-                    <h3>Smart Building Occupancy</h3>
-                    <p>Optimize building energy consumption by tracking occupancy patterns. Control lighting, HVAC, and security systems automatically.</p>
+                    <h3>Akıllı Bina Doluluk</h3>
+                    <p>Doluluk kalıplarını takip ederek bina enerji tüketimini optimize edin. Aydınlatma, HVAC ve güvenlik sistemlerini otomatik kontrol edin.</p>
                     <div class="app-features">
-                        <span class="feature-tag">Energy Optimization</span>
-                        <span class="feature-tag">Occupancy Tracking</span>
-                        <span class="feature-tag">Smart Controls</span>
+                        <span class="feature-tag">Enerji Optimizasyonu</span>
+                        <span class="feature-tag">Doluluk Takibi</span>
+                        <span class="feature-tag">Akıllı Kontroller</span>
                     </div>
                 </div>
 
                 <div class="app-card">
                     <div class="app-icon">🥽</div>
-                    <h3>AR/VR Applications</h3>
-                    <p>Enable full-body tracking for virtual and augmented reality applications without wearing additional sensors or cameras.</p>
+                    <h3>AR/VR Uygulamaları</h3>
+                    <p>Ek sensör veya kamera takmadan sanal ve artırılmış gerçeklik uygulamaları için tam vücut takibi sağlayın.</p>
                     <div class="app-features">
-                        <span class="feature-tag">Full Body Tracking</span>
-                        <span class="feature-tag">Sensor-free</span>
-                        <span class="feature-tag">Immersive Experience</span>
+                        <span class="feature-tag">Tam Vücut Takibi</span>
+                        <span class="feature-tag">Sensörsüz</span>
+                        <span class="feature-tag">İmersif Deneyim</span>
                     </div>
                 </div>
             </div>
 
             <div class="implementation-note">
-                <h3>Implementation Considerations</h3>
-                <p>While WiFi DensePose offers revolutionary capabilities, successful implementation requires careful consideration of environment setup, data privacy regulations, and system calibration for optimal performance.</p>
+                <h3>Uygulama Dikkat Edilmesi Gerekenler</h3>
+                <p>WiFi DensePose devrim niteliğinde yetenekler sunsa da, başarılı uygulama için ortam kurulumu, veri gizliliği düzenlemeleri ve en iyi performans için sistem kalibrasyonunun dikkatle değerlendirilmesi gerekir.</p>
             </div>
         </section>
 
@@ -493,8 +563,8 @@
         <!-- Training Tab -->
         <section id="training" class="tab-content">
             <div class="tab-header">
-                <h2>Model Training</h2>
-                <p>Record CSI data, train pose estimation models, and manage .rvf files</p>
+                <h2>Model Eğitimi</h2>
+                <p>CSI verisi kaydedin, poz tahmin modellerini eğitin ve .rvf dosyalarını yönetin</p>
             </div>
             <div id="training-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <div id="training-panel-container" style="flex: 1; min-width: 400px;"></div>
