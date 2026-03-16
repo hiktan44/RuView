@@ -37,6 +37,7 @@
             <button class="nav-tab" data-tab="applications">Uygulamalar</button>
             <button class="nav-tab" data-tab="sensing">Algılama</button>
             <button class="nav-tab" data-tab="training">Eğitim</button>
+            <button class="nav-tab" data-tab="howto">Nasıl Kullanılır</button>
             <a href="observatory.html" class="nav-tab" style="text-decoration:none">Gözlemevi</a>
         </nav>
 
@@ -571,10 +572,281 @@
                 <div id="model-panel-container" style="flex: 1; min-width: 350px; max-width: 450px;"></div>
             </div>
         </section>
+
+        <!-- Nasıl Kullanılır Tab -->
+        <section id="howto" class="tab-content">
+            <div class="howto-container">
+                <h2>Nasıl Kullanılır</h2>
+                <p class="howto-intro">Bu rehber, RuView uygulamasını gerçek WiFi CSI verisi ile kullanmak için gereken tüm adımları içerir.</p>
+                
+                <!-- CSI Nedir? -->
+                <div class="howto-section">
+                    <h3>CSI (Channel State Information) Nedir?</h3>
+                    <p>CSI, WiFi sinyallerinin her bir alt taşıyıcı (subcarrier) için genlik ve faz bilgilerini içerir. Bu veriler, insan hareketlerini algılamak için kullanılır.</p>
+                    <div class="howto-warning">
+                        <strong>Uyarı:</strong> Standart WiFi kartları CSI verisi sağlamaz. Sadece RSSI (sinyal gücü) verisi sağlar.
+                    </div>
+                </div>
+
+                <!-- Donanım Seçenekleri -->
+                <div class="howto-section">
+                    <h3>Donanım Seçenekleri</h3>
+                    <div class="howto-cards">
+                        <div class="howto-card recommended">
+                            <div class="howto-card-header">
+                                <span class="howto-badge">Önerilen</span>
+                                <h4>ESP32-S3 Mesh</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <ul>
+                                    <li><strong>Maliyet:</strong> ~$54 (3-6 adet)</li>
+                                    <li><strong>CSI:</strong> Tam destek</li>
+                                    <li><strong>Yetenekler:</strong> Poz, nefes, kalp, hareket</li>
+                                    <li><strong>Kurulum:</strong> Kolay, USB ile</li>
+                                </ul>
+                                <p class="howto-price">Tek board: ~$7-15</p>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-card">
+                            <div class="howto-card-header">
+                                <h4>Araştırma NIC</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <ul>
+                                    <li><strong>Modeller:</strong> Intel 5300, Atheros AR9580</li>
+                                    <li><strong>Maliyet:</strong> ~$50-100</li>
+                                    <li><strong>CSI:</strong> Tam destek (3x3 MIMO)</li>
+                                    <li><strong>Not:</strong> Linux gerektirir</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-card limited">
+                            <div class="howto-card-header">
+                                <span class="howto-badge-limited">Sınırlı</span>
+                                <h4>Standart WiFi</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <ul>
+                                    <li><strong>Donanım:</strong> Herhangi bir laptop</li>
+                                    <li><strong>Maliyet:</strong> $0</li>
+                                    <li><strong>CSI:</strong> Hayır</li>
+                                    <li><strong>Yetenek:</strong> Sadece kaba varlık algılama</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WiFi Kartı Kontrolü -->
+                <div class="howto-section">
+                    <h3>WiFi Kartınızı Kontrol Edin</h3>
+                    <p>Mevcut WiFi kartınızın CSI destekleyip desteklemediğini kontrol edin:</p>
+                    
+                    <div class="howto-tabs">
+                        <button class="howto-tab-btn active" data-os="macos">macOS</button>
+                        <button class="howto-tab-btn" data-os="windows">Windows</button>
+                        <button class="howto-tab-btn" data-os="linux">Linux</button>
+                    </div>
+                    
+                    <div class="howto-tab-content active" data-os="macos">
+                        <pre><code># WiFi kart bilgilerini görüntüle
+system_profiler SPAirPortDataType
+
+# Kart modelini kontrol et
+# Intel 5300: 0x8086, 0x4238
+# Atheros AR9580: 0x168C, 0x003C
+# Broadcom (CSI yok): 0x14E4</code></pre>
+                        <p class="howto-note"><strong>Not:</strong> Mac'lerde genellikle Broadcom kartlar vardır ve CSI desteklemez.</p>
+                    </div>
+                    
+                    <div class="howto-tab-content" data-os="windows">
+                        <pre><code># PowerShell ile WiFi kart bilgileri
+Get-NetAdapter -Name "*Wi-Fi*" | Format-List
+
+# Device Manager'da kontrol et
+# Intel 5300: "Intel(R) WiFi Link 5300"
+# Atheros: "Qualcomm Atheros AR9580"</code></pre>
+                    </div>
+                    
+                    <div class="howto-tab-content" data-os="linux">
+                        <pre><code># WiFi kart bilgilerini görüntüle
+lspci -nnk | grep -i net
+iwconfig
+
+# CSI destekli kartlar için:
+# Intel 5300: lspci | grep 5300
+# Atheros: lspci | grep AR9580
+
+# CSI araçları
+sudo apt install linux80211
+</code></pre>
+                    </div>
+                </div>
+
+                <!-- ESP32-S3 Kurulumu -->
+                <div class="howto-section">
+                    <h3>ESP32-S3 Kurulum Adımları</h3>
+                    
+                    <div class="howto-steps">
+                        <div class="howto-step">
+                            <div class="howto-step-number">1</div>
+                            <div class="howto-step-content">
+                                <h4>Donanım Hazırlığı</h4>
+                                <ul>
+                                    <li>ESP32-S3 DevKit satın alın (8MB Flash, 8MB PSRAM)</li>
+                                    <li>USB-C kablosu hazırlayın</li>
+                                    <li>Bilgisayara bağlayın</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-step">
+                            <div class="howto-step-number">2</div>
+                            <div class="howto-step-content">
+                                <h4>Firmware Derleme</h4>
+                                <pre><code># Docker ile derle (önerilen)
+docker run --rm \
+  -v "$(pwd)/firmware/esp32-csi-node:/project" -w /project \
+  espressif/idf:v5.2 bash -c \
+  "rm -rf build sdkconfig && idf.py set-target esp32s3 && idf.py build"</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-step">
+                            <div class="howto-step-number">3</div>
+                            <div class="howto-step-content">
+                                <h4>Firmware Yükleme</h4>
+                                <pre><code># ESP32'ye flaşla
+python -m esptool --chip esp32s3 --port COM7 --baud 460800 \
+  write_flash --flash_mode dio --flash_size 8MB \
+  0x0 build/bootloader/bootloader.bin \
+  0x8000 build/partition_table/partition-table.bin \
+  0x10000 build/esp32-csi-node.bin</code></pre>
+                                <p class="howto-note">macOS'ta port: /dev/cu.usbserial-xxx</p>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-step">
+                            <div class="howto-step-number">4</div>
+                            <div class="howto-step-content">
+                                <h4>WiFi Yapılandırma</h4>
+                                <pre><code># WiFi bilgilerini gir
+python scripts/provision.py --port COM7 \
+  --ssid "WiFi-Adınız" --password "Şifreniz" \
+  --target-ip 192.168.1.20</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="howto-step">
+                            <div class="howto-step-number">5</div>
+                            <div class="howto-step-content">
+                                <h4>Sensing Server Başlatma</h4>
+                                <pre><code># Rust sensing server'ı başlat
+cargo run -p wifi-densepose-sensing-server -- \
+  --http-port 3000 --source auto</code></pre>
+                                <p>veya Python API ile:</p>
+                                <pre><code># Python backend
+make run-api</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mesh Kurulumu -->
+                <div class="howto-section">
+                    <h3>Mesh Kurulumu (En İyi Sonuç)</h3>
+                    <p>3D poz algılama için birden fazla ESP32 kullanın:</p>
+                    
+                    <table class="howto-table">
+                        <thead>
+                            <tr>
+                                <th>Oda Boyutu</th>
+                                <th>ESP32 Adedi</th>
+                                <th>Hata Payı</th>
+                                <th>Yetenekler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Küçük (3x3m)</td>
+                                <td>1-2</td>
+                                <td>~100mm</td>
+                                <td>Varlık, nefes, kalp</td>
+                            </tr>
+                            <tr>
+                                <td>Orta (5x5m)</td>
+                                <td>3-4</td>
+                                <td>~50mm</td>
+                                <td>3D poz</td>
+                            </tr>
+                            <tr>
+                                <td>Büyük (10x10m)</td>
+                                <td>5-6</td>
+                                <td>&lt;30mm</td>
+                                <td>360° kapsama</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sık Sorulan Sorular -->
+                <div class="howto-section">
+                    <h3>Sık Sorulan Sorular</h3>
+                    
+                    <div class="howto-faq">
+                        <details>
+                            <summary>Mevcut WiFi kartımı kullanabilir miyim?</summary>
+                            <p>Standart laptop WiFi kartları CSI verisi sağlamaz. Sadece RSSI (sinyal gücü) verisi sağlar, bu da sadece kaba varlık algılama için yeterlidir. Gerçek poz algılama için ESP32-S3 veya CSI destekli NIC gerekir.</p>
+                        </details>
+                        
+                        <details>
+                            <summary>Duvarların arkasını görebilir mi?</summary>
+                            <p>Evet, WiFi sinyalleri duvarlardan geçebilir. Ancak kalın beton duvarlar sinyali zayıflatır. En iyi sonuç için 2-3 duvar sınırı önerilir.</p>
+                        </details>
+                        
+                        <details>
+                            <summary>Veriler gizli mi?</summary>
+                            <p>Evet! Kamera kullanılmaz, sadece WiFi sinyalleri analiz edilir. Görüntü kaydı yoktur. Tüm veriler yerel olarak işlenir.</p>
+                        </details>
+                        
+                        <details>
+                            <summary>Mock mod nedir?</summary>
+                            <p>Mock mod, gerçek donanım olmadan uygulamayı test etmek için simülasyon verisi kullanır. Tüm özellikleri görebilirsiniz ancak veriler gerçek değildir.</p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Error Toast -->
     <div id="globalErrorToast" class="error-toast"></div>
+
+    <!-- OS Tab Switching Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // OS Tab switching for HowTo section
+        const osTabBtns = document.querySelectorAll('.howto-tab-btn');
+        const osTabContents = document.querySelectorAll('.howto-tab-content');
+        
+        osTabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const os = this.getAttribute('data-os');
+                
+                // Update button states
+                osTabBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update content visibility
+                osTabContents.forEach(content => {
+                    content.classList.toggle('active', content.getAttribute('data-os') === os);
+                });
+            });
+        });
+    });
+    </script>
 
     <!-- Load application scripts as modules -->
     <script type="module" src="app.js"></script>

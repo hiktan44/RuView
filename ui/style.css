@@ -2734,3 +2734,301 @@ canvas {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
 }
+
+/* ========================================
+   NASIL KULLANILIR SEKME STİLLERİ
+   ======================================== */
+
+.howto-container {
+  padding: var(--space-24);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.howto-container h2 {
+  color: var(--color-text);
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--space-8);
+}
+
+.howto-intro {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-32);
+}
+
+.howto-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+}
+
+.howto-section h3 {
+  color: var(--color-text);
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--space-16) 0;
+  padding-bottom: var(--space-12);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.howto-section p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.howto-warning {
+  background: rgba(168, 75, 47, 0.1);
+  border: 1px solid rgba(168, 75, 47, 0.3);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-top: var(--space-16);
+  color: var(--color-warning);
+}
+
+/* Kartlar */
+.howto-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-20);
+  margin-top: var(--space-20);
+}
+
+.howto-card {
+  background: rgba(33, 128, 141, 0.05);
+  border: 1px solid rgba(33, 128, 141, 0.2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.howto-card.recommended {
+  border-color: var(--color-primary);
+  background: rgba(33, 128, 141, 0.1);
+}
+
+.howto-card.limited {
+  border-color: rgba(168, 75, 47, 0.3);
+  background: rgba(168, 75, 47, 0.05);
+}
+
+.howto-card-header {
+  background: rgba(0, 0, 0, 0.05);
+  padding: var(--space-16);
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.howto-card-header h4 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.howto-badge {
+  background: var(--color-primary);
+  color: white;
+  font-size: var(--font-size-xs);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+}
+
+.howto-badge-limited {
+  background: var(--color-warning);
+  color: white;
+  font-size: var(--font-size-xs);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+}
+
+.howto-card-body {
+  padding: var(--space-16);
+}
+
+.howto-card-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.howto-card-body li {
+  padding: var(--space-8) 0;
+  border-bottom: 1px solid var(--color-card-border);
+  color: var(--color-text-secondary);
+}
+
+.howto-card-body li:last-child {
+  border-bottom: none;
+}
+
+.howto-price {
+  margin-top: var(--space-12);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* OS Tabs */
+.howto-tabs {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+
+.howto-tab-btn {
+  padding: var(--space-8) var(--space-16);
+  background: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.howto-tab-btn.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.howto-tab-content {
+  display: none;
+}
+
+.howto-tab-content.active {
+  display: block;
+}
+
+/* Kod blokları */
+.howto-section pre {
+  background: #1a1a2e;
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  overflow-x: auto;
+  margin: var(--space-12) 0;
+}
+
+.howto-section code {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: #a8b2c3;
+}
+
+.howto-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-top: var(--space-8);
+}
+
+/* Adımlar */
+.howto-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  margin-top: var(--space-20);
+}
+
+.howto-step {
+  display: flex;
+  gap: var(--space-20);
+  align-items: flex-start;
+}
+
+.howto-step-number {
+  width: 48px;
+  height: 48px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  flex-shrink: 0;
+}
+
+.howto-step-content {
+  flex: 1;
+}
+
+.howto-step-content h4 {
+  margin: 0 0 var(--space-12) 0;
+  color: var(--color-text);
+}
+
+.howto-step-content ul {
+  margin: 0;
+  padding-left: var(--space-20);
+}
+
+.howto-step-content li {
+  color: var(--color-text-secondary);
+  padding: var(--space-4) 0;
+}
+
+/* Tablo */
+.howto-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-16);
+}
+
+.howto-table th,
+.howto-table td {
+  padding: var(--space-12) var(--space-16);
+  text-align: left;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.howto-table th {
+  background: rgba(33, 128, 141, 0.1);
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.howto-table td {
+  color: var(--color-text-secondary);
+}
+
+/* SSS */
+.howto-faq {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.howto-faq details {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-base);
+}
+
+.howto-faq summary {
+  padding: var(--space-16);
+  cursor: pointer;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.howto-faq summary::after {
+  content: '+';
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+}
+
+.howto-faq details[open] summary::after {
+  content: '−';
+}
+
+.howto-faq details p {
+  padding: 0 var(--space-16) var(--space-16);
+  margin: 0;
+}
