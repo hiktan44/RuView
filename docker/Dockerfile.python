@@ -1,6 +1,4 @@
-# WiFi-DensePose Python Sensing Pipeline
-# RSSI-based presence/motion detection + WebSocket server
-
+# RuView Docker - Serves UI and WebSocket
 FROM python:3.11-slim-bookworm
 
 WORKDIR /app
@@ -13,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 COPY v1/requirements-lock.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir websockets uvicorn fastapi
+    && pip install --no-cache-dir websockets uvicorn fastapi aiohttp
 
 # Copy application code
 COPY v1/ /app/v1/
@@ -22,14 +20,14 @@ COPY ui/ /app/ui/
 # Copy sensing modules
 COPY v1/src/sensing/ /app/v1/src/sensing/
 
-EXPOSE 8765
+# Copy startup script
+COPY docker/start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 EXPOSE 8080
+EXPOSE 8765
 
 ENV PYTHONUNBUFFERED=1
-
-#Prevent Python from writing .pyc files and __pycache__ folders to disk
-#Make the runtime faster
-
 ENV PYTHONDONTWRITEBYTECODE=1
 
-CMD ["python", "-m", "v1.src.sensing.ws_server"]
+CMD ["/app/start.sh"]
