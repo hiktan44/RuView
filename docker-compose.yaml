@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  # Python Sensing Server - WebSocket + UI
+  python-sensing:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.python
+    image: ruview-python:latest
+    container_name: ruview-python
+    ports:
+      - "8765:8765"   # WebSocket
+      - "8080:8080"   # UI
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["*"]}
+      - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Rust Sensing Server (Optional - for real CSI data)
+  sensing-server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.rust
+    image: ruview-rust:latest
+    container_name: ruview-rust
+    ports:
+      - "3000:3000"   # REST API
+      - "3001:3001"   # WebSocket
+      - "5005:5005/udp"  # ESP32 UDP
+    environment:
+      - RUST_LOG=info
+      - CSI_SOURCE=${CSI_SOURCE:-simulated}
+    restart: unless-stopped
+    profiles:
+      - rust
