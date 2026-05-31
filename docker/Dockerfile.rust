@@ -48,6 +48,10 @@ EXPOSE 5005/udp
 
 ENV RUST_LOG=info
 
+# Bind to all interfaces so the reverse proxy (Coolify/Traefik) can reach the
+# container. Default is 127.0.0.1 which is unreachable from outside the container.
+ENV SENSING_BIND_ADDR=0.0.0.0
+
 # CSI_SOURCE controls which data source the sensing server uses at startup.
 # auto      — probe UDP port 5005 for an ESP32 first; fall back to simulation (default)
 # esp32     — receive real CSI frames from an ESP32 device over UDP port 5005
