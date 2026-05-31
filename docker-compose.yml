@@ -2,21 +2,18 @@ version: "3.9"
 
 services:
   # Python Sensing Server - WebSocket + UI
-  python-sensing:
+  # Service name MUST stay "python_sensing" (underscore) to match the domain key
+  # Coolify has bound (docker_compose_domains.python_sensing). Uses the root
+  # Dockerfile (docker/Dockerfile.python does not exist).
+  python_sensing:
     build:
       context: .
       dockerfile: Dockerfile
     image: ruview-python:latest
-    # Coolify routes the public domain to this service automatically via the
-    # SERVICE_FQDN_* magic env var below. We `expose` the container ports to the
-    # internal proxy network instead of binding host ports, so Traefik knows the
-    # UI lives on container port 8080.
     expose:
-      - "8080"   # UI (HTTP) — Coolify proxy target
+      - "8080"   # UI (HTTP) — Coolify binds the app domain to this port
       - "8765"   # WebSocket
     environment:
-      # Coolify auto-fills the domain; "_8080" tells the proxy which port to hit.
-      - SERVICE_FQDN_PYTHONSENSING_8080
       - PYTHONUNBUFFERED=1
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["*"]}
@@ -28,20 +25,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  # Rust Sensing Server (Optional - for real CSI data)
-  sensing-server:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.rust
-    image: ruview-rust:latest
-    ports:
-      - "13000:3000"   # REST API
-      - "13001:3001"   # WebSocket
-      - "15005:5005/udp"  # ESP32 UDP
-    environment:
-      - RUST_LOG=info
-      - CSI_SOURCE=${CSI_SOURCE:-simulated}
-    restart: unless-stopped
-    profiles:
-      - rust
