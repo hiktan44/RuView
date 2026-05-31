@@ -37,7 +37,7 @@ use clap::Parser;
 use serde::{Deserialize, Serialize};
 use tokio::net::UdpSocket;
 use tokio::sync::{broadcast, RwLock};
-use tower_http::services::ServeDir;
+use tower_http::services::{ServeDir, ServeFile};
 use tower_http::set_header::SetResponseHeaderLayer;
 use axum::http::HeaderValue;
 use tracing::{info, warn, debug, error};
@@ -3647,7 +3647,8 @@ async fn main() {
     // HTTP server (serves UI + full DensePose-compatible REST API)
     let ui_path = args.ui_path.clone();
     let http_app = Router::new()
-        .route("/", get(info_page))
+        // Plain-text endpoint listing (was the root page); kept at /info.
+        .route("/info", get(info_page))
         // Health endpoints (DensePose-compatible)
         .route("/health", get(health))
         .route("/health/health", get(health_system))
@@ -3702,8 +3703,15 @@ async fn main() {
         .route("/api/v1/adaptive/train", post(adaptive_train))
         .route("/api/v1/adaptive/status", get(adaptive_status))
         .route("/api/v1/adaptive/unload", post(adaptive_unload))
-        // Static UI files
+        // Static UI files. Mounted at both /ui (legacy path) and at the root so
+        // the public domain serves the dashboard directly. ServeDir falls back
+        // to index.html for unknown paths (SPA-style), so visiting "/" loads the
+        // UI; API routes above take precedence as they are matched first.
         .nest_service("/ui", ServeDir::new(&ui_path))
+        .fallback_service(
+            ServeDir::new(&ui_path)
+                .fallback(ServeFile::new(ui_path.join("index.html"))),
+        )
         .layer(SetResponseHeaderLayer::overriding(
             axum::http::header::CACHE_CONTROL,
             HeaderValue::from_static("no-cache, no-store, must-revalidate"),
