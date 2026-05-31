@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <stdbool.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
@@ -27,6 +28,7 @@
 #include "wasm_runtime.h"
 #include "wasm_upload.h"
 #include "display_task.h"
+#include "emergency_mesh.h"
 
 #include "esp_timer.h"
 
@@ -68,7 +70,12 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     }
 }
 
-static void wifi_init_sta(void)
+/**
+ * @brief Initialise Wi-Fi in station mode and try to join the provisioned AP.
+ * @return true if associated with the router, false if it failed (caller should
+ *         then bring up the emergency-mesh SoftAP fallback).
+ */
+static bool wifi_init_sta(void)
 {
     s_wifi_event_group = xEventGroupCreate();
 
@@ -114,9 +121,11 @@ static void wifi_init_sta(void)
 
     if (bits & WIFI_CONNECTED_BIT) {
         ESP_LOGI(TAG, "Connected to WiFi");
-    } else if (bits & WIFI_FAIL_BIT) {
-        ESP_LOGE(TAG, "Failed to connect to WiFi after %d retries", MAX_RETRY);
+        return true;
     }
+
+    ESP_LOGE(TAG, "Failed to connect to WiFi after %d retries", MAX_RETRY);
+    return false;
 }
 
 void app_main(void)
@@ -134,11 +143,41 @@ void app_main(void)
 
     ESP_LOGI(TAG, "ESP32-S3 CSI Node (ADR-018) — Node ID: %d", g_nvs_config.node_id);
 
-    /* Initialize WiFi STA */
-    wifi_init_sta();
+    /* Initialize WiFi STA. In a disaster the router is usually gone, so if the
+     * provisioned network is unreachable we fall back to an internet-free
+     * rescue SoftAP (emergency mesh): the node raises its own Wi-Fi network and
+     * a rescuer's phone/laptop connects directly to receive CSI. */
+    bool sta_ok = wifi_init_sta();
 
-    /* Initialize UDP sender with runtime target */
-    if (stream_sender_init_with(g_nvs_config.target_ip, g_nvs_config.target_port) != 0) {
+    char stream_ip[16];
+    uint16_t stream_port = g_nvs_config.target_port
+                               ? g_nvs_config.target_port
+                               : EMESH_DEFAULT_PORT;
+
+    if (!sta_ok) {
+        ESP_LOGW(TAG, "Router unreachable — activating emergency mesh SoftAP");
+        emesh_state_t emesh;
+        /* Reuse the provisioned WiFi password as the rescue AP passphrase when
+         * it is long enough; otherwise the AP is open (rescue speed > secrecy). */
+        const char *ap_pass = g_nvs_config.wifi_password;
+        if (emergency_mesh_start_softap(g_nvs_config.node_id, ap_pass, &emesh) != 0) {
+            ESP_LOGE(TAG, "Emergency mesh failed to start");
+            return;
+        }
+        /* Stream to whichever rescuer attaches to the SoftAP. */
+        if (emergency_mesh_resolve_target(g_nvs_config.target_ip,
+                                          stream_ip, sizeof(stream_ip)) != 0) {
+            ESP_LOGE(TAG, "Failed to resolve emergency-mesh stream target");
+            return;
+        }
+    } else {
+        /* Normal mode: stream to the provisioned aggregator. */
+        strncpy(stream_ip, g_nvs_config.target_ip, sizeof(stream_ip) - 1);
+        stream_ip[sizeof(stream_ip) - 1] = '\0';
+    }
+
+    /* Initialize UDP sender with the resolved target */
+    if (stream_sender_init_with(stream_ip, stream_port) != 0) {
         ESP_LOGE(TAG, "Failed to initialize UDP sender");
         return;
     }

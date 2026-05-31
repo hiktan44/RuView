@@ -207,6 +207,37 @@ You should see packets sourced from each node's WiFi IP.
 
 ---
 
+## Emergency mesh — internet-free disaster mode
+
+In a real disaster the building Wi-Fi is usually gone, so there is no router to
+join. The firmware handles this automatically:
+
+1. On boot the node tries to join the provisioned Wi-Fi (normal STA mode).
+2. If that fails after the retry budget, it raises **its own Wi-Fi network** —
+   a rescue SoftAP named `RuView-Rescue-<nodeId>` (gateway `192.168.4.1`).
+3. A rescuer connects a phone or laptop **directly** to that network. No router,
+   no internet, no cloud. The node streams CSI to the connected client over the
+   same UDP port (5005).
+
+**Rescuer flow (phone):**
+
+1. Phone Wi-Fi settings → join `RuView-Rescue-0` (or `-1`, `-2` for other nodes).
+   The passphrase is the deployment Wi-Fi password if one was provisioned and is
+   ≥ 8 chars; otherwise the rescue AP is open (rescue speed over secrecy).
+2. Open the RuView mobile app → point it at `ws://192.168.4.1:5005/ws/sensing`
+   (the app's emergency-mesh helper builds this URL for you).
+3. Survivor presence/vitals appear as the node streams directly to the phone.
+   The app's offline inference engine keeps producing estimates even if a node
+   drops out.
+
+You normally do not configure anything for this — it is a built-in fallback. To
+**test** it without a router, provision a node with a Wi-Fi SSID that does not
+exist, power it up, and watch for the `RuView-Rescue-<id>` network to appear.
+Implementation: `firmware/esp32-csi-node/main/emergency_mesh.c` (firmware) and
+`ui/mobile/src/services/emergencyMesh.ts` (app).
+
+---
+
 ## See also
 
 - `firmware/esp32-csi-node/README.md` — full firmware reference (tiers, wire
