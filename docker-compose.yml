@@ -7,10 +7,16 @@ services:
       context: .
       dockerfile: Dockerfile
     image: ruview-python:latest
-    ports:
-      - "18765:8765"   # WebSocket
-      - "3020:8080"   # UI
+    # Coolify routes the public domain to this service automatically via the
+    # SERVICE_FQDN_* magic env var below. We `expose` the container ports to the
+    # internal proxy network instead of binding host ports, so Traefik knows the
+    # UI lives on container port 8080.
+    expose:
+      - "8080"   # UI (HTTP) — Coolify proxy target
+      - "8765"   # WebSocket
     environment:
+      # Coolify auto-fills the domain; "_8080" tells the proxy which port to hit.
+      - SERVICE_FQDN_PYTHONSENSING_8080
       - PYTHONUNBUFFERED=1
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["*"]}
