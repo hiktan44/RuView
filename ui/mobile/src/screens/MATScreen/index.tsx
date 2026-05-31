@@ -1,136 +1,204 @@
-import { useEffect, useRef } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  TextInput,
+  RefreshControl,
+} from 'react-native';
 import { ConnectionBanner } from '@/components/ConnectionBanner';
 import { ThemedView } from '@/components/ThemedView';
 import { colors } from '@/theme/colors';
 import { spacing } from '@/theme/spacing';
 import { usePoseStream } from '@/hooks/usePoseStream';
+import { useTriageFeed } from '@/hooks/useTriageFeed';
 import { useMatStore } from '@/stores/matStore';
 import { type ConnectionStatus } from '@/types/sensing';
-import { Alert, type Survivor } from '@/types/mat';
-import { AlertList } from './AlertList';
-import { MatWebView } from './MatWebView';
-import { SurvivorCounter } from './SurvivorCounter';
-import { useMatBridge } from './useMatBridge';
+import { type Survivor } from '@/types/mat';
+import { TRIAGE_PRIORITY } from '@/services/triage.service';
+import { ZoneMap } from './ZoneMap';
+import { SurvivorRow } from './SurvivorRow';
+import { SurvivorDetail } from './SurvivorDetail';
+import { TriageSummary } from './TriageSummary';
 
-const isAlert = (value: unknown): value is Alert => {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const record = value as Record<string, unknown>;
-  return typeof record.id === 'string' && typeof record.message === 'string';
-};
-
-const isSurvivor = (value: unknown): value is Survivor => {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const record = value as Record<string, unknown>;
-  return typeof record.id === 'string' && typeof record.zone_id === 'string';
-};
-
-const resolveBannerState = (status: ConnectionStatus): 'connected' | 'simulated' | 'disconnected' => {
+const resolveBannerState = (
+  status: ConnectionStatus,
+): 'connected' | 'simulated' | 'disconnected' => {
   if (status === 'connecting') {
     return 'disconnected';
   }
-
   return status;
 };
 
-export const MATScreen = () => {
-  const { connectionStatus, lastFrame } = usePoseStream();
-
-  const survivors = useMatStore((state) => state.survivors);
-  const alerts = useMatStore((state) => state.alerts);
-  const upsertSurvivor = useMatStore((state) => state.upsertSurvivor);
-  const addAlert = useMatStore((state) => state.addAlert);
-  const upsertEvent = useMatStore((state) => state.upsertEvent);
-
-  const { webViewRef, ready, onMessage, sendFrameUpdate, postEvent } = useMatBridge({
-    onSurvivorDetected: (survivor) => {
-      if (isSurvivor(survivor)) {
-        upsertSurvivor(survivor);
-      }
-    },
-    onAlertGenerated: (alert) => {
-      if (isAlert(alert)) {
-        addAlert(alert);
-      }
-    },
+/** Sort survivors by rescue priority (RED first), then shallower depth, then recency. */
+const sortByPriority = (list: Survivor[]): Survivor[] =>
+  [...list].sort((a, b) => {
+    const p = TRIAGE_PRIORITY[a.triage_status] - TRIAGE_PRIORITY[b.triage_status];
+    if (p !== 0) {
+      return p;
+    }
+    const d = a.depth - b.depth;
+    if (d !== 0) {
+      return d;
+    }
+    return Date.parse(b.last_updated) - Date.parse(a.last_updated);
   });
 
-  const seededRef = useRef(false);
+export const MATScreen = () => {
+  const { connectionStatus } = usePoseStream();
+  const { connect, startDemo, muted, toggleMute } = useTriageFeed();
 
-  useEffect(() => {
-    if (!ready || seededRef.current) {
-      return;
+  const survivors = useMatStore((state) => state.survivors);
+  const sorted = useMemo(() => sortByPriority(survivors), [survivors]);
+
+  const [hostInput, setHostInput] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [selected, setSelected] = useState<Survivor | null>(null);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    if (hostInput.trim()) {
+      connect(hostInput);
+    } else {
+      startDemo();
     }
-
-    const createEvent = postEvent('CREATE_EVENT');
-    createEvent({
-      type: 'earthquake',
-      latitude: 37.7749,
-      longitude: -122.4194,
-      name: 'Training Scenario',
-    });
-
-    const addZone = postEvent('ADD_ZONE');
-    addZone({
-      name: 'Zone A',
-      zone_type: 'rectangle',
-      x: 60,
-      y: 60,
-      width: 180,
-      height: 120,
-    });
-    addZone({
-      name: 'Zone B',
-      zone_type: 'circle',
-      center_x: 300,
-      center_y: 170,
-      radius: 60,
-    });
-
-    upsertEvent({
-      event_id: 'training-scenario',
-      disaster_type: 1,
-      latitude: 37.7749,
-      longitude: -122.4194,
-      description: 'Training Scenario',
-    });
-
-    seededRef.current = true;
-  }, [postEvent, upsertEvent, ready]);
-
-  useEffect(() => {
-    if (ready && lastFrame) {
-      sendFrameUpdate(lastFrame);
-    }
-  }, [lastFrame, ready, sendFrameUpdate]);
-
-  const { height } = useWindowDimensions();
-  const webHeight = Math.max(240, Math.floor(height * 0.5));
+    setTimeout(() => setRefreshing(false), 600);
+  }, [hostInput, connect, startDemo]);
 
   return (
-    <ThemedView style={{ flex: 1, backgroundColor: colors.bg, padding: spacing.md }}>
+    <ThemedView style={styles.container}>
       <ConnectionBanner status={resolveBannerState(connectionStatus)} />
-      <View style={{ marginTop: 20 }}>
-        <SurvivorCounter survivors={survivors} />
-      </View>
-      <View style={{ height: webHeight }}>
-        <MatWebView
-          webViewRef={webViewRef}
-          onMessage={onMessage}
-          style={{ flex: 1, borderRadius: 12, overflow: 'hidden', backgroundColor: colors.surface }}
-        />
-      </View>
-      <View style={{ flex: 1, marginTop: spacing.md }}>
-        <AlertList alerts={alerts} />
-      </View>
+
+      <FlatList
+        data={sorted}
+        keyExtractor={(s) => s.id}
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.textPrimary}
+          />
+        }
+        ListHeaderComponent={
+          <View>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>WiFi-MAT Triage</Text>
+              <Pressable
+                onPress={toggleMute}
+                style={[styles.muteBtn, muted ? styles.muteOff : styles.muteOn]}
+                accessibilityRole="button"
+                accessibilityLabel={muted ? 'Unmute alarm' : 'Mute alarm'}
+              >
+                <Text style={styles.muteText}>{muted ? 'ALARM MUTED' : 'ALARM ON'}</Text>
+              </Pressable>
+            </View>
+
+            <TriageSummary survivors={survivors} />
+
+            <View style={styles.card}>
+              <Text style={styles.label}>Sensing server (host:port)</Text>
+              <View style={styles.connectRow}>
+                <TextInput
+                  style={styles.input}
+                  value={hostInput}
+                  onChangeText={setHostInput}
+                  placeholder="192.168.4.1:8080"
+                  placeholderTextColor={colors.textSecondary}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  accessibilityLabel="Sensing server host"
+                />
+                <Pressable
+                  style={styles.connectBtn}
+                  onPress={() => hostInput.trim() && connect(hostInput)}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.connectBtnText}>Connect</Text>
+                </Pressable>
+              </View>
+              <Pressable onPress={startDemo} accessibilityRole="button">
+                <Text style={styles.demoLink}>Start offline demo</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.card}>
+              <ZoneMap survivors={sorted} selectedId={selected?.id} />
+            </View>
+
+            <Text style={styles.sectionTitle}>Survivors ({survivors.length})</Text>
+          </View>
+        }
+        renderItem={({ item }) => (
+          <SurvivorRow survivor={item} onPress={() => setSelected(item)} />
+        )}
+        ListEmptyComponent={
+          <View style={styles.card}>
+            <Text style={styles.empty}>
+              No survivors detected. Connect to a sensing node or start the demo.
+            </Text>
+          </View>
+        }
+      />
+
+      <SurvivorDetail survivor={selected} onClose={() => setSelected(null)} />
     </ThemedView>
   );
 };
 
 export default MATScreen;
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.bg },
+  content: { padding: spacing.md, paddingTop: 36, paddingBottom: spacing.xxl },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+  },
+  title: { fontSize: 24, fontWeight: '700', color: colors.textPrimary },
+  muteBtn: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: 6,
+  },
+  muteOn: { backgroundColor: colors.success },
+  muteOff: { backgroundColor: colors.muted },
+  muteText: { color: '#FFFFFF', fontSize: 11, fontWeight: '700' },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+  },
+  label: { fontSize: 12, color: colors.textSecondary, marginBottom: spacing.xs },
+  connectRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
+  input: {
+    flex: 1,
+    backgroundColor: colors.surfaceAlt,
+    color: colors.textPrimary,
+    borderRadius: 8,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  connectBtn: {
+    backgroundColor: colors.accent,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 8,
+  },
+  connectBtnText: { color: '#06222A', fontWeight: '700' },
+  demoLink: { color: colors.accent, fontSize: 13, marginTop: spacing.sm },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+  },
+  empty: { fontSize: 14, color: colors.textSecondary },
+});

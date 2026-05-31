@@ -2,8 +2,14 @@
 Signal feature extraction from RSSI time series.
 
 Extracts both time-domain statistical features and frequency-domain spectral
-features using real mathematics (scipy.fft, scipy.stats).  Also implements
-CUSUM change-point detection for abrupt RSSI transitions.
+features using real mathematics.  Also implements CUSUM change-point detection
+for abrupt RSSI transitions.
+
+SciPy is used when available (``scipy.fft``, ``scipy.stats``) but is **not**
+required: the module falls back to numpy-only implementations of the real FFT
+and of the skewness / kurtosis moments. This keeps the notebook RSSI sensing
+path runnable on a stdlib + numpy install (no scipy), which is the only
+dependency available on the laptop capture path.
 """
 
 from __future__ import annotations
@@ -14,8 +20,16 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 from numpy.typing import NDArray
-from scipy import fft as scipy_fft
-from scipy import stats as scipy_stats
+
+try:  # pragma: no cover - exercised only when scipy is installed
+    from scipy import fft as scipy_fft
+    from scipy import stats as scipy_stats
+
+    _HAS_SCIPY = True
+except ImportError:  # scipy is optional; numpy provides equivalents
+    scipy_fft = None  # type: ignore[assignment]
+    scipy_stats = None  # type: ignore[assignment]
+    _HAS_SCIPY = False
 
 from v1.src.sensing.rssi_collector import WifiSample
 
@@ -185,8 +199,8 @@ class RssiFeatureExtractor:
             features.skewness = 0.0
             features.kurtosis = 0.0
         else:
-            features.skewness = float(scipy_stats.skew(rssi, bias=False)) if len(rssi) > 2 else 0.0
-            features.kurtosis = float(scipy_stats.kurtosis(rssi, bias=False)) if len(rssi) > 3 else 0.0
+            features.skewness = _skew(rssi) if len(rssi) > 2 else 0.0
+            features.kurtosis = _kurtosis(rssi) if len(rssi) > 3 else 0.0
 
         q75, q25 = np.percentile(rssi, [75, 25])
         features.iqr = float(q75 - q25)
@@ -211,9 +225,13 @@ class RssiFeatureExtractor:
         window = np.hanning(n)
         windowed = signal * window
 
-        # Compute real FFT
-        fft_vals = scipy_fft.rfft(windowed)
-        freqs = scipy_fft.rfftfreq(n, d=1.0 / sample_rate)
+        # Compute real FFT (scipy when present, numpy otherwise -- identical math)
+        if _HAS_SCIPY:
+            fft_vals = scipy_fft.rfft(windowed)
+            freqs = scipy_fft.rfftfreq(n, d=1.0 / sample_rate)
+        else:
+            fft_vals = np.fft.rfft(windowed)
+            freqs = np.fft.rfftfreq(n, d=1.0 / sample_rate)
 
         # Power spectral density (magnitude squared, normalised by N)
         psd = (np.abs(fft_vals) ** 2) / n
@@ -283,6 +301,53 @@ def _band_power(
     """Sum PSD within a frequency band [low_hz, high_hz]."""
     mask = (freqs >= low_hz) & (freqs <= high_hz)
     return float(np.sum(psd[mask]))
+
+
+def _skew(x: NDArray[np.float64]) -> float:
+    """Unbiased sample skewness (matches ``scipy.stats.skew(bias=False)``).
+
+    numpy-only fallback so the module works without scipy. Returns the
+    bias-corrected (sample) skewness:
+
+        g1 = m3 / m2**1.5
+        G1 = g1 * sqrt(n * (n - 1)) / (n - 2)
+
+    where m2, m3 are the (biased) 2nd/3rd central moments.
+    """
+    n = len(x)
+    if n < 3:
+        return 0.0
+    mean = np.mean(x)
+    diff = x - mean
+    m2 = np.mean(diff ** 2)
+    m3 = np.mean(diff ** 3)
+    if m2 <= 0:
+        return 0.0
+    g1 = m3 / (m2 ** 1.5)
+    correction = np.sqrt(n * (n - 1)) / (n - 2)
+    return float(g1 * correction)
+
+
+def _kurtosis(x: NDArray[np.float64]) -> float:
+    """Unbiased excess (Fisher) kurtosis (matches ``scipy.stats.kurtosis(bias=False)``).
+
+    numpy-only fallback. Returns the bias-corrected excess kurtosis:
+
+        G2 = ((n + 1) * g2 + 6) * (n - 1) / ((n - 2) * (n - 3))
+
+    where g2 = m4 / m2**2 - 3 is the biased excess kurtosis.
+    """
+    n = len(x)
+    if n < 4:
+        return 0.0
+    mean = np.mean(x)
+    diff = x - mean
+    m2 = np.mean(diff ** 2)
+    m4 = np.mean(diff ** 4)
+    if m2 <= 0:
+        return 0.0
+    g2 = m4 / (m2 ** 2) - 3.0
+    return float(((n + 1) * g2 + 6.0) * (n - 1) / ((n - 2) * (n - 3)))
 
 
 def cusum_detect(

@@ -7571,6 +7571,16 @@ name = "wifi-densepose-api"
 version = "0.3.0"
 
 [[package]]
+name = "wifi-densepose-bfi"
+version = "0.3.0"
+dependencies = [
+ "approx",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "wifi-densepose-cli"
 version = "0.3.0"
 dependencies = [

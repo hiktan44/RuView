@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { ThemeProvider } from '@/theme/ThemeContext';
+import { usePoseStore } from '@/stores/poseStore';
 
 jest.mock('@/hooks/usePoseStream', () => ({
   usePoseStream: () => ({
@@ -64,6 +65,9 @@ describe('VitalsScreen', () => {
   });
 
   it('renders the connection banner', () => {
+    // VitalsScreen derives the banner from poseStore, not the usePoseStream
+    // return value, so seed the store with the simulated state.
+    usePoseStore.setState({ connectionStatus: 'simulated', isSimulated: true });
     const VitalsScreen = require('@/screens/VitalsScreen').default;
     render(
       <ThemeProvider>
