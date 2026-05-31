@@ -11,6 +11,18 @@ jest.mock('@/hooks/usePoseStream', () => ({
   }),
 }));
 
+jest.mock('@/hooks/useLocalInference', () => ({
+  useLocalInference: () => ({
+    frame: null,
+    result: null,
+    origin: 'local' as const,
+    offline: true,
+    connectionStatus: 'simulated' as const,
+    modeLabel: 'OFFLINE (local inference)' as const,
+    lastUpdated: null,
+  }),
+}));
+
 jest.mock('react-native-svg', () => {
   const { View } = require('react-native');
   return {

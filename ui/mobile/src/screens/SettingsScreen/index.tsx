@@ -12,6 +12,7 @@ import { Alert, Pressable, Platform } from 'react-native';
 import { ThemePicker } from './ThemePicker';
 import { RssiToggle } from './RssiToggle';
 import { ServerUrlInput } from './ServerUrlInput';
+import { InferenceSettings } from './InferenceSettings';
 
 type GlowCardProps = {
   title: string;
@@ -87,6 +88,10 @@ export const SettingsScreen = () => {
   const setServerUrl = useSettingsStore((state) => state.setServerUrl);
   const setRssiScanEnabled = useSettingsStore((state) => state.setRssiScanEnabled);
   const setTheme = useSettingsStore((state) => state.setTheme);
+  const forceLocalInference = useSettingsStore((state) => state.forceLocalInference);
+  const inferenceEngine = useSettingsStore((state) => state.inferenceEngine);
+  const setForceLocalInference = useSettingsStore((state) => state.setForceLocalInference);
+  const setInferenceEngine = useSettingsStore((state) => state.setInferenceEngine);
 
   const [draftUrl, setDraftUrl] = useState(serverUrl);
   const [scanInterval, setScanInterval] = useState(2);
@@ -140,6 +145,15 @@ export const SettingsScreen = () => {
               iOS: RSSI scanning uses stubbed telemetry in this build.
             </ThemedText>
           )}
+        </GlowCard>
+
+        <GlowCard title="INFERENCE">
+          <InferenceSettings
+            forceLocal={forceLocalInference}
+            engine={inferenceEngine}
+            onForceLocalChange={setForceLocalInference}
+            onEngineChange={setInferenceEngine}
+          />
         </GlowCard>
 
         <GlowCard title="APPEARANCE">

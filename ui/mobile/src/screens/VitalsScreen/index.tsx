@@ -6,11 +6,13 @@ import { HeartRateGauge } from './HeartRateGauge';
 import { MetricCard } from './MetricCard';
 import { ConnectionBanner } from '@/components/ConnectionBanner';
 import { ModeBadge } from '@/components/ModeBadge';
+import { InferenceStatusPill } from '@/components/InferenceStatusPill';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SparklineChart } from '@/components/SparklineChart';
 import { usePoseStore } from '@/stores/poseStore';
 import { usePoseStream } from '@/hooks/usePoseStream';
+import { useLocalInference } from '@/hooks/useLocalInference';
 import { colors } from '@/theme/colors';
 
 type ConnectionBannerState = 'connected' | 'simulated' | 'disconnected';
@@ -22,6 +24,7 @@ const clampPercent = (value: number) => {
 
 export default function VitalsScreen() {
   usePoseStream();
+  const inference = useLocalInference();
 
   const connectionStatus = usePoseStore((state) => state.connectionStatus);
   const isSimulated = usePoseStore((state) => state.isSimulated);
@@ -29,8 +32,13 @@ export default function VitalsScreen() {
   const classification = usePoseStore((state) => state.classification);
   const rssiHistory = usePoseStore((state) => state.rssiHistory);
 
-  const confidence = clampPercent(classification?.confidence ?? 0);
-  const badgeLabel = (classification?.motion_level ?? 'ABSENT').toUpperCase();
+  // When offline, prefer the on-device inference result; otherwise the server's.
+  const localResult = inference.offline ? inference.result : null;
+  const effectiveConfidence = localResult?.presence.confidence ?? classification?.confidence ?? 0;
+  const effectiveMotionLevel = localResult?.presence.motionLevel ?? classification?.motion_level ?? 'absent';
+
+  const confidence = clampPercent(effectiveConfidence);
+  const badgeLabel = effectiveMotionLevel.toUpperCase();
 
   const bannerStatus: ConnectionBannerState = connectionStatus === 'connected' ? 'connected' : connectionStatus === 'simulated' ? 'simulated' : 'disconnected';
 
@@ -49,9 +57,9 @@ export default function VitalsScreen() {
   }));
 
   const classificationColor =
-    classification?.motion_level === 'active'
+    effectiveMotionLevel === 'active'
       ? colors.success
-      : classification?.motion_level === 'present_still'
+      : effectiveMotionLevel === 'present_still'
         ? colors.warn
         : colors.muted;
 
@@ -60,7 +68,14 @@ export default function VitalsScreen() {
       <ConnectionBanner status={bannerStatus} />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerRow}>{isSimulated ? <ModeBadge mode="SIM" /> : null}</View>
+        <View style={styles.headerRow}>
+          <InferenceStatusPill
+            offline={inference.offline}
+            backend={inference.result?.backend}
+            lastUpdated={inference.lastUpdated}
+          />
+          {isSimulated ? <ModeBadge mode="SIM" /> : null}
+        </View>
 
         <View style={styles.gaugesRow}>
           <View style={styles.gaugeCard}>
@@ -135,7 +150,10 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   headerRow: {
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
   },
   gaugesRow: {
     flexDirection: 'row',

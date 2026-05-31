@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Platform, StyleSheet, View } from 'react-native';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { InferenceStatusPill } from '@/components/InferenceStatusPill';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { usePoseStream } from '@/hooks/usePoseStream';
+import { useLocalInference } from '@/hooks/useLocalInference';
 import { colors, spacing } from '@/theme';
 import type { ConnectionStatus, SensingFrame } from '@/types/sensing';
 import { LiveHUD } from './LiveHUD';
@@ -78,6 +80,7 @@ const NativeLiveViewer = ({ frame, onReady, onFps, onError }: ViewerProps) => {
 
 export const LiveScreen = () => {
   const { lastFrame, connectionStatus, isSimulated } = usePoseStream();
+  const inference = useLocalInference();
   const [ready, setReady] = useState(false);
   const [fps, setFps] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +123,14 @@ export const LiveScreen = () => {
           mode={mode}
         />
 
+        <View style={styles.statusOverlay} pointerEvents="none">
+          <InferenceStatusPill
+            offline={inference.offline}
+            backend={inference.result?.backend}
+            lastUpdated={inference.lastUpdated}
+          />
+        </View>
+
         {!ready && (
           <View style={styles.loadingWrap}>
             <LoadingSpinner />
@@ -135,6 +146,7 @@ export default LiveScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
+  statusOverlay: { position: 'absolute', left: spacing.md, bottom: spacing.lg, zIndex: 50 },
   loadingWrap: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center', gap: spacing.md },
   loadingText: { color: colors.textSecondary },
   fallbackWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, padding: spacing.lg },

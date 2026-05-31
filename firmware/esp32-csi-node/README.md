@@ -25,6 +25,17 @@ This firmware captures WiFi Channel State Information (CSI) from an ESP32-S3 and
 
 For users who want to get running fast. Detailed explanations follow in later sections.
 
+> **macOS users:** skip the manual steps below. One-command, plug-and-play
+> scripts handle build, flash, and provisioning with automatic serial-port
+> detection. See [`docs/esp32-setup.md`](../../docs/esp32-setup.md), or just run:
+>
+> ```bash
+> # From the repo root, one board plugged in, Docker Desktop running:
+> scripts/esp32-setup.sh --node 0 --ssid "YourWiFi" --aggregator-ip <MAC_LAN_IP>
+> ```
+>
+> The manual steps below (Windows `COM7` examples) remain the cross-platform reference.
+
 ### 1. Build (Docker -- the only reliable method)
 
 ```bash
