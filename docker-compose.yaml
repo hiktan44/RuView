@@ -11,11 +11,9 @@ services:
     # magic env var below. We `expose` the container ports to the internal proxy
     # network instead of binding host ports, so Traefik knows the UI is on 8080.
     expose:
-      - "8080"   # UI (HTTP) — Coolify proxy target
+      - "8080"   # UI (HTTP) — Coolify binds the app domain to this port
       - "8765"   # WebSocket
     environment:
-      # Coolify auto-fills the domain; the _8080 suffix tells the proxy the port.
-      - SERVICE_FQDN_PYTHONSENSING_8080
       - PYTHONUNBUFFERED=1
       - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["*"]}
