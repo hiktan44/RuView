@@ -36,6 +36,7 @@ export const SparklineChart = ({
   return (
     <View style={style}>
       <View
+        accessible
         accessibilityRole="image"
         style={{
           height,

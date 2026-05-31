@@ -33,6 +33,20 @@ import sys
 import time
 from typing import Optional
 
+# Allow running this file directly (``python3 v1/src/sensing/notebook_runner.py``)
+# in addition to ``python3 -m v1.src.sensing.notebook_runner``. When executed
+# directly, the repo root is not on sys.path, so the absolute ``v1.src...``
+# imports below would raise ModuleNotFoundError. Insert the repo root (four
+# levels up: sensing -> src -> v1 -> repo) so both invocations resolve.
+if __package__ in (None, ""):  # pragma: no cover - direct-execution shim
+    import os as _os
+
+    _repo_root = _os.path.abspath(
+        _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+    )
+    if _repo_root not in sys.path:
+        sys.path.insert(0, _repo_root)
+
 from v1.src.sensing.classifier import PresenceClassifier, SensingResult
 from v1.src.sensing.feature_extractor import RssiFeatureExtractor, RssiFeatures
 from v1.src.sensing.notebook_scan import NotebookWifiCollector, ScanError
@@ -127,16 +141,42 @@ class NotebookSensingApp:
 
     # -- console mode --------------------------------------------------------
 
-    def run_console(self) -> None:
-        """Continuous console reporting (no WebSocket)."""
-        self._start_collector_or_exit()
+    @staticmethod
+    def _format_line(features: RssiFeatures, result: SensingResult, n_aps: int) -> str:
+        return (
+            f"  {time.strftime('%H:%M:%S')}  "
+            f"{result.motion_level.value.upper():<14} "
+            f"conf={result.confidence:5.0%}  "
+            f"motion_power={features.motion_band_power:.4f}  "
+            f"var={features.variance:.3f}  "
+            f"APs={n_aps}"
+        )
+
+    def _print_banner(self) -> None:
         print(f"\n  Notebook RSSI sensing on {platform.system()}")
         print(f"  Scan rate: {self.collector.sample_rate_hz:.2f} Hz | "
               f"Window: {self.extractor.window_seconds:.0f}s | "
               f"Report: every {self.interval:.1f}s")
         print("  (RSSI presence only -- no pose/vitals; that needs CSI hardware)")
-        print("  Press Ctrl+C to stop\n")
+
+    def run_console(self, count: Optional[int] = None) -> None:
+        """Continuous console reporting (no WebSocket).
+
+        Parameters
+        ----------
+        count : int, optional
+            Stop after emitting this many presence reports. ``None`` (default)
+            runs until Ctrl+C. ``count=1`` performs a single scan+classify+print
+            then exits cleanly -- useful for ``--once`` smoke tests.
+        """
+        self._start_collector_or_exit()
+        self._print_banner()
+        if count is None:
+            print("  Press Ctrl+C to stop\n")
+        else:
+            print(f"  Reporting {count} sample(s) then exiting.\n")
         self._running = True
+        emitted = 0
         try:
             while self._running:
                 out = self._tick()
@@ -144,20 +184,52 @@ class NotebookSensingApp:
                     print("  warming up (collecting WiFi scans) ...")
                 else:
                     features, result, n_aps = out
-                    print(
-                        f"  {time.strftime('%H:%M:%S')}  "
-                        f"{result.motion_level.value.upper():<14} "
-                        f"conf={result.confidence:5.0%}  "
-                        f"motion_power={features.motion_band_power:.4f}  "
-                        f"var={features.variance:.3f}  "
-                        f"APs={n_aps}"
-                    )
+                    print(self._format_line(features, result, n_aps))
+                    emitted += 1
+                    if count is not None and emitted >= count:
+                        break
                 time.sleep(self.interval)
         except KeyboardInterrupt:
             pass
         finally:
             self.collector.stop()
             print("\n  Stopped.")
+
+    def run_once(self, timeout: float = 30.0) -> int:
+        """Collect until enough samples exist, print ONE presence line, exit.
+
+        Returns a process exit code (0 on success). Bounded by ``timeout`` so it
+        never hangs: if not enough WiFi scans arrive (e.g. macOS Location
+        Services permission denied so scans return no networks), it prints an
+        actionable message and returns a non-zero code -- never a traceback.
+        """
+        self._start_collector_or_exit()
+        self._print_banner()
+        print(f"  Single-shot mode (--once); up to {timeout:.0f}s to warm up.\n")
+        self._running = True
+        deadline = time.monotonic() + timeout
+        try:
+            while time.monotonic() < deadline:
+                out = self._tick()
+                if out is not None:
+                    features, result, n_aps = out
+                    print(self._format_line(features, result, n_aps))
+                    return 0
+                time.sleep(self.interval)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            self.collector.stop()
+            print("\n  Stopped.")
+
+        print(
+            "\n  No usable WiFi scans within the timeout.\n"
+            "  On macOS the scan returns no networks unless the running\n"
+            "  terminal/app has Location Services permission\n"
+            "  (System Settings -> Privacy & Security -> Location Services).\n"
+            "  This is a permission/data issue, not a crash."
+        )
+        return 3
 
     # -- websocket mode ------------------------------------------------------
 
@@ -260,6 +332,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
         "--check", action="store_true",
         help="Run a single scan, print whether sensing is available, and exit.",
     )
+    parser.add_argument(
+        "--once", action="store_true",
+        help="Warm up, print ONE presence line, then exit (bounded smoke test).",
+    )
+    parser.add_argument(
+        "--once-timeout", type=float, default=30.0,
+        help="Max seconds to warm up in --once mode (default 30).",
+    )
+    parser.add_argument(
+        "--count", type=int, default=None,
+        help="In console mode, exit after this many presence reports.",
+    )
     return parser
 
 
@@ -301,8 +385,10 @@ def main(argv: Optional[list] = None) -> int:
         finally:
             app.collector.stop()
             loop.close()
+    elif args.once:
+        return app.run_once(timeout=args.once_timeout)
     else:
-        app.run_console()
+        app.run_console(count=args.count)
     return 0
 
 
