@@ -7,6 +7,12 @@ FROM rust:1.85-bookworm AS builder
 
 WORKDIR /build
 
+# Build dependencies for ndarray-linalg (openblas-static builds OpenBLAS from
+# source, which needs a Fortran toolchain + make/perl).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gfortran perl make pkg-config cmake \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy workspace files
 COPY rust-port/wifi-densepose-rs/Cargo.toml rust-port/wifi-densepose-rs/Cargo.lock ./
 COPY rust-port/wifi-densepose-rs/crates/ ./crates/

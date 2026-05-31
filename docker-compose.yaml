@@ -1,26 +1,25 @@
 version: "3.9"
 
 services:
-  # Python Sensing Server - WebSocket + UI
+  # Rust Sensing Server — single binary serving UI + REST API (/api/v1/*) +
+  # WebSocket (/ws/sensing) + /health on port 3000.
   # Service name MUST stay "python_sensing" (underscore) to match the domain key
-  # Coolify has bound (docker_compose_domains.python_sensing). Uses the root
-  # Dockerfile (docker/Dockerfile.python does not exist).
+  # Coolify has bound (docker_compose_domains.python_sensing).
   python_sensing:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: ruview-python:latest
+      dockerfile: docker/Dockerfile.rust
+    image: ruview-rust:latest
     expose:
-      - "8080"   # UI (HTTP) — Coolify binds the app domain to this port
-      - "8765"   # WebSocket
+      - "3000"   # HTTP: UI + REST API + WebSocket — Coolify proxy target
     environment:
-      - PYTHONUNBUFFERED=1
-      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-["*"]}
-      - CORS_ORIGINS=${CORS_ORIGINS:-["*"]}
+      - RUST_LOG=info
+      # simulated => deterministic synthetic CSI so the live demo works with no
+      # hardware. Switch to "esp32" once a sensor mesh streams to UDP :5005.
+      - CSI_SOURCE=simulated
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: ["CMD", "/app/sensing-server", "--help"]
       interval: 30s
       timeout: 10s
       retries: 3
