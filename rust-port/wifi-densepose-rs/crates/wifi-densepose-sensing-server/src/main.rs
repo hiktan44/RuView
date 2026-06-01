@@ -212,6 +212,11 @@ struct SensingUpdate {
     /// Estimated person count from CSI feature heuristics (1-3 for single ESP32).
     #[serde(skip_serializing_if = "Option::is_none")]
     estimated_persons: Option<usize>,
+    /// Human activity estimate (HAR): {activity, confidence, cross_domain_warning, is_fall}.
+    /// In-domain ~85-92% on single-antenna ESP32-S3 CSI; cross-domain estimates
+    /// are flagged. Absent until the first analysis window is gathered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    activity: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -360,6 +365,13 @@ struct AppStateInner {
     // ── Adaptive classifier (environment-tuned) ──────────────────────────
     /// Trained adaptive model (loaded from data/adaptive_model.json or trained at runtime).
     adaptive_model: Option<adaptive_classifier::AdaptiveModel>,
+    // ── Human Activity Recognition (HAR) ─────────────────────────────────
+    /// Streaming HAR pipeline (walk/sit/stand/fall/wave) over CSI amplitude
+    /// windows. In-domain ~85-92% on single-antenna ESP32-S3 CSI; cross-domain
+    /// estimates carry a `cross_domain_warning` flag (see wifi_densepose_signal::har).
+    har_pipeline: wifi_densepose_signal::HarPipeline,
+    /// Most recent HAR estimate, or `None` until a full window is gathered.
+    latest_activity: Option<wifi_densepose_signal::HarEstimate>,
 }
 
 /// Number of frames retained in `frame_history` for temporal analysis.
@@ -1195,6 +1207,8 @@ async fn windows_wifi_task(state: SharedState, tick_ms: u64) {
         if s_write_pre.frame_history.len() > FRAME_HISTORY_CAPACITY {
             s_write_pre.frame_history.pop_front();
         }
+        // HAR: feed the per-subcarrier amplitude vector into the activity pipeline.
+        feed_har(&mut s_write_pre, frame.amplitudes.clone());
         let sample_rate_hz = 1000.0 / tick_ms as f64;
         let (features, mut classification, breathing_rate_hz, sub_variances, raw_motion) =
             extract_features_from_frame(&frame, &s_write_pre.frame_history, sample_rate_hz);
@@ -1285,6 +1299,7 @@ async fn windows_wifi_task(state: SharedState, tick_ms: u64) {
             model_status: None,
             persons: None,
             estimated_persons: if est_persons > 0 { Some(est_persons) } else { None },
+            activity: har_json(&s),
         };
 
         // Populate persons from the sensing update.
@@ -1415,6 +1430,7 @@ async fn windows_wifi_fallback_tick(state: &SharedState, seq: u32) {
         model_status: None,
         persons: None,
         estimated_persons: if est_persons > 0 { Some(est_persons) } else { None },
+        activity: har_json(&s),
     };
 
     let persons = derive_pose_from_sensing(&update);
@@ -2589,6 +2605,63 @@ async fn vital_signs_endpoint(State(state): State<SharedState>) -> Json<serde_js
     }))
 }
 
+/// Build the optional `activity` JSON for a SensingUpdate from the latest HAR estimate.
+fn har_json(s: &AppStateInner) -> Option<serde_json::Value> {
+    s.latest_activity.as_ref().map(|est| {
+        serde_json::json!({
+            "activity": est.activity.label(),
+            "confidence": est.confidence,
+            "cross_domain_warning": est.cross_domain_warning,
+            "is_fall": est.activity.is_fall(),
+        })
+    })
+}
+
+/// Feed one CSI amplitude frame into the HAR pipeline and cache any new estimate.
+///
+/// Honest note: HAR is in-domain ~85-92% on single-antenna ESP32-S3 CSI and
+/// degrades cross-subject/cross-room; low-confidence estimates carry
+/// `cross_domain_warning` so the UI can flag them.
+fn feed_har(s: &mut AppStateInner, amplitudes: Vec<f64>) {
+    match s.har_pipeline.push_frame(amplitudes) {
+        Ok(Some(est)) => s.latest_activity = Some(est),
+        Ok(None) => {} // window not full yet
+        Err(_) => {}   // malformed window; skip silently
+    }
+}
+
+/// GET /api/v1/activity — latest human-activity estimate (HAR).
+///
+/// Returns the coarse activity class (empty/walking/sitting/standing/falling/
+/// waving/other), a confidence score, and a `cross_domain_warning` flag that is
+/// true when the estimate may not generalize beyond the trained environment.
+async fn activity_endpoint(State(state): State<SharedState>) -> Json<serde_json::Value> {
+    let s = state.read().await;
+    match &s.latest_activity {
+        Some(est) => Json(serde_json::json!({
+            "activity": est.activity.label(),
+            "confidence": est.confidence,
+            "cross_domain_warning": est.cross_domain_warning,
+            "is_fall": est.activity.is_fall(),
+            "buffered_frames": s.har_pipeline.buffered(),
+            "source": s.source,
+            "tick": s.tick,
+            "note": "HAR ~85-92% in-domain on single-antenna ESP32-S3 CSI; \
+                     accuracy drops across new people/rooms (see cross_domain_warning).",
+        })),
+        None => Json(serde_json::json!({
+            "activity": "unknown",
+            "confidence": 0.0,
+            "cross_domain_warning": true,
+            "is_fall": false,
+            "buffered_frames": s.har_pipeline.buffered(),
+            "source": s.source,
+            "tick": s.tick,
+            "note": "Gathering the first analysis window…",
+        })),
+    }
+}
+
 /// GET /api/v1/edge-vitals — latest edge vitals from ESP32 (ADR-039).
 async fn edge_vitals_endpoint(State(state): State<SharedState>) -> Json<serde_json::Value> {
     let s = state.read().await;
@@ -2713,6 +2786,7 @@ async fn info_page() -> Html<String> {
          <li><a href='/health'>/health</a> — Server health</li>\
          <li><a href='/api/v1/sensing/latest'>/api/v1/sensing/latest</a> — Latest sensing data</li>\
          <li><a href='/api/v1/vital-signs'>/api/v1/vital-signs</a> — Vital sign estimates (HR/RR)</li>\
+         <li><a href='/api/v1/activity'>/api/v1/activity</a> — Human activity (walk/sit/fall/wave + confidence)</li>\
          <li><a href='/api/v1/model/info'>/api/v1/model/info</a> — RVF model container info</li>\
          <li>ws://localhost:8765/ws/sensing — WebSocket stream</li>\
          </ul>\
@@ -2797,6 +2871,8 @@ async fn udp_receiver_task(state: SharedState, udp_port: u16) {
                     if s.frame_history.len() > FRAME_HISTORY_CAPACITY {
                         s.frame_history.pop_front();
                     }
+                    // HAR: feed real ESP32 CSI amplitudes into the activity pipeline.
+                    feed_har(&mut s, frame.amplitudes.clone());
 
                     let sample_rate_hz = 1000.0 / 500.0_f64; // default tick; ESP32 frames arrive as fast as they come
                     let (features, mut classification, breathing_rate_hz, sub_variances, raw_motion) =
@@ -2862,6 +2938,7 @@ async fn udp_receiver_task(state: SharedState, udp_port: u16) {
                         model_status: None,
                         persons: None,
                         estimated_persons: if est_persons > 0 { Some(est_persons) } else { None },
+                        activity: har_json(&s),
                     };
 
                     let persons = derive_pose_from_sensing(&update);
@@ -2903,6 +2980,8 @@ async fn simulated_data_task(state: SharedState, tick_ms: u64) {
         if s.frame_history.len() > FRAME_HISTORY_CAPACITY {
             s.frame_history.pop_front();
         }
+        // HAR: feed the simulated subcarrier amplitudes into the activity pipeline.
+        feed_har(&mut s, frame.amplitudes.clone());
 
         let sample_rate_hz = 1000.0 / tick_ms as f64;
         let (features, mut classification, breathing_rate_hz, sub_variances, raw_motion) =
@@ -2977,6 +3056,7 @@ async fn simulated_data_task(state: SharedState, tick_ms: u64) {
             },
             persons: None,
             estimated_persons: if est_persons > 0 { Some(est_persons) } else { None },
+            activity: har_json(&s),
         };
 
         // Populate persons from the sensing update.
@@ -3608,6 +3688,10 @@ async fn main() {
                   m.trained_frames, m.training_accuracy * 100.0);
             m
         }),
+        // HAR: heuristic pipeline works with zero training; a per-site trained
+        // model can be swapped in later via har_pipeline.set_classifier(...).
+        har_pipeline: wifi_densepose_signal::HarPipeline::default_heuristic(),
+        latest_activity: None,
     }));
 
     // Start background tasks based on source
@@ -3664,6 +3748,7 @@ async fn main() {
         .route("/api/v1/sensing/latest", get(latest))
         // Vital sign endpoints
         .route("/api/v1/vital-signs", get(vital_signs_endpoint))
+        .route("/api/v1/activity", get(activity_endpoint))
         .route("/api/v1/edge-vitals", get(edge_vitals_endpoint))
         .route("/api/v1/wasm-events", get(wasm_events_endpoint))
         // RVF model container info

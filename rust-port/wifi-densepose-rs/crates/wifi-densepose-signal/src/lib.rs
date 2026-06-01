@@ -37,6 +37,7 @@ pub mod csi_ratio;
 pub mod features;
 pub mod fresnel;
 pub mod hampel;
+pub mod har;
 pub mod hardware_norm;
 pub mod motion;
 pub mod phase_sanitizer;
@@ -55,6 +56,10 @@ pub use features::{
 };
 pub use motion::{
     HumanDetectionResult, MotionAnalysis, MotionDetector, MotionDetectorConfig, MotionScore,
+};
+pub use har::{
+    Activity, HarClassifier, HarConfig, HarEstimate, HarFeatureExtractor, HarFeatures, HarModel,
+    HarPipeline, LabeledWindow, PipelineConfig,
 };
 pub use hardware_norm::{
     AmplitudeStats, CanonicalCsiFrame, HardwareNormError, HardwareNormalizer, HardwareType,
