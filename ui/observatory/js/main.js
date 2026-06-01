@@ -127,10 +127,23 @@ class Observatory {
     this._showFps = false;
     this._qualityLevel = 2;
 
-    // WebSocket for live data — always try auto-detect on startup
+    // WebSocket for live data.
+    // The Observatory is a cinematic showcase of the 10 demo scenarios (fall,
+    // crowd, etc.), so it stays in DEMO mode by default — otherwise it would
+    // auto-connect to a sensing server streaming static/simulated CSI and the
+    // figures would freeze (the scenarios stop animating). Opt into live data
+    // explicitly with `?source=ws` (or `?live=1`) in the URL.
     this._ws = null;
     this._liveData = null;
-    this._autoDetectLive();
+    {
+      const params = new URLSearchParams(window.location.search);
+      const wantLive = params.get('source') === 'ws' || params.get('live') === '1';
+      if (wantLive) {
+        this._autoDetectLive();
+      } else {
+        console.log('[Observatory] Demo mode (10 scenarios). Add ?source=ws to use live sensing data.');
+      }
+    }
 
     // Input
     this._initKeyboard();
