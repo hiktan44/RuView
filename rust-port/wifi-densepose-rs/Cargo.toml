@@ -49,7 +49,14 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 
 # Signal processing
 ndarray = { version = "0.15", features = ["serde"] }
-ndarray-linalg = { version = "0.16", features = ["openblas-static"] }
+# Link against the SYSTEM OpenBLAS (apt: libopenblas-dev) instead of building it
+# from source. openblas-static compiles all of OpenBLAS during `cargo build`,
+# which needs several GB of RAM and OOM-kills the build on the deploy server
+# (cargo exits 101). openblas-system links the prebuilt library: far less build
+# memory, much faster. Requires libopenblas-dev + gfortran at build time and
+# libopenblas0 (or -dev) at runtime — provided in docker/Dockerfile.rust and
+# documented for local macOS builds (brew install openblas) in the README.
+ndarray-linalg = { version = "0.16", features = ["openblas-system"] }
 rustfft = "6.1"
 num-complex = "0.4"
 num-traits = "0.2"

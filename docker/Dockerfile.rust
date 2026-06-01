@@ -7,10 +7,13 @@ FROM rust:1.85-bookworm AS builder
 
 WORKDIR /build
 
-# Build dependencies for ndarray-linalg (openblas-static builds OpenBLAS from
-# source, which needs a Fortran toolchain + make/perl).
+# Build dependencies for ndarray-linalg. We link the SYSTEM OpenBLAS
+# (libopenblas-dev) rather than compiling OpenBLAS from source — building it in
+# `cargo build` needs several GB of RAM and OOM-kills the deploy server (cargo
+# exit 101). gfortran is still needed for the LAPACK symbols.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential gfortran perl make pkg-config cmake \
+    libopenblas-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy workspace files
@@ -27,8 +30,11 @@ RUN cargo build --release -p wifi-densepose-sensing-server 2>&1 \
 # Stage 2: Runtime
 FROM debian:bookworm-slim
 
+# Runtime needs the shared OpenBLAS + libgfortran the binary now links against
+# dynamically (openblas-system), plus curl for the compose healthcheck.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
+    ca-certificates curl \
+    libopenblas0 libgfortran5 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
