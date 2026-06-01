@@ -23,7 +23,16 @@ COPY rust-port/wifi-densepose-rs/crates/ ./crates/
 # Copy vendored RuVector crates
 COPY vendor/ruvector/ /build/vendor/ruvector/
 
-# Build release binary
+# Build release binary.
+# The shared deploy server has limited RAM and runs 2 concurrent builds, so a
+# normal parallel release build OOM-kills rustc (cargo exits 101 after minutes
+# of compiling — even though it builds fine locally). Constrain memory use:
+#   CARGO_BUILD_JOBS=1        — compile one crate at a time (biggest RAM saver)
+#   codegen-units=1 + opt for size-ish — fewer parallel codegen threads per crate
+# This is slower but fits in the build host's memory budget.
+ENV CARGO_BUILD_JOBS=1
+ENV CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+ENV CARGO_PROFILE_RELEASE_LTO=off
 RUN cargo build --release -p wifi-densepose-sensing-server 2>&1 \
     && strip target/release/sensing-server
 
