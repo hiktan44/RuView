@@ -22,6 +22,8 @@ export const DEFAULTS = {
   bloom: 0.08, bloomRadius: 0.2, bloomThresh: 0.6,
   exposure: 1.3, vignette: 0.25, grain: 0.01, chromatic: 0.0005,
   boneThick: 0.018, jointSize: 0.035, glow: 0.3, trail: 0.35,
+  // bodyFill: 'capsule' = inferred filled silhouette (default), 'skeleton' = old stick view
+  bodyFill: 'capsule',
   wireColor: '#00d878', jointColor: '#ff4060', aura: 0.02,
   field: 0.45, waves: 0.4, ambient: 0.7, reflect: 0.2,
   fov: 50, orbitSpeed: 0.15, grid: true, room: true,
@@ -356,6 +358,37 @@ export class HudController {
   }
 
   // ============================================================
+  // "Inferred body" disclaimer
+  // ============================================================
+
+  /**
+   * Create (once) and show/hide the always-honest disclaimer label. It makes
+   * clear the rendered body is an estimate from WiFi, not a camera image.
+   * Built in JS so we don't touch the host HTML; styled via observatory.css.
+   * @param {boolean} present - whether a body is currently shown
+   */
+  _updateBodyDisclaimer(present) {
+    if (!this._bodyDisclaimerEl) {
+      const el = document.createElement('div');
+      el.id = 'inferred-body-disclaimer';
+      el.setAttribute('aria-live', 'polite');
+      el.innerHTML =
+        '<span class="ibd-icon">&#9888;</span>' +
+        '<span class="ibd-text">' +
+        '<span class="ibd-en">Estimated body shape &middot; inferred from WiFi, not a camera</span>' +
+        '<span class="ibd-tr">Tahmini v&uuml;cut &middot; WiFi&#39;dan &ccedil;&#305;kar&#305;m, kamera de&#287;il</span>' +
+        '</span>';
+      // Attach to <body> directly: the label is position:fixed with its own
+      // z-index, so it must not be trapped in an ancestor's stacking/transform
+      // context. This guarantees it renders above the canvas whenever shown.
+      document.body.appendChild(el);
+      this._bodyDisclaimerEl = el;
+    }
+    // Subtle fade rather than hard toggle so it matches the holographic feel.
+    this._bodyDisclaimerEl.classList.toggle('visible', present);
+  }
+
+  // ============================================================
   // Source badge
   // ============================================================
 
@@ -437,6 +470,11 @@ export class HudController {
 
     const fallEl = document.getElementById('fall-alert');
     if (fallEl) fallEl.style.display = cls.fall_detected ? 'block' : 'none';
+
+    // "Inferred — not a camera" disclaimer: visible whenever a body is rendered.
+    // The 3D figure is a smoothed approximation from estimated WiFi keypoints,
+    // never a measured surface — so we say so, plainly, in two languages.
+    this._updateBodyDisclaimer(!!cls.presence);
 
     // Scenario description and edge modules
     const scenarioKey = demoData._autoMode ? (demoData.currentScenario || 'auto') : (demoData.currentScenario || 'auto');

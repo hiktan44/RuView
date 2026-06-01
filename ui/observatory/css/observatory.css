@@ -113,6 +113,65 @@ body {
   50% { opacity: 0.4; }
 }
 
+/* ---- "Inferred body — not a camera" disclaimer (bottom centre) ---- */
+/* Honest framing: the 3D body is an estimate from WiFi, never a measured scan. */
+#inferred-body-disclaimer {
+  /* Fixed + high z-index so it can never be clipped by a HUD transform/overflow
+     and always sits above the canvas and bloom. Placed above the bottom tab bar
+     (which lives at the bottom-centre) so the two never overlap. */
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 92vw;
+  padding: 7px 16px;
+  border-radius: 18px;
+  background: rgba(6, 10, 16, 0.78);
+  border: 1px solid rgba(0, 216, 120, 0.4);
+  box-shadow: 0 0 18px rgba(0, 216, 120, 0.18), 0 2px 10px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  color: rgba(120, 255, 190, 0.95);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#inferred-body-disclaimer.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#inferred-body-disclaimer .ibd-icon {
+  color: var(--amber);
+  font-size: 12px;
+  opacity: 0.95;
+  flex: 0 0 auto;
+}
+#inferred-body-disclaimer .ibd-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+#inferred-body-disclaimer .ibd-en {
+  color: rgba(160, 255, 205, 0.98);
+}
+#inferred-body-disclaimer .ibd-tr {
+  color: rgba(0, 216, 120, 0.62);
+  font-size: 9.5px;
+}
+
+@media (max-width: 640px) {
+  #inferred-body-disclaimer { font-size: 9.5px; padding: 6px 12px; bottom: 18px; }
+  #inferred-body-disclaimer .ibd-tr { font-size: 8.5px; }
+}
+
 #scenario-area {
   display: flex;
   align-items: center;

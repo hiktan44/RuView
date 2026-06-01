@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RuView Observatory — WiFi DensePose</title>
-  <link rel="stylesheet" href="observatory/css/observatory.css">
+  <!-- Cache-bust query so browsers fetch the latest CSS after each deploy
+       (the bare path was being served stale from cache). Bump on UI changes. -->
+  <link rel="stylesheet" href="observatory/css/observatory.css?v=20260603">
 </head>
 <body>
   <canvas id="observatory-canvas"></canvas>
@@ -335,6 +337,8 @@
   }
   </script>
 
-  <script type="module" src="observatory/js/main.js"></script>
+  <!-- Cache-bust query so the latest JS (figure-pool, hud-controller, …) loads
+       after each deploy instead of a stale cached copy. Bump on UI changes. -->
+  <script type="module" src="observatory/js/main.js?v=20260603"></script>
 </body>
 </html>

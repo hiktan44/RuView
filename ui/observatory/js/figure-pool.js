@@ -1,5 +1,5 @@
 /**
- * FigurePool — Manages a pool of wireframe human figures for multi-person rendering.
+ * FigurePool — Manages a pool of human figures for multi-person rendering.
  *
  * Extracted from main.js Observatory class. Owns the lifecycle of up to MAX_FIGURES
  * Three.js figure groups, each containing joints, bones, body segments, and aura.
@@ -10,8 +10,24 @@
  * - Natural bone thickness taper (thicker at shoulder/hip, thinner at extremities)
  * - Secondary motion with slight delay/overshoot for organic feel
  * - Pose-adaptive aura shape (wider for exercise, narrower for crouching)
+ *
+ * ── HONESTY NOTE (important) ─────────────────────────────────────────────
+ * The "capsule" body fill renders an INFERRED, smoothed volumetric silhouette
+ * interpolated between ESTIMATED keypoints. Single-antenna WiFi sensing CANNOT
+ * measure a person's body surface — there is no camera and no depth scan here.
+ * Limb/torso thickness is driven by ONE coarse per-person `bodyScale` scalar
+ * (see _estimateBodyScale), never per-pixel geometry. This is a plausible
+ * approximation for visualization only. It must never be presented as a
+ * "scan", "measured surface", or "camera-accurate" body. The HUD shows an
+ * always-visible "inferred — not a camera" disclaimer whenever a body renders.
+ * ─────────────────────────────────────────────────────────────────────────
  */
 import * as THREE from 'three';
+
+// THREE.CapsuleGeometry exists from r140+ (this app uses r160). We still keep a
+// cylinder+sphere-caps fallback so the silhouette degrades gracefully if a
+// stripped/older THREE build is ever swapped in. No new dependency is added.
+const HAS_CAPSULE = typeof THREE.CapsuleGeometry === 'function';
 
 // 17-keypoint COCO skeleton connectivity
 export const SKELETON_PAIRS = [
@@ -36,6 +52,43 @@ export const BODY_SEGMENT_DEFS = [
   { joints: [13, 15], radius: 0.05 },  // left shin
   { joints: [14, 16], radius: 0.05 },  // right shin
   { joints: [0, 0], radius: 0.1, isHead: true },
+];
+
+/**
+ * Capsule silhouette segments — the FILLED, inferred body fill ('capsule' mode).
+ *
+ * Each limb is rendered as a tapered capsule (rounded ends so joints read as
+ * smooth blends instead of hard cylinder caps). The torso is built from a few
+ * overlapping fuller capsules so it reads as one rounded volume rather than thin
+ * bars. `radius` is a BASE half-width in metres; the per-person `bodyScale`
+ * scalar (a single coarse number — see _estimateBodyScale) multiplies every
+ * radius uniformly so the whole silhouette widens/narrows together. This is an
+ * inferred approximation, NOT a per-vertex body measurement.
+ */
+export const CAPSULE_SEGMENT_DEFS = [
+  // ── Torso: overlapping fuller volumes for a rounded, filled core ──
+  { joints: [5, 11], radius: 0.155, kind: 'torso' },  // left trunk
+  { joints: [6, 12], radius: 0.155, kind: 'torso' },  // right trunk
+  { joints: [5, 6],  radius: 0.140, kind: 'torso' },  // chest / shoulder span
+  { joints: [11, 12], radius: 0.135, kind: 'torso' }, // pelvis span
+  // diagonal cross-fills smooth the trunk into one mass
+  { joints: [5, 12], radius: 0.125, kind: 'torso' },
+  { joints: [6, 11], radius: 0.125, kind: 'torso' },
+  // ── Neck (head ↔ shoulder centre handled in update) ──
+  { joints: [0, 5], radius: 0.055, kind: 'neck' },
+  { joints: [0, 6], radius: 0.055, kind: 'neck' },
+  // ── Arms ──
+  { joints: [5, 7], radius: 0.072, kind: 'limb' },   // left upper arm
+  { joints: [6, 8], radius: 0.072, kind: 'limb' },   // right upper arm
+  { joints: [7, 9], radius: 0.055, kind: 'limb' },   // left forearm
+  { joints: [8, 10], radius: 0.055, kind: 'limb' },  // right forearm
+  // ── Legs ──
+  { joints: [11, 13], radius: 0.098, kind: 'limb' }, // left thigh
+  { joints: [12, 14], radius: 0.098, kind: 'limb' }, // right thigh
+  { joints: [13, 15], radius: 0.072, kind: 'limb' }, // left shin
+  { joints: [14, 16], radius: 0.072, kind: 'limb' }, // right shin
+  // ── Head (rounded volume, no face / no features — coarse only) ──
+  { joints: [0, 0], radius: 0.125, isHead: true, kind: 'head' },
 ];
 
 // Bone thickness multipliers — thicker at torso, thinner at extremities
@@ -108,10 +161,54 @@ const OVERSHOOT = [
 
 const MAX_FIGURES = 4;
 
+// Nominal segment length the capsule geometry is authored at. At runtime each
+// capsule is scaled along Z to span its two joints, so caps stay roughly rounded.
+const CAPSULE_NOMINAL_LEN = 0.35;
+
 // Reusable vectors to avoid per-frame allocation
 const _vecFrom = new THREE.Vector3();
 const _vecTo = new THREE.Vector3();
 const _vecTarget = new THREE.Vector3();
+const _vecMid = new THREE.Vector3();
+const _vecShoulderMid = new THREE.Vector3();
+
+/**
+ * Build a capsule (or cylinder + sphere-cap fallback) oriented along +Z with its
+ * origin at the START joint, so it can be placed at jointA, scaled in Z to the
+ * joint distance, and aimed with lookAt(jointB) — exactly like the existing
+ * bone/segment convention. Returns a THREE.Mesh.
+ *
+ * @param {number} radius - base half-width in metres
+ * @param {THREE.Material} mat
+ */
+function buildOrientedCapsule(radius, mat) {
+  const len = CAPSULE_NOMINAL_LEN;
+  let geo;
+  if (HAS_CAPSULE) {
+    // CapsuleGeometry is authored along +Y, centred at origin, with `length`
+    // being the straight mid-section between the two hemispherical caps.
+    geo = new THREE.CapsuleGeometry(radius, len, 6, 12);
+  } else {
+    // Fallback: a cylinder we then cap with spheres (merged visually by overlap).
+    geo = new THREE.CylinderGeometry(radius, radius, len, 12, 1, false);
+  }
+  // Move so the segment spans 0..len in +Y, then reorient to +Z (matches bones).
+  geo.translate(0, len / 2, 0);
+  geo.rotateX(Math.PI / 2);
+  const mesh = new THREE.Mesh(geo, mat);
+
+  if (!HAS_CAPSULE) {
+    // Rounded end-caps for the fallback path so joints still read smoothly.
+    const capGeo = new THREE.SphereGeometry(radius, 10, 10);
+    const capA = new THREE.Mesh(capGeo, mat);
+    const capB = new THREE.Mesh(capGeo, mat);
+    capA.position.set(0, 0, 0);
+    capB.position.set(0, 0, len);
+    mesh.add(capA, capB);
+    mesh._fallbackCaps = [capA, capB];
+  }
+  return mesh;
+}
 
 export class FigurePool {
   /**
@@ -125,8 +222,14 @@ export class FigurePool {
     this._poseSystem = poseSystem;
     this._figures = [];
     this._maxFigures = MAX_FIGURES;
+    // bodyFill: 'capsule' (default, inferred filled silhouette) or 'skeleton'
+    // (the original thin stick-figure look). Old view stays reachable.
+    if (this._settings.bodyFill == null) this._settings.bodyFill = 'capsule';
     this._build();
   }
+
+  /** @returns {boolean} true when the filled capsule silhouette is active */
+  get _capsuleMode() { return this._settings.bodyFill !== 'skeleton'; }
 
   /** @returns {Array} The array of figure objects */
   get figures() { return this._figures; }
@@ -225,6 +328,46 @@ export class FigurePool {
       bodySegments.push({ mesh, mat, a: seg.joints[0], b: seg.joints[1], isHead: seg.isHead });
     }
 
+    // ── Capsule silhouette ('capsule' fill) ──
+    // The FILLED, inferred body: tapered capsules for limbs, fuller overlapping
+    // capsules for the torso, a rounded head sphere. Thickness is uniformly
+    // scaled at runtime by a single coarse per-person `bodyScale` scalar.
+    const capsules = [];
+    for (const seg of CAPSULE_SEGMENT_DEFS) {
+      const mat = new THREE.MeshStandardMaterial({
+        color: wireColor, emissive: wireColor,
+        // Low emissive so the body reads by SHAPE (lit volume), not by glow.
+        // Over-bright emissive previously washed every figure into a green blob.
+        emissiveIntensity: seg.kind === 'torso' ? 0.06 : 0.08,
+        transparent: true, opacity: 0,
+        roughness: 0.55, metalness: 0.05,
+        // DoubleSide is ESSENTIAL: figures can face any direction (e.g. the two
+        // walkers face opposite ways). With the default FrontSide, a figure
+        // facing away culls its front faces and the capsule renders invisible —
+        // which is why one walker looked like a filled body and the other like
+        // a bare stick. DoubleSide makes every figure render identically.
+        side: THREE.DoubleSide,
+        // Write depth so the body reads solid regardless of transparent-sort.
+        depthWrite: true,
+      });
+      let mesh;
+      if (seg.isHead) {
+        mesh = new THREE.Mesh(new THREE.SphereGeometry(seg.radius, 16, 16), mat);
+      } else {
+        mesh = buildOrientedCapsule(seg.radius, mat);
+      }
+      mesh.castShadow = true;
+      // Draw the solid body before the additive aura/halos (renderOrder 0)
+      // so the silhouette is never overwritten by another figure's glow.
+      mesh.renderOrder = 1;
+      group.add(mesh);
+      capsules.push({
+        mesh, mat,
+        a: seg.joints[0], b: seg.joints[1],
+        baseRadius: seg.radius, kind: seg.kind, isHead: !!seg.isHead,
+      });
+    }
+
     // Aura cylinder
     const auraGeo = new THREE.CylinderGeometry(0.4, 0.3, 1.7, 16, 1, true);
     const auraMat = new THREE.MeshBasicMaterial({
@@ -233,6 +376,9 @@ export class FigurePool {
     });
     const aura = new THREE.Mesh(auraGeo, auraMat);
     aura.position.y = 1;
+    // Draw the faint halo AFTER the solid body so it stays a subtle outer haze
+    // and never fills over the silhouette.
+    aura.renderOrder = 2;
     group.add(aura);
 
     // Per-figure point light
@@ -249,12 +395,16 @@ export class FigurePool {
     }
 
     return {
-      group, joints, bones, bodySegments, aura, auraMat, personLight,
+      group, joints, bones, bodySegments, capsules, aura, auraMat, personLight,
       visible: false,
       prevPositions,
       velocities,
       _initialized: false,
       _lastPose: null,
+      // Smoothed coarse body-size scalar (inferred, not measured). 1.0 = average build.
+      bodyScale: 1.0,
+      // Smoothed confidence used to size the uncertainty aura. Starts uncertain.
+      confSmooth: 0.5,
     };
   }
 
@@ -268,7 +418,12 @@ export class FigurePool {
   update(data, elapsed) {
     const persons = data?.persons || [];
     const vs = data?.vital_signs || {};
-    const isPresent = data?.classification?.presence || false;
+    const cls = data?.classification || {};
+    const isPresent = cls.presence || false;
+    // Global sensing confidence (0..1) — single-antenna WiFi gives us a coarse
+    // confidence, not a per-person measured one, so all bodies share it. Drives
+    // the uncertainty aura: low confidence ⇒ wider, hazier halo.
+    const confidence = typeof cls.confidence === 'number' ? cls.confidence : 0.5;
     const breathBpm = vs.breathing_rate_bpm || 0;
     const breathPulse = breathBpm > 0
       ? Math.sin(elapsed * Math.PI * 2 * (breathBpm / 60)) * 0.012
@@ -279,7 +434,7 @@ export class FigurePool {
       if (f < persons.length && isPresent) {
         const p = persons[f];
         const kps = this._poseSystem.generateKeypoints(p, elapsed, breathPulse);
-        this.applyKeypoints(fig, kps, breathPulse, p.position || [0, 0, 0], elapsed, p.pose);
+        this.applyKeypoints(fig, kps, breathPulse, p.position || [0, 0, 0], elapsed, p.pose, p, confidence);
         fig.visible = true;
       } else {
         if (fig.visible) {
@@ -299,8 +454,16 @@ export class FigurePool {
    * @param {number} elapsed - Elapsed time for pulsation effects
    * @param {string} pose - Current pose name for aura adaptation
    */
-  applyKeypoints(fig, kps, breathPulse, pos, elapsed = 0, pose = 'standing') {
+  applyKeypoints(fig, kps, breathPulse, pos, elapsed = 0, pose = 'standing', person = null, confidence = 0.5) {
     const lerpFactor = fig._initialized ? 0.18 : 1.0;
+    const capsuleMode = this._capsuleMode;
+
+    // Smooth the coarse, inferred body-size scalar so the silhouette doesn't
+    // jitter as noisy keypoints wobble. ONE number sizes the whole body.
+    const targetScale = this._estimateBodyScale(kps, person);
+    fig.bodyScale += (targetScale - fig.bodyScale) * (fig._initialized ? 0.05 : 1.0);
+    // Smooth confidence too (drives the uncertainty aura).
+    fig.confSmooth += (confidence - fig.confSmooth) * (fig._initialized ? 0.06 : 1.0);
 
     // Joints with smooth interpolation and secondary motion
     for (let i = 0; i < 17 && i < kps.length; i++) {
@@ -330,22 +493,26 @@ export class FigurePool {
         fig.velocities[i].set(0, 0, 0);
       }
 
-      j.material.opacity = 0.95;
+      // In capsule mode the red joint dots are subtle accents on the volume,
+      // not the primary read — keep them dimmer and smaller so the silhouette
+      // dominates. In skeleton mode they stay as before.
+      j.material.opacity = capsuleMode ? 0.6 : 0.95;
 
       // Joint pulsation synced with breathing
       const pulseFactor = 1.0 + Math.abs(breathPulse) * 8.0;
-      j.material.emissiveIntensity = 0.35 * pulseFactor;
+      j.material.emissiveIntensity = (capsuleMode ? 0.2 : 0.35) * pulseFactor;
 
-      const baseScale = this._settings.jointSize / 0.04;
+      const baseScale = (this._settings.jointSize / 0.04) * (capsuleMode ? 0.6 : 1.0);
       // Subtle size pulsation on breathing
       const pulseScale = baseScale * (1.0 + Math.abs(breathPulse) * 3.0);
       j.scale.setScalar(pulseScale);
 
       if (j._haloMat) {
-        j._haloMat.opacity = 0.04 * this._settings.glow * pulseFactor;
+        // Halo glow further muted in capsule mode so it doesn't add to the bloom.
+        j._haloMat.opacity = (capsuleMode ? 0.012 : 0.04) * this._settings.glow * pulseFactor;
       }
       if (j._glow) {
-        j._glow.intensity = this._settings.glow * 0.12 * pulseFactor;
+        j._glow.intensity = (capsuleMode ? 0.05 : 0.12) * this._settings.glow * pulseFactor;
       }
     }
 
@@ -372,17 +539,21 @@ export class FigurePool {
           bone.mesh.lookAt(_vecTo);
         }
 
-        bone.mesh.material.opacity = 0.85;
-        bone.mesh.material.emissiveIntensity = 0.3 + Math.abs(breathPulse) * 2.0;
+        // In capsule mode the thin bones become faint internal scaffolding so
+        // the filled silhouette dominates; in skeleton mode they stay bright.
+        bone.mesh.material.opacity = capsuleMode ? 0.18 : 0.85;
+        bone.mesh.material.emissiveIntensity = (capsuleMode ? 0.15 : 0.3) + Math.abs(breathPulse) * 2.0;
       }
     }
 
-    // Body segments
+    // Body segments (the original thin volume cylinders). Keep them as subtle
+    // inner mass under the capsules in capsule mode; brighter as the volume in
+    // skeleton mode.
     for (const seg of fig.bodySegments) {
       if (seg.isHead) {
         const headJoint = fig.joints[seg.a];
         seg.mesh.position.set(headJoint.position.x, headJoint.position.y + 0.05, headJoint.position.z);
-        seg.mat.opacity = 0.15;
+        seg.mat.opacity = capsuleMode ? 0.0 : 0.15;
       } else {
         const jA = fig.joints[seg.a];
         const jB = fig.joints[seg.b];
@@ -391,28 +562,152 @@ export class FigurePool {
           seg.mesh.position.copy(jA.position);
           seg.mesh.scale.set(1, 1, len);
           seg.mesh.lookAt(jB.position);
-          seg.mat.opacity = 0.12;
+          seg.mat.opacity = capsuleMode ? 0.06 : 0.12;
         }
       }
       seg.mat.emissiveIntensity = 0.1 + Math.abs(breathPulse) * 0.4;
     }
 
-    // Aura — adapt shape to pose
+    // ── Capsule silhouette: the inferred, filled body fill ──
+    this._updateCapsules(fig, capsuleMode, breathPulse);
+
+    // ── Uncertainty aura ──
+    // Width and opacity scale with (1 - confidence): low confidence renders a
+    // wider, hazier halo (honest "we're not sure exactly where the body is");
+    // high confidence tightens it toward the silhouette.
     const hipY = (fig.joints[11].position.y + fig.joints[12].position.y) / 2;
     const cx = (fig.joints[11].position.x + fig.joints[12].position.x) / 2;
     const cz = (fig.joints[11].position.z + fig.joints[12].position.z) / 2;
     fig.aura.position.set(cx, hipY, cz);
-    fig.auraMat.opacity = this._settings.aura + Math.abs(breathPulse) * 0.8;
 
-    // Pose-adaptive aura: compute from actual keypoint spread
+    const uncertainty = 1 - Math.max(0, Math.min(1, fig.confSmooth)); // 0=sure, 1=unsure
+    // Base aura opacity grows with uncertainty (hazier when unsure), but is
+    // HARD-CAPPED low so it stays a faint additive halo around the silhouette
+    // instead of a solid green fill that hides the body contours.
+    const auraOpacity =
+      this._settings.aura * (0.5 + uncertainty * 1.6) + Math.abs(breathPulse) * 0.15;
+    fig.auraMat.opacity = Math.min(auraOpacity, 0.07);
+
+    // Pose-adaptive aura shape, then expanded outward by uncertainty + body scale.
     const auraShape = this._computeAuraShape(fig, pose, breathPulse);
-    fig.aura.scale.set(auraShape.scaleX, auraShape.scaleY, auraShape.scaleZ);
+    const haze = 1 + uncertainty * 0.9;                 // up to ~1.9x wider when unsure
+    const widthScale = fig.bodyScale * haze;
+    fig.aura.scale.set(
+      auraShape.scaleX * widthScale,
+      auraShape.scaleY * (1 + uncertainty * 0.12),
+      auraShape.scaleZ * widthScale,
+    );
 
-    // Person light
+    // Person light — kept modest so several figures don't flood the scene with
+    // green fill (which contributed to the washed-out "blob" look).
     fig.personLight.position.set(pos[0], 1.2, pos[2]);
-    fig.personLight.intensity = this._settings.glow * 0.4;
+    fig.personLight.intensity = this._settings.glow * 0.25;
 
     fig._lastPose = pose;
+  }
+
+  /**
+   * Estimate a SINGLE coarse body-size scalar (≈0.8 slim … ≈1.3 large) for a
+   * person. This is an INFERRED approximation — WiFi cannot measure body width.
+   * We blend a few weak cues:
+   *   - explicit size/build hint in the data, if present (data may not have one)
+   *   - shoulder span vs an average reference (noisy but cheap)
+   *   - motion_score as a faint proxy (larger movers read slightly fuller)
+   * The result uniformly widens/narrows the whole silhouette — never per-limb,
+   * never per-pixel. Defaults to an average build when cues are weak.
+   *
+   * @param {Array} kps - 17 keypoints [x,y,z]
+   * @param {object|null} person - per-person data (may carry size/build/motion_score)
+   * @returns {number} coarse uniform thickness scalar
+   */
+  _estimateBodyScale(kps, person) {
+    // 1) Explicit hint wins if the data provides one (kept honest: still coarse).
+    if (person) {
+      const hint = person.bodyScale ?? person.size ?? person.build;
+      if (typeof hint === 'number' && isFinite(hint)) {
+        return Math.max(0.75, Math.min(1.35, hint));
+      }
+    }
+
+    // 2) Shoulder span relative to an average adult reference (~0.42 m).
+    let spanRatio = 1.0;
+    const lS = kps?.[5], rS = kps?.[6];
+    if (lS && rS) {
+      const dx = rS[0] - lS[0];
+      const dz = rS[2] - lS[2];
+      const span = Math.sqrt(dx * dx + dz * dz);
+      if (span > 0.05) spanRatio = span / 0.42;
+    }
+
+    // 3) Faint motion proxy — bigger movers read very slightly fuller.
+    const ms = person && typeof person.motion_score === 'number' ? person.motion_score : 0;
+    const motionBias = Math.max(0, Math.min(0.08, ms / 600)); // ≤ +0.08
+
+    // Weighted, heavily damped toward 1.0 (average build) since cues are weak.
+    const raw = 0.78 + spanRatio * 0.20 + motionBias;
+    return Math.max(0.8, Math.min(1.3, raw));
+  }
+
+  /**
+   * Drive the capsule silhouette each frame from interpolated joint positions.
+   * Thickness = baseRadius × bodyScale (one coarse scalar), with a gentle
+   * breathing swell on the torso. The neck capsules bridge head→shoulder centre.
+   *
+   * @param {object} fig
+   * @param {boolean} capsuleMode - false hides capsules (skeleton fill active)
+   * @param {number} breathPulse
+   */
+  _updateCapsules(fig, capsuleMode, breathPulse) {
+    if (!fig.capsules) return;
+    const scale = fig.bodyScale;
+    const breathSwell = 1 + Math.abs(breathPulse) * 4.0; // subtle chest rise
+
+    // Shoulder centre, reused for the neck capsules.
+    _vecShoulderMid.copy(fig.joints[5].position).add(fig.joints[6].position).multiplyScalar(0.5);
+
+    for (const cap of fig.capsules) {
+      const mat = cap.mat;
+      if (!capsuleMode) { mat.opacity = 0; continue; }
+
+      if (cap.isHead) {
+        const head = fig.joints[cap.a].position;
+        cap.mesh.position.set(head.x, head.y + 0.04, head.z);
+        // Head widens with body scale but never gains features — coarse sphere only.
+        cap.mesh.scale.setScalar(scale);
+        // Translucent, low-glow so the head reads as a rounded volume, not a bulb.
+        mat.opacity = 0.55;
+        mat.emissiveIntensity = 0.07 + Math.abs(breathPulse) * 0.25;
+        continue;
+      }
+
+      // Resolve endpoints. Neck capsules go head(0) → shoulder centre.
+      const aPos = fig.joints[cap.a].position;
+      let bx, by, bz;
+      if (cap.kind === 'neck') {
+        bx = _vecShoulderMid.x; by = _vecShoulderMid.y; bz = _vecShoulderMid.z;
+      } else {
+        const bPos = fig.joints[cap.b].position;
+        bx = bPos.x; by = bPos.y; bz = bPos.z;
+      }
+      _vecMid.set(bx, by, bz);
+      const len = aPos.distanceTo(_vecMid);
+      if (len < 1e-4) { mat.opacity = 0; continue; }
+
+      cap.mesh.position.copy(aPos);
+      // Capsule authored at CAPSULE_NOMINAL_LEN along +Z, origin at start joint.
+      // X/Y scale = radial thickness (bodyScale); Z scale = span / nominal length.
+      const radial = scale * (cap.kind === 'torso' ? breathSwell : 1);
+      cap.mesh.scale.set(radial, radial, len / CAPSULE_NOMINAL_LEN);
+      cap.mesh.lookAt(_vecMid);
+
+      // Translucent body: torso a touch more solid than limbs so you can read
+      // the rounded core, while limbs keep a soft, see-through edge. Low values
+      // (vs the old ~0.9) stop the figure saturating into a green blob — the
+      // shape is carried by lighting + contour, not by brightness.
+      mat.opacity = cap.kind === 'torso' ? 0.55 : 0.5;
+      // Very low emissive; depth/normal lighting now defines limb/torso shape.
+      mat.emissiveIntensity = (cap.kind === 'torso' ? 0.06 : 0.08) + Math.abs(breathPulse) * 0.3;
+    }
   }
 
   /**
@@ -474,6 +769,7 @@ export class FigurePool {
     }
     for (const b of fig.bones) b.mesh.material.opacity = 0;
     for (const seg of fig.bodySegments) seg.mat.opacity = 0;
+    if (fig.capsules) for (const cap of fig.capsules) cap.mat.opacity = 0;
     fig.auraMat.opacity = 0;
     fig.personLight.intensity = 0;
     fig._initialized = false;
@@ -505,6 +801,12 @@ export class FigurePool {
       for (const seg of fig.bodySegments) {
         seg.mat.color.copy(wireColor);
         seg.mat.emissive.copy(wireColor);
+      }
+      if (fig.capsules) {
+        for (const cap of fig.capsules) {
+          cap.mat.color.copy(wireColor);
+          cap.mat.emissive.copy(wireColor);
+        }
       }
       fig.auraMat.color.copy(wireColor);
       fig.personLight.color.copy(wireColor);
