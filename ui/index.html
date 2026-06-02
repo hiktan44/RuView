@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WiFi DensePose: Duvar Arkası İnsan Takibi</title>
-    <link rel="stylesheet" href="style.css?v=20260604tr">
+    <link rel="stylesheet" href="style.css?v=20260605rescue">
 </head>
 <body>
     <div class="container">
@@ -37,6 +37,7 @@
             <button class="nav-tab" data-tab="applications">Uygulamalar</button>
             <button class="nav-tab" data-tab="sensing">Algılama</button>
             <button class="nav-tab" data-tab="training">Eğitim</button>
+            <button class="nav-tab" data-tab="rescue">Kurtarma Modları</button>
             <button class="nav-tab" data-tab="howto">Nasıl Kullanılır</button>
             <a href="observatory.html" class="nav-tab" style="text-decoration:none">Gözlemevi</a>
         </nav>
@@ -573,6 +574,128 @@
             </div>
         </section>
 
+        <!-- Kurtarma Modları Tab -->
+        <section id="rescue" class="tab-content">
+            <div class="howto-container">
+                <h2>Kurtarma Modları</h2>
+                <p class="howto-intro">Bu rehber, arama-kurtarma ekipleri için yazılmıştır. Hangi algılama modunun nerede kullanılacağını, hangi ek ekipmanın gerektiğini ve uzaktan/uzun-menzil algılamayla ilgili kritik soruların dürüst cevaplarını içerir. Tutarlı sözlük: <strong>Yaşamsal Belirtiler</strong>, <strong>Kalp Atış Hızı</strong>, <strong>Solunum Hızı</strong>, <strong>Canlı Tespiti</strong>.</p>
+
+                <!-- Altın Kural -->
+                <div class="howto-card recommended" style="margin-bottom: var(--space-24);">
+                    <div class="howto-card-header">
+                        <span class="howto-badge">Altın Kural</span>
+                        <h4>Algı menzili ≠ İletişim menzili</h4>
+                    </div>
+                    <div class="howto-card-body">
+                        <p style="margin:0;"><strong>Algı menzili</strong> (kısa, yerel, fizik kuralları): Bedenin WiFi/RF sinyalini bozması yalnızca metrelerce mesafede ölçülebilir. <strong>İletişim menzili</strong> (küresel, IP/mesh): Toplanan küçük veriyi internet veya mesh üzerinden dünyanın öbür ucuna taşıyabilirsiniz. Bu ikisini asla karıştırmayın — sensörü hedefe yakın koyun, veriyi istediğiniz kadar uzağa taşıyın.</p>
+                    </div>
+                </div>
+
+                <!-- Modlar Tablosu -->
+                <div class="howto-section">
+                    <h3>Algılama Modları</h3>
+                    <p>Her mod farklı bir fizik-mühendislik dengesi sunar. Poz çözünürlüğü arttıkça nüfuz/derinlik düşer; nüfuz arttıkça çıktı "canlı var/yok + nefes" seviyesine iner.</p>
+                    <div style="overflow-x:auto;">
+                    <table class="howto-table">
+                        <thead>
+                            <tr>
+                                <th>Mod adı</th>
+                                <th>Ne işe yarar</th>
+                                <th>Nerede kullanılır</th>
+                                <th>Gerekli ek ekipman</th>
+                                <th>Menzil / Derinlik</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Normal Algılama</strong><br>(2.4/5 GHz CSI)</td>
+                                <td>Bina içi poz tahmini + Yaşamsal Belirtiler (Solunum Hızı, Kalp Atış Hızı)</td>
+                                <td>Sağlam bina içi, hafif duvar arkası arama</td>
+                                <td>ESP32 + WiFi (mevcut donanım)</td>
+                                <td>Oda ölçeği (birkaç metre)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kurtarma Modu</strong><br>(Rescue Mode)</td>
+                                <td>Uzun-integration / düşük veri hızı ile processing gain → daha zayıf ve daha derin hedefler (moloz altı zayıf nefes). Poz hızı düşer, Canlı Tespiti derinliği artar.</td>
+                                <td>Hafif göçük, moloz altında zayıf yaşam sinyali aranan yerler</td>
+                                <td>Mevcut ESP32 (yalnızca yazılım modu — ek donanım yok)</td>
+                                <td>Birkaç metre RF erişimi içinde. <strong>Dürüst:</strong> yüzlerce metre kayayı/betonu DELMEZ.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sub-GHz Modu</strong><br>(900/433 MHz)</td>
+                                <td>Moloz/beton nüfuzu kat kat daha iyi — ama yalnızca Canlı Tespiti (var/yok) + Solunum Hızı. Poz YOK.</td>
+                                <td>Kalın beton, yoğun moloz, deprem enkazı</td>
+                                <td>Sub-GHz alıcı-verici (SX1276 / CC1101 sınıfı)</td>
+                                <td>Daha derin nüfuz; düşük çözünürlük. (Önerilen — proposed)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Breadcrumb Mesh</strong></td>
+                                <td>Göçük içine bırakılan röle düğümleri + store-and-forward ile derin erişim. Algı menzilini değil, <strong>iletişim menzilini</strong> uzatır.</td>
+                                <td>Karmaşık enkaz, içe doğru ilerlenen boşluklar</td>
+                                <td>Ucuz röle node'ları (atılabilir/yerleştirilebilir)</td>
+                                <td>İletişim derinliği: node zinciri kadar uzar. Algı: her node kendi metrelerini görür.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maden Modu</strong><br>(TTE — Through-The-Earth)</td>
+                                <td>Yüzlerce metre derin maden için manyetik indüksiyon uplink + önceden kurulu çöküşe-dayanıklı node'lar. Yalnızca "yaşıyorum + Yaşamsal Belirtiler" mesajı.</td>
+                                <td>Derin maden ocakları (yüzlerce metre kaya)</td>
+                                <td>TTE verici + önceden yerleştirilmiş (pre-deployed) node'lar</td>
+                                <td>Yüzlerce metre kaya. <strong>Brutal dürüst:</strong> WiFi burada ÇALIŞMAZ — bu ayrı bir mimaridir.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+
+                <!-- Mod Seçim Rehberi -->
+                <div class="howto-section">
+                    <h3>Mod Seçim Rehberi (Karar Rehberi)</h3>
+                    <div class="howto-cards">
+                        <div class="howto-card recommended">
+                            <div class="howto-card-header">
+                                <h4>🏢 Bina içi arama</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <p style="margin:0;"><strong>Normal Algılama</strong> veya <strong>Kurtarma Modu</strong>. Poz + Yaşamsal Belirtiler gerekiyorsa Normal; zayıf/derin nefes aranıyorsa Kurtarma Modu.</p>
+                            </div>
+                        </div>
+                        <div class="howto-card">
+                            <div class="howto-card-header">
+                                <h4>🌍 Deprem / göçük (metrelerce moloz)</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <p style="margin:0;"><strong>Kurtarma Modu + Sub-GHz Modu + Breadcrumb Mesh</strong> birlikte. Sub-GHz nüfuz eder, Kurtarma Modu zayıf nefesi yakalar, Mesh veriyi dışarı taşır.</p>
+                            </div>
+                        </div>
+                        <div class="howto-card limited">
+                            <div class="howto-card-header">
+                                <span class="howto-badge-limited">Ayrı Mimari</span>
+                                <h4>⛏️ Derin maden</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <p style="margin:0;"><strong>Maden Modu (TTE)</strong> — WiFi DEĞİL. Manyetik indüksiyon uplink ve önceden kurulu node'lar gerektirir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sık Sorulan Sorular -->
+                <div class="howto-section">
+                    <h3>Sık Sorulan Sorular</h3>
+                    <div class="howto-faq">
+                        <details>
+                            <summary>İstanbul'dayım, Malatya'daki ESP32'ye bağlıyım — buradan görebilir miyim?</summary>
+                            <p><strong>EVET.</strong> ESP32 Malatya'da <strong>yerel</strong> olarak algılar (göçüğe yakın/içinde olmalı — algı fiziksel ve kısa menzillidir). Cihazın ürettiği küçük CSI verisi internet üzerinden İstanbul'daki veri merkezine akar; ağır çıkarım (inference) orada koşar ve sonucu siz görürsünüz. Buradaki mesafe yalnızca <strong>veri taşımadır</strong>. Açıkça: bu "uzaktan ışınla-gör" değil; <strong>yerel-node + uzak-veri</strong> mimarisidir. Sensör hedefin yanında, ekran sizin yanınızda.</p>
+                        </details>
+                        <details>
+                            <summary>Açık havada 1 km ötede bir WiFi Box var, sinyalini alıyorum — bina içindeki nesneleri görebilir miyim?</summary>
+                            <p><strong>HAYIR (gerçekçi değil).</strong> 1 km mesafede insan bedeninin sinyalde oluşturduğu perturbasyon, yol kaybı (path loss) ve klutter (çevre yansımaları) içinde tamamen gömülür. Duvar-arkası algı yalnızca <strong>metrelerce</strong> mesafede çalışır. Sinyali "almak" (iletişim) ile "o sinyalle içerideki bedeni çözmek" (algı) bambaşka şeylerdir. <strong>Doğru çözüm:</strong> algılama node'unu binaya yakın/içine yerleştirin, sonra veriyi 1 km geriye mesh/IP ile taşıyın. Yine: algı yerelde, iletişim uzakta.</p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Nasıl Kullanılır Tab -->
         <section id="howto" class="tab-content">
             <div class="howto-container">
@@ -849,6 +972,6 @@ make run-api</code></pre>
     </script>
 
     <!-- Load application scripts as modules -->
-    <script type="module" src="app.js?v=20260604tr"></script>
+    <script type="module" src="app.js?v=20260605rescue"></script>
 </body>
 </html>

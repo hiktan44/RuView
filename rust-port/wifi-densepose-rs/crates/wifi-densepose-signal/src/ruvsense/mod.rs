@@ -41,6 +41,7 @@ pub mod field_model;
 pub mod gesture;
 pub mod intention;
 pub mod longitudinal;
+pub mod rescue_mode;
 pub mod tomography;
 
 // ADR-032a: Midstreamer-enhanced sensing
@@ -62,6 +63,10 @@ pub use multiband::MultiBandCsiFrame;
 pub use multistatic::FusedSensingFrame;
 pub use phase_align::{PhaseAligner, PhaseAlignError};
 pub use pose_tracker::{KeypointState, PoseTrack, TrackLifecycleState};
+pub use rescue_mode::{
+    assess_detectability, integration_gain_db, DetectabilityVerdict, IntegratedFrame,
+    IntegrationMode, RescueIntegrator, RescueModeConfig,
+};
 
 /// Number of keypoints in a full-body pose skeleton (COCO-17).
 pub const NUM_KEYPOINTS: usize = 17;
