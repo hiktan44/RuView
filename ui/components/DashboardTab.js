@@ -105,10 +105,10 @@ export class DashboardTab {
     const statusText = el.querySelector('.status-text');
     const statusMsg  = el.querySelector('.status-message');
     const config = {
-      'live':              { text: 'ESP32',     status: 'healthy', msg: 'Real hardware connected' },
-      'server-simulated':  { text: 'SIMULATED', status: 'warning', msg: 'Server running without hardware' },
-      'reconnecting':      { text: 'RECONNECTING', status: 'degraded', msg: 'Attempting to connect...' },
-      'simulated':         { text: 'OFFLINE',   status: 'unhealthy', msg: 'Server unreachable, local fallback' },
+      'live':              { text: 'ESP32',     status: 'healthy', msg: 'Gerçek donanım bağlı' },
+      'server-simulated':  { text: 'SİMÜLE', status: 'warning', msg: 'Sunucu donanımsız çalışıyor' },
+      'reconnecting':      { text: 'YENİDEN BAĞLANIYOR', status: 'degraded', msg: 'Bağlanmaya çalışılıyor...' },
+      'simulated':         { text: 'ÇEVRİMDIŞI',   status: 'unhealthy', msg: 'Sunucuya erişilemiyor, yerel yedek' },
     };
     const cfg = config[ds] || config['reconnecting'];
     el.className = `component-status status-${cfg.status}`;
@@ -222,11 +222,11 @@ export class DashboardTab {
         const apiStatusMessage = apiElement.querySelector('.status-message');
         
         if (apiStatusText) {
-          apiStatusText.textContent = 'HEALTHY';
+          apiStatusText.textContent = 'SAĞLIKLI';
         }
-        
+
         if (apiStatusMessage) {
-          apiStatusMessage.textContent = 'API server is running normally';
+          apiStatusMessage.textContent = 'API sunucusu normal çalışıyor';
         }
       }
     }

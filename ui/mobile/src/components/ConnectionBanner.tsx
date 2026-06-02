@@ -10,7 +10,7 @@ type ConnectionBannerProps = {
 const resolveState = (status: ConnectionState) => {
   if (status === 'connected') {
     return {
-      label: 'LIVE STREAM',
+      label: 'CANLI YAYIN',
       backgroundColor: '#0F6B2A',
       textColor: '#E2FFEA',
     };
@@ -18,14 +18,14 @@ const resolveState = (status: ConnectionState) => {
 
   if (status === 'disconnected') {
     return {
-      label: 'DISCONNECTED',
+      label: 'BAĞLANTI KESİLDİ',
       backgroundColor: '#8A1E2A',
       textColor: '#FFE3E7',
     };
   }
 
   return {
-    label: 'SIMULATED DATA',
+    label: 'SİMÜLE VERİ',
     backgroundColor: '#9A5F0C',
     textColor: '#FFF3E1',
   };

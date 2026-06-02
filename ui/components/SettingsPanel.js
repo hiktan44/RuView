@@ -726,18 +726,18 @@ export class SettingsPanel {
     
     const isVisible = advancedSection.style.display !== 'none';
     advancedSection.style.display = isVisible ? 'none' : 'block';
-    toggleBtn.textContent = isVisible ? 'Show Advanced' : 'Hide Advanced';
+    toggleBtn.textContent = isVisible ? 'Gelişmişi Göster' : 'Gelişmişi Gizle';
     
     this.logger.debug('Advanced settings toggled', { visible: !isVisible });
   }
 
   resetSettings() {
-    if (confirm('Reset all settings to defaults? This cannot be undone.')) {
+    if (confirm('Tüm ayarlar varsayılana sıfırlansın mı? Bu işlem geri alınamaz.')) {
       this.settings = this.getDefaultSettings();
       this.updateUI();
       this.saveSettings();
       this.notifyCallback('onSettingsChange', { reset: true, settings: this.settings });
-      this.updateStatus('Settings reset to defaults');
+      this.updateStatus('Ayarlar varsayılana sıfırlandı');
       this.logger.info('Settings reset to defaults');
     }
   }
@@ -757,7 +757,7 @@ export class SettingsPanel {
     a.click();
     URL.revokeObjectURL(url);
     
-    this.updateStatus('Settings exported');
+    this.updateStatus('Ayarlar dışa aktarıldı');
     this.notifyCallback('onExport', data);
     this.logger.info('Settings exported');
   }
@@ -777,15 +777,15 @@ export class SettingsPanel {
           this.saveSettings();
           this.notifyCallback('onSettingsChange', { imported: true, settings: this.settings });
           this.notifyCallback('onImport', data);
-          this.updateStatus('Settings imported successfully');
+          this.updateStatus('Ayarlar başarıyla içe aktarıldı');
           this.logger.info('Settings imported successfully');
         } else {
-          throw new Error('Invalid settings file format');
+          throw new Error('Geçersiz ayar dosyası biçimi');
         }
       } catch (error) {
-        this.updateStatus('Error importing settings');
+        this.updateStatus('Ayarlar içe aktarılırken hata oluştu');
         this.logger.error('Error importing settings', { error: error.message });
-        alert('Error importing settings: ' + error.message);
+        alert('Ayarlar içe aktarılırken hata: ' + error.message);
       }
     };
     
@@ -865,7 +865,7 @@ export class SettingsPanel {
       
       // Clear status after 3 seconds
       setTimeout(() => {
-        statusElement.textContent = 'Settings ready';
+        statusElement.textContent = 'Ayarlar hazır';
       }, 3000);
     }
   }
@@ -915,11 +915,11 @@ export class SettingsPanel {
         });
       }
 
-      this.updateStatus('Settings applied to services');
+      this.updateStatus('Ayarlar servislere uygulandı');
       this.logger.info('Settings applied to services');
     } catch (error) {
       this.logger.error('Error applying settings to services', { error: error.message });
-      this.updateStatus('Error applying settings');
+      this.updateStatus('Ayarlar uygulanırken hata oluştu');
     }
   }
 

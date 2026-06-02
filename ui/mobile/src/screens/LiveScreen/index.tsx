@@ -38,7 +38,7 @@ const WebLiveViewer = ({ frame, onReady, onFps, onError }: ViewerProps) => {
   useEffect(() => {
     import('./GaussianSplatWebView.web').then((mod) => {
       setViewer(() => mod.GaussianSplatWebViewWeb);
-    }).catch(() => onError('Failed to load web viewer'));
+    }).catch(() => onError('Web görüntüleyici yüklenemedi'));
   }, [onError]);
 
   if (!Viewer) return null;
@@ -54,7 +54,7 @@ const NativeLiveViewer = ({ frame, onReady, onFps, onError }: ViewerProps) => {
       const { GaussianSplatWebView } = require('./GaussianSplatWebView');
       setWVComponent(() => GaussianSplatWebView);
     } catch {
-      onError('WebView not available on this platform');
+      onError('Bu platformda WebView kullanılamıyor');
     }
   }, [onError]);
 
@@ -70,10 +70,10 @@ const NativeLiveViewer = ({ frame, onReady, onFps, onError }: ViewerProps) => {
             : event.nativeEvent.data;
           if (data.type === 'READY') onReady();
           else if (data.type === 'FPS_TICK') onFps(data.payload?.fps ?? 0);
-          else if (data.type === 'ERROR') onError(data.payload?.message ?? 'Unknown error');
+          else if (data.type === 'ERROR') onError(data.payload?.message ?? 'Bilinmeyen hata');
         } catch { /* ignore */ }
       }}
-      onError={() => onError('WebView renderer failed')}
+      onError={() => onError('WebView oluşturucu başarısız oldu')}
     />
   );
 };
@@ -98,9 +98,9 @@ export const LiveScreen = () => {
   if (error) {
     return (
       <ThemedView style={styles.fallbackWrap}>
-        <ThemedText preset="bodyLg">Live visualization failed</ThemedText>
+        <ThemedText preset="bodyLg">Canlı görselleştirme başarısız oldu</ThemedText>
         <ThemedText preset="bodySm" color="textSecondary" style={styles.errorText}>{error}</ThemedText>
-        <Button title="Retry" onPress={handleRetry} />
+        <Button title="Yeniden Dene" onPress={handleRetry} />
       </ThemedView>
     );
   }
@@ -134,7 +134,7 @@ export const LiveScreen = () => {
         {!ready && (
           <View style={styles.loadingWrap}>
             <LoadingSpinner />
-            <ThemedText preset="bodyMd" style={styles.loadingText}>Loading live renderer</ThemedText>
+            <ThemedText preset="bodyMd" style={styles.loadingText}>Canlı oluşturucu yükleniyor</ThemedText>
           </View>
         )}
       </View>

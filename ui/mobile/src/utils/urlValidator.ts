@@ -7,19 +7,19 @@ export interface UrlValidationResult {
 
 export function validateServerUrl(url: string): UrlValidationResult {
   if (typeof url !== 'string' || !url.trim()) {
-    return { valid: false, error: 'URL must be a non-empty string.' };
+    return { valid: false, error: 'URL boş olmayan bir metin olmalıdır.' };
   }
 
   try {
     const parsed = new URL(url);
     if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
-      return { valid: false, error: 'URL must use http, https, ws, or wss.' };
+      return { valid: false, error: 'URL http, https, ws veya wss kullanmalıdır.' };
     }
     if (!parsed.host) {
-      return { valid: false, error: 'URL must include a host.' };
+      return { valid: false, error: 'URL bir sunucu adresi içermelidir.' };
     }
     return { valid: true };
   } catch {
-    return { valid: false, error: 'Invalid URL format.' };
+    return { valid: false, error: 'Geçersiz URL biçimi.' };
   }
 }

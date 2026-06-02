@@ -692,12 +692,12 @@ export const GaussianSplatWebViewWeb = ({ onReady, onFps, onError, frame }: Prop
           ctx.fillText(`WIFI-DENSEPOSE  [${(fr.source || '--').toUpperCase()}]`, 12, 20);
           ctx.font = '12px "SF Mono", Menlo, monospace';
           ctx.fillStyle = '#7799aa';
-          ctx.fillText(`Nodes: ${(fr.nodes || []).length}   RSSI: ${rssi.toFixed(1)} dBm   Motion: ${mot}   Conf: ${(conf * 100).toFixed(0)}%`, 12, 42);
+          ctx.fillText(`Düğümler: ${(fr.nodes || []).length}   RSSI: ${rssi.toFixed(1)} dBm   Hareket: ${mot}   Güven: ${(conf * 100).toFixed(0)}%`, 12, 42);
           if (vs) {
             const br = Number(vs.breathing_bpm ?? vs.breathing_rate_bpm ?? 0);
             if (br > 0 || hrBpm > 0) {
               ctx.fillStyle = '#44ddaa';
-              ctx.fillText(`Breathing: ${br.toFixed(1)} bpm    Heart: ${hrBpm.toFixed(1)} bpm`, 12, 62);
+              ctx.fillText(`Solunum: ${br.toFixed(1)} bpm    Kalp: ${hrBpm.toFixed(1)} bpm`, 12, 62);
             }
           }
           const anyShow = bodies.some((b) => b.fadeIn > 0.01);
@@ -705,10 +705,10 @@ export const GaussianSplatWebViewWeb = ({ onReady, onFps, onError, frame }: Prop
             ctx.fillStyle = pres ? (mot === 'active' ? '#ff8844' : '#44bbcc') : '#556677';
             const mBar = Math.min(20, Math.round(mPow * 40));
             const mBarStr = '\u2588'.repeat(mBar) + '\u2591'.repeat(20 - mBar);
-            ctx.fillText(`Motion: [${mBarStr}] ${(mPow * 100).toFixed(0)}%`, 12, 82);
+            ctx.fillText(`Hareket: [${mBarStr}] ${(mPow * 100).toFixed(0)}%`, 12, 82);
             ctx.fillStyle = nPersons > 1 ? '#ffaa44' : '#556677';
             ctx.font = '10px "SF Mono", Menlo, monospace';
-            ctx.fillText(`Persons: ${nPersons}   Pose: procedural (CSI-driven)`, 12, 100);
+            ctx.fillText(`Kişi: ${nPersons}   Poz: yordamsal (CSI-tabanlı)`, 12, 100);
           }
           hudT.needsUpdate = true;
         }
@@ -731,7 +731,7 @@ export const GaussianSplatWebViewWeb = ({ onReady, onFps, onError, frame }: Prop
         if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       };
     } catch (err) {
-      onError(err instanceof Error ? err.message : 'Failed to initialize 3D renderer');
+      onError(err instanceof Error ? err.message : '3D oluşturucu başlatılamadı');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

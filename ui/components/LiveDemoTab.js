@@ -135,7 +135,7 @@ export class LiveDemoTab {
       this.logger.info('LiveDemoTab component initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize LiveDemoTab', { error: error.message });
-      this.showError(`Initialization failed: ${error.message}`);
+      this.showError(`Başlatma başarısız: ${error.message}`);
     }
   }
 
@@ -148,26 +148,26 @@ export class LiveDemoTab {
         <div class="live-demo-enhanced">
           <!-- Data source banner — prominent indicator for live vs simulated -->
           <div id="demo-source-banner" class="demo-source-banner demo-source-unknown" role="status" aria-live="polite">
-            Detecting data source...
+            Veri kaynağı algılanıyor...
           </div>
 
           <div class="demo-header">
             <div class="demo-title">
-              <h2>Live Human Pose Detection</h2>
+              <h2>Canlı İnsan Duruşu Algılama</h2>
               <div class="demo-status">
                 <span class="status-indicator" id="demo-status-indicator"></span>
-                <span class="status-text" id="demo-status-text">Ready</span>
+                <span class="status-text" id="demo-status-text">Hazır</span>
               </div>
             </div>
             <div class="demo-controls">
-              <button class="btn btn--primary" id="start-enhanced-demo">Start Detection</button>
-              <button class="btn btn--secondary" id="stop-enhanced-demo" disabled>Stop Detection</button>
+              <button class="btn btn--primary" id="start-enhanced-demo">Algılamayı Başlat</button>
+              <button class="btn btn--secondary" id="stop-enhanced-demo" disabled>Algılamayı Durdur</button>
               <button class="btn btn--accent" id="run-offline-demo">Demo</button>
-              <button class="btn btn--primary" id="toggle-debug">Debug Mode</button>
+              <button class="btn btn--primary" id="toggle-debug">Hata Ayıklama Modu</button>
               <select class="zone-select" id="zone-selector">
-                <option value="zone_1">Zone 1</option>
-                <option value="zone_2">Zone 2</option>
-                <option value="zone_3">Zone 3</option>
+                <option value="zone_1">Bölge 1</option>
+                <option value="zone_2">Bölge 2</option>
+                <option value="zone_3">Bölge 3</option>
               </select>
             </div>
           </div>
@@ -179,45 +179,45 @@ export class LiveDemoTab {
             
             <div class="demo-sidebar">
               <div class="metrics-panel">
-                <h4>Performance Metrics</h4>
+                <h4>Performans Metrikleri</h4>
                 <div class="metric">
-                  <label>Connection Status:</label>
-                  <span id="connection-status">Disconnected</span>
+                  <label>Bağlantı Durumu:</label>
+                  <span id="connection-status">Bağlantı Kesildi</span>
                 </div>
                 <div class="metric">
-                  <label>Frames Processed:</label>
+                  <label>İşlenen Kareler:</label>
                   <span id="frame-count">0</span>
                 </div>
                 <div class="metric">
-                  <label>Uptime:</label>
+                  <label>Çalışma Süresi:</label>
                   <span id="uptime">0s</span>
                 </div>
                 <div class="metric">
-                  <label>Errors:</label>
+                  <label>Hatalar:</label>
                   <span id="error-count">0</span>
                 </div>
                 <div class="metric">
-                  <label>Last Update:</label>
-                  <span id="last-update">Never</span>
+                  <label>Son Güncelleme:</label>
+                  <span id="last-update">Hiç</span>
                 </div>
               </div>
               
               <div class="pose-source-panel">
-                <h4>Estimation Mode</h4>
+                <h4>Tahmin Modu</h4>
                 <div class="pose-source-indicator" id="pose-source-indicator">
-                  <span class="pose-source-badge pose-source-unknown" id="pose-source-badge">Unknown</span>
+                  <span class="pose-source-badge pose-source-unknown" id="pose-source-badge">Bilinmiyor</span>
                   <p class="pose-source-description" id="pose-source-description">
-                    Waiting for first frame...
+                    İlk kare bekleniyor...
                   </p>
                 </div>
               </div>
 
               <div class="model-control-panel" id="model-control-panel">
-                <h4>Model Control</h4>
+                <h4>Model Kontrolü</h4>
                 <div class="setting-row-ld">
                   <label class="ld-label">Model:</label>
                   <select class="ld-select" id="model-selector">
-                    <option value="">Signal-Derived (no model)</option>
+                    <option value="">Sinyal Tabanlı (model yok)</option>
                   </select>
                 </div>
                 <div class="model-info-row" id="model-active-info" style="display: none;">
@@ -225,90 +225,90 @@ export class LiveDemoTab {
                   <span class="model-pck-badge" id="model-active-pck"></span>
                 </div>
                 <div class="setting-row-ld" id="lora-profile-row" style="display: none;">
-                  <label class="ld-label">LoRA Profile:</label>
+                  <label class="ld-label">LoRA Profili:</label>
                   <select class="ld-select" id="lora-profile-selector">
-                    <option value="">None</option>
+                    <option value="">Yok</option>
                   </select>
                 </div>
                 <div class="model-actions">
-                  <button class="btn-ld btn-ld-accent" id="load-model-btn">Load Model</button>
-                  <button class="btn-ld btn-ld-muted" id="unload-model-btn" disabled>Unload</button>
+                  <button class="btn-ld btn-ld-accent" id="load-model-btn">Modeli Yükle</button>
+                  <button class="btn-ld btn-ld-muted" id="unload-model-btn" disabled>Kaldır</button>
                 </div>
-                <div class="model-status-text" id="model-status-text">No model loaded</div>
+                <div class="model-status-text" id="model-status-text">Model yüklenmedi</div>
               </div>
 
               <div class="split-view-panel">
                 <div class="setting-row-ld">
-                  <label class="ld-label">Compare: Signal vs Model</label>
-                  <button class="btn-ld btn-ld-toggle" id="split-view-toggle" disabled>Off</button>
+                  <label class="ld-label">Karşılaştır: Sinyal & Model</label>
+                  <button class="btn-ld btn-ld-toggle" id="split-view-toggle" disabled>Kapalı</button>
                 </div>
               </div>
 
               <div class="training-quick-panel" id="training-quick-panel">
-                <h4>Training</h4>
+                <h4>Eğitim</h4>
                 <div class="training-status-row">
-                  <span class="training-status-badge" id="training-status-badge">Idle</span>
+                  <span class="training-status-badge" id="training-status-badge">Beklemede</span>
                 </div>
                 <div class="training-actions">
-                  <button class="btn-ld btn-ld-accent" id="open-training-panel-btn">Open Training Panel</button>
-                  <button class="btn-ld btn-ld-muted" id="quick-record-btn">Record 60s</button>
+                  <button class="btn-ld btn-ld-accent" id="open-training-panel-btn">Eğitim Panelini Aç</button>
+                  <button class="btn-ld btn-ld-muted" id="quick-record-btn">60sn Kaydet</button>
                 </div>
               </div>
 
               <div class="setup-guide-panel">
-                <h4>Setup Guide</h4>
+                <h4>Kurulum Rehberi</h4>
                 <div class="setup-levels">
                   <div class="setup-level">
                     <span class="setup-level-icon">1x</span>
                     <div class="setup-level-info">
                       <strong>1 ESP32 + 1 AP</strong>
-                      <p>Presence, breathing, gross motion</p>
+                      <p>Mevcudiyet, solunum, kaba hareket</p>
                     </div>
                   </div>
                   <div class="setup-level">
                     <span class="setup-level-icon">3x</span>
                     <div class="setup-level-info">
-                      <strong>2-3 ESP32s</strong>
-                      <p>Body localization, motion direction</p>
+                      <strong>2-3 ESP32</strong>
+                      <p>Vücut konumlandırma, hareket yönü</p>
                     </div>
                   </div>
                   <div class="setup-level">
                     <span class="setup-level-icon">4x+</span>
                     <div class="setup-level-info">
-                      <strong>4+ ESP32s + trained model</strong>
-                      <p>Individual limb tracking, full pose</p>
+                      <strong>4+ ESP32 + eğitilmiş model</strong>
+                      <p>Bireysel uzuv takibi, tam duruş</p>
                     </div>
                   </div>
                 </div>
                 <p class="setup-note">
-                  Signal-Derived mode uses aggregate CSI features.
-                  For per-limb tracking, load a trained <code>.rvf</code> model
-                  with <code>--model path.rvf</code> and use 4+ sensors.
+                  Sinyal Tabanlı mod, toplu CSI özelliklerini kullanır.
+                  Uzuv bazlı takip için <code>--model path.rvf</code> ile eğitilmiş bir
+                  <code>.rvf</code> modeli yükleyin ve 4+ sensör kullanın.
                 </p>
               </div>
 
               <div class="health-panel">
-                <h4>System Health</h4>
+                <h4>Sistem Sağlığı</h4>
                 <div class="health-check">
-                  <label>API Health:</label>
-                  <span id="api-health">Unknown</span>
+                  <label>API Sağlığı:</label>
+                  <span id="api-health">Bilinmiyor</span>
                 </div>
                 <div class="health-check">
                   <label>WebSocket:</label>
-                  <span id="websocket-health">Unknown</span>
+                  <span id="websocket-health">Bilinmiyor</span>
                 </div>
                 <div class="health-check">
-                  <label>Pose Service:</label>
-                  <span id="pose-service-health">Unknown</span>
+                  <label>Poz Servisi:</label>
+                  <span id="pose-service-health">Bilinmiyor</span>
                 </div>
               </div>
-              
+
               <div class="debug-panel" id="debug-panel" style="display: none;">
-                <h4>Debug Information</h4>
+                <h4>Hata Ayıklama Bilgileri</h4>
                 <div class="debug-actions">
-                  <button class="btn btn-sm" id="force-reconnect">Force Reconnect</button>
-                  <button class="btn btn-sm" id="clear-errors">Clear Errors</button>
-                  <button class="btn btn-sm" id="export-logs">Export Logs</button>
+                  <button class="btn btn-sm" id="force-reconnect">Yeniden Bağlanmaya Zorla</button>
+                  <button class="btn btn-sm" id="clear-errors">Hataları Temizle</button>
+                  <button class="btn btn-sm" id="export-logs">Günlükleri Dışa Aktar</button>
                 </div>
                 <div class="debug-info">
                   <textarea id="debug-output" readonly rows="8" cols="30"></textarea>
@@ -1124,13 +1124,13 @@ export class LiveDemoTab {
     if (data.pose_source && data.pose_source !== this.state.poseSource) {
       this.setState({ poseSource: data.pose_source });
     }
-    this.updateDebugOutput(`Pose update: ${data.persons?.length || 0} persons detected (${data.pose_source || 'unknown'})`);
+    this.updateDebugOutput(`Poz güncellemesi: ${data.persons?.length || 0} kişi algılandı (${data.pose_source || 'bilinmiyor'})`);
   }
 
   handleCanvasError(error) {
     this.metrics.errorCount++;
     this.logger.error('Canvas error', { error: error.message });
-    this.showError(`Canvas error: ${error.message}`);
+    this.showError(`Tuval hatası: ${error.message}`);
   }
 
   handleConnectionStateChange(state) {
@@ -1161,11 +1161,11 @@ export class LiveDemoTab {
       await this.components.poseCanvas.start();
       
       this.logger.info('Enhanced demo started successfully');
-      this.updateDebugOutput('Demo started successfully');
+      this.updateDebugOutput('Demo başarıyla başlatıldı');
       
     } catch (error) {
       this.logger.error('Failed to start enhanced demo', { error: error.message });
-      this.showError(`Failed to start: ${error.message}`);
+      this.showError(`Başlatma başarısız: ${error.message}`);
       this.setState({ isActive: false, connectionState: 'error' });
     }
   }
@@ -1188,11 +1188,11 @@ export class LiveDemoTab {
       this.clearError();
       
       this.logger.info('Enhanced demo stopped successfully');
-      this.updateDebugOutput('Demo stopped successfully');
+      this.updateDebugOutput('Demo başarıyla durduruldu');
       
     } catch (error) {
       this.logger.error('Error stopping enhanced demo', { error: error.message });
-      this.showError(`Error stopping: ${error.message}`);
+      this.showError(`Durdurma hatası: ${error.message}`);
     }
   }
 
@@ -1207,7 +1207,7 @@ export class LiveDemoTab {
     }
     
     if (debugBtn) {
-      debugBtn.textContent = this.state.debugMode ? 'Hide Debug' : 'Debug Mode';
+      debugBtn.textContent = this.state.debugMode ? 'Hata Ayıklamayı Gizle' : 'Hata Ayıklama Modu';
       debugBtn.classList.toggle('active', this.state.debugMode);
     }
     
@@ -1231,17 +1231,17 @@ export class LiveDemoTab {
 
   async forceReconnect() {
     if (!this.state.isActive) {
-      this.showError('Cannot reconnect - demo not active');
+      this.showError('Yeniden bağlanılamıyor - demo aktif değil');
       return;
     }
     
     try {
       this.logger.info('Forcing reconnection');
       await this.components.poseCanvas.reconnect();
-      this.updateDebugOutput('Force reconnection initiated');
+      this.updateDebugOutput('Yeniden bağlanma zorlandı');
     } catch (error) {
       this.logger.error('Force reconnection failed', { error: error.message });
-      this.showError(`Reconnection failed: ${error.message}`);
+      this.showError(`Yeniden bağlanma başarısız: ${error.message}`);
     }
   }
 
@@ -1249,7 +1249,7 @@ export class LiveDemoTab {
     this.metrics.errorCount = 0;
     this.clearError();
     poseService.clearValidationErrors();
-    this.updateDebugOutput('Errors cleared');
+    this.updateDebugOutput('Hatalar temizlendi');
     this.logger.info('Errors cleared');
   }
 
@@ -1271,7 +1271,7 @@ export class LiveDemoTab {
     a.click();
     URL.revokeObjectURL(url);
     
-    this.updateDebugOutput('Logs exported');
+    this.updateDebugOutput('Günlükler dışa aktarıldı');
     this.logger.info('Logs exported');
   }
 
@@ -1313,13 +1313,13 @@ export class LiveDemoTab {
 
   getStatusText() {
     if (!this.state.isActive) {
-      return this.state.connectionState === 'error' ? 'Error' : 'Ready';
+      return this.state.connectionState === 'error' ? 'Hata' : 'Haz\u0131r';
     }
     const ds = sensingService.dataSource;
-    if (ds === 'live') return 'Active \u2014 ESP32 Live';
-    if (ds === 'server-simulated') return 'Active \u2014 Simulated Data';
-    if (ds === 'simulated') return 'Active \u2014 Offline Simulation';
-    return 'Connecting...';
+    if (ds === 'live') return 'Aktif \u2014 ESP32 Canl\u0131';
+    if (ds === 'server-simulated') return 'Aktif \u2014 Sim\u00fcle Veri';
+    if (ds === 'simulated') return 'Aktif \u2014 \u00c7evrimd\u0131\u015f\u0131 Sim\u00fclasyon';
+    return 'Ba\u011flan\u0131yor...';
   }
 
   /** Update the prominent data-source banner at the top of Live Demo. */
@@ -1328,10 +1328,10 @@ export class LiveDemoTab {
     if (!banner) return;
     const ds = sensingService.dataSource;
     const config = {
-      'live':             { text: 'LIVE \u2014 ESP32 Hardware Connected',           cls: 'demo-source-live' },
-      'server-simulated': { text: 'SIMULATED DATA \u2014 No Hardware Detected',     cls: 'demo-source-sim' },
-      'reconnecting':     { text: 'RECONNECTING TO SERVER...',                      cls: 'demo-source-reconnecting' },
-      'simulated':        { text: 'OFFLINE \u2014 Server Unreachable, Local Sim',   cls: 'demo-source-offline' },
+      'live':             { text: 'CANLI \u2014 ESP32 Donan\u0131m\u0131 Ba\u011fl\u0131',                cls: 'demo-source-live' },
+      'server-simulated': { text: 'S\u0130M\u00dcLE VER\u0130 \u2014 Donan\u0131m Alg\u0131lanmad\u0131',          cls: 'demo-source-sim' },
+      'reconnecting':     { text: 'SUNUCUYA YEN\u0130DEN BA\u011eLANILIYOR...',                cls: 'demo-source-reconnecting' },
+      'simulated':        { text: '\u00c7EVR\u0130MDI\u015eI \u2014 Sunucuya Eri\u015filemiyor, Yerel Sim', cls: 'demo-source-offline' },
     };
     const cfg = config[ds] || config['reconnecting'];
     banner.textContent = cfg.text;
@@ -1368,10 +1368,10 @@ export class LiveDemoTab {
     if (elements.connectionStatus) {
       const ds = sensingService.dataSource;
       const dsLabels = {
-        'live':              'Connected \u2014 ESP32',
-        'server-simulated':  'Connected \u2014 Simulated',
-        'reconnecting':      'Reconnecting...',
-        'simulated':         'Offline \u2014 Simulated',
+        'live':              'Ba\u011fl\u0131 \u2014 ESP32',
+        'server-simulated':  'Ba\u011fl\u0131 \u2014 Sim\u00fcle',
+        'reconnecting':      'Yeniden ba\u011flan\u0131yor...',
+        'simulated':         '\u00c7evrimd\u0131\u015f\u0131 \u2014 Sim\u00fcle',
       };
       const label = dsLabels[ds] || this.state.connectionState;
       elements.connectionStatus.textContent = label;
@@ -1399,7 +1399,7 @@ export class LiveDemoTab {
 
     if (elements.lastUpdate) {
       const lastUpdate = this.metrics.lastUpdate ? 
-        new Date(this.metrics.lastUpdate).toLocaleTimeString() : 'Never';
+        new Date(this.metrics.lastUpdate).toLocaleTimeString() : 'Hiç';
       elements.lastUpdate.textContent = lastUpdate;
     }
   }
@@ -1414,20 +1414,20 @@ export class LiveDemoTab {
 
     if (source === 'model_inference') {
       badge.className = 'pose-source-badge pose-source-model';
-      badge.textContent = 'Model Inference';
+      badge.textContent = 'Model Çıkarımı';
       description.textContent =
-        'Pose is estimated by a trained neural network ' +
-        'loaded from an RVF container.';
+        'Duruş, bir RVF konteynerinden yüklenen eğitilmiş bir ' +
+        'sinir ağı tarafından tahmin edilir.';
     } else if (source === 'signal_derived') {
       badge.className = 'pose-source-badge pose-source-signal';
-      badge.textContent = 'Signal-Derived';
+      badge.textContent = 'Sinyal Tabanlı';
       description.textContent =
-        'Keypoints are derived from live CSI signal features ' +
-        '(motion power, breathing rate, variance).';
+        'Anahtar noktalar, canlı CSI sinyal özelliklerinden ' +
+        '(hareket gücü, solunum hızı, varyans) türetilir.';
     } else {
       badge.className = 'pose-source-badge pose-source-unknown';
-      badge.textContent = 'Unknown';
-      description.textContent = 'Waiting for first frame...';
+      badge.textContent = 'Bilinmiyor';
+      description.textContent = 'İlk kare bekleniyor...';
     }
   }
 
@@ -1462,7 +1462,7 @@ export class LiveDemoTab {
   updateHealthDisplay(elementId, isHealthy) {
     const element = this.container.querySelector(`#${elementId}`);
     if (element) {
-      element.textContent = isHealthy ? 'Good' : 'Poor';
+      element.textContent = isHealthy ? 'İyi' : 'Zayıf';
       element.className = isHealthy ? 'health-good' : 'health-poor';
     }
   }
@@ -1521,11 +1521,11 @@ export class LiveDemoTab {
     const selector = this.container.querySelector('#model-selector');
     if (!selector) return;
     // Keep the first "Signal-Derived" option
-    selector.innerHTML = '<option value="">Signal-Derived (no model)</option>';
+    selector.innerHTML = '<option value="">Sinyal Tabanlı (model yok)</option>';
     this.modelState.models.forEach(model => {
       const opt = document.createElement('option');
       opt.value = model.id || model.model_id || model.name;
-      opt.textContent = model.name || model.id || 'Unknown Model';
+      opt.textContent = model.name || model.id || 'Bilinmeyen Model';
       selector.appendChild(opt);
     });
     if (this.modelState.activeModelId) {
@@ -1538,12 +1538,12 @@ export class LiveDemoTab {
     const selector = this.container.querySelector('#model-selector');
     const modelId = selector?.value;
     if (!modelId) {
-      this.setModelStatus('Select a model first');
+      this.setModelStatus('Önce bir model seçin');
       return;
     }
     try {
       this.modelState.loading = true;
-      this.setModelStatus('Loading...');
+      this.setModelStatus('Yükleniyor...');
       const loadBtn = this.container.querySelector('#load-model-btn');
       if (loadBtn) loadBtn.disabled = true;
 
@@ -1575,7 +1575,7 @@ export class LiveDemoTab {
 
     } catch (error) {
       this.modelState.loading = false;
-      this.setModelStatus(`Error: ${error.message}`);
+      this.setModelStatus(`Hata: ${error.message}`);
       const loadBtn = this.container.querySelector('#load-model-btn');
       if (loadBtn) loadBtn.disabled = false;
       this.logger.error('Failed to load model', { error: error.message });
@@ -1595,7 +1595,7 @@ export class LiveDemoTab {
       this.disableSplitView();
       this.setState({ poseSource: 'signal_derived' });
     } catch (error) {
-      this.setModelStatus(`Error: ${error.message}`);
+      this.setModelStatus(`Hata: ${error.message}`);
       this.logger.error('Failed to unload model', { error: error.message });
     }
   }
@@ -1606,9 +1606,9 @@ export class LiveDemoTab {
     try {
       await modelService.activateLoraProfile(this.modelState.activeModelId, profileName);
       this.modelState.selectedLoraProfile = profileName;
-      this.setModelStatus(`LoRA: ${profileName} active`);
+      this.setModelStatus(`LoRA: ${profileName} aktif`);
     } catch (error) {
-      this.setModelStatus(`LoRA error: ${error.message}`);
+      this.setModelStatus(`LoRA hatası: ${error.message}`);
     }
   }
 
@@ -1639,14 +1639,14 @@ export class LiveDemoTab {
       if (pckEl) pckEl.textContent = `PCK: ${pck}`;
       this.setModelStatus(`Model: ${name} (PCK: ${pck})`);
     } else if (!isLoaded) {
-      this.setModelStatus('No model loaded');
+      this.setModelStatus('Model yüklenmedi');
     }
 
     // LoRA profiles
     if (loraRow && loraSel) {
       if (isLoaded && this.modelState.loraProfiles.length > 0) {
         loraRow.style.display = 'flex';
-        loraSel.innerHTML = '<option value="">None</option>';
+        loraSel.innerHTML = '<option value="">Yok</option>';
         this.modelState.loraProfiles.forEach(profile => {
           const opt = document.createElement('option');
           opt.value = profile.name || profile;
@@ -1678,7 +1678,7 @@ export class LiveDemoTab {
     this.splitViewActive = !this.splitViewActive;
     const toggle = this.container.querySelector('#split-view-toggle');
     if (toggle) {
-      toggle.textContent = this.splitViewActive ? 'On' : 'Off';
+      toggle.textContent = this.splitViewActive ? 'Açık' : 'Kapalı';
       toggle.classList.toggle('active', this.splitViewActive);
     }
     this.updateSplitViewOverlay();
@@ -1688,7 +1688,7 @@ export class LiveDemoTab {
     this.splitViewActive = false;
     const toggle = this.container.querySelector('#split-view-toggle');
     if (toggle) {
-      toggle.textContent = 'Off';
+      toggle.textContent = 'Kapalı';
       toggle.classList.remove('active');
     }
     this.updateSplitViewOverlay();
@@ -1708,12 +1708,12 @@ export class LiveDemoTab {
 
       const leftLabel = document.createElement('div');
       leftLabel.className = 'split-view-label left';
-      leftLabel.textContent = 'Signal-Derived';
+      leftLabel.textContent = 'Sinyal Tabanlı';
       mainContainer.appendChild(leftLabel);
 
       const rightLabel = document.createElement('div');
       rightLabel.className = 'split-view-label right';
-      rightLabel.textContent = 'Model Inference';
+      rightLabel.textContent = 'Model Çıkarımı';
       mainContainer.appendChild(rightLabel);
     }
   }
@@ -1729,12 +1729,12 @@ export class LiveDemoTab {
 
     if (state === 'training') {
       badge.classList.add('training');
-      badge.textContent = `Training epoch ${this.trainingState.epoch}/${this.trainingState.totalEpochs}`;
+      badge.textContent = `Eğitim epoch ${this.trainingState.epoch}/${this.trainingState.totalEpochs}`;
     } else if (state === 'recording') {
       badge.classList.add('recording');
-      badge.textContent = 'Recording...';
+      badge.textContent = 'Kaydediliyor...';
     } else {
-      badge.textContent = 'Idle';
+      badge.textContent = 'Beklemede';
     }
   }
 
@@ -1768,19 +1768,19 @@ export class LiveDemoTab {
     overlay.className = 'training-panel-overlay';
     overlay.innerHTML = `
       <div class="training-panel-modal">
-        <button class="close-btn" id="close-training-modal">Close</button>
-        <h3>Training Panel</h3>
+        <button class="close-btn" id="close-training-modal">Kapat</button>
+        <h3>Eğitim Paneli</h3>
         <p style="color: #8899aa; font-size: 13px; margin-bottom: 16px;">
-          Configure and start model training from here. Connect to the backend training API to manage epochs, datasets, and checkpoints.
+          Model eğitimini buradan yapılandırın ve başlatın. Epoch'ları, veri kümelerini ve kontrol noktalarını yönetmek için arka uç eğitim API'sine bağlanın.
         </p>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <div class="setting-row-ld">
-            <label class="ld-label" style="flex: 1;">Status:</label>
+            <label class="ld-label" style="flex: 1;">Durum:</label>
             <span style="color: #c8d0dc; font-size: 12px;">${this.trainingState.status}</span>
           </div>
           <div class="setting-row-ld">
-            <label class="ld-label" style="flex: 1;">Training service:</label>
-            <span style="color: ${trainingService ? '#00cc88' : '#ef4444'}; font-size: 12px;">${trainingService ? 'Connected' : 'Not available'}</span>
+            <label class="ld-label" style="flex: 1;">Eğitim servisi:</label>
+            <span style="color: ${trainingService ? '#00cc88' : '#ef4444'}; font-size: 12px;">${trainingService ? 'Bağlı' : 'Mevcut değil'}</span>
           </div>
         </div>
       </div>

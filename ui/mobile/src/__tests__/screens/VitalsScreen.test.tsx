@@ -62,7 +62,7 @@ describe('VitalsScreen', () => {
         <VitalsScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText('RSSI HISTORY')).toBeTruthy();
+    expect(screen.getByText('RSSI GEÇMİŞİ')).toBeTruthy();
   });
 
   it('renders the classification label', () => {
@@ -72,8 +72,8 @@ describe('VitalsScreen', () => {
         <VitalsScreen />
       </ThemeProvider>,
     );
-    // With no data, classification defaults to 'ABSENT'
-    expect(screen.getByText('Classification: ABSENT')).toBeTruthy();
+    // With no data, classification defaults to 'YOK' (absent)
+    expect(screen.getByText('Sınıflandırma: YOK')).toBeTruthy();
   });
 
   it('renders the connection banner', () => {
@@ -86,6 +86,6 @@ describe('VitalsScreen', () => {
         <VitalsScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText('SIMULATED DATA')).toBeTruthy();
+    expect(screen.getByText('SİMÜLE VERİ')).toBeTruthy();
   });
 });

@@ -244,7 +244,7 @@ export class DashboardHUD {
       </style>
 
       <!-- Data source banner -->
-      <div class="hud-banner mock" id="hud-banner">MOCK DATA</div>
+      <div class="hud-banner mock" id="hud-banner">MOCK VERİ</div>
 
       <!-- Corner decorations -->
       <div class="hud-corner tl"></div>

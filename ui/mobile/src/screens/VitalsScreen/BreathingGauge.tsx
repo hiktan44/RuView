@@ -36,7 +36,7 @@ export const BreathingGauge = () => {
   return (
     <View style={styles.container}>
       <ThemedText preset="labelMd" style={styles.label}>
-        BREATHING
+        SOLUNUM
       </ThemedText>
       <GaugeArc value={value} min={BREATHING_MIN_BPM} max={BREATHING_MAX_BPM} label="" unit="BPM" color={colors.accent} />
       <ThemedText preset="labelMd" color="textSecondary" style={styles.unit}>

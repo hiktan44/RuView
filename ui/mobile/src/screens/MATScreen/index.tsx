@@ -85,21 +85,21 @@ export const MATScreen = () => {
         ListHeaderComponent={
           <View>
             <View style={styles.titleRow}>
-              <Text style={styles.title}>WiFi-MAT Triage</Text>
+              <Text style={styles.title}>WiFi-MAT Triyaj</Text>
               <Pressable
                 onPress={toggleMute}
                 style={[styles.muteBtn, muted ? styles.muteOff : styles.muteOn]}
                 accessibilityRole="button"
-                accessibilityLabel={muted ? 'Unmute alarm' : 'Mute alarm'}
+                accessibilityLabel={muted ? 'Alarmın sesini aç' : 'Alarmı sessize al'}
               >
-                <Text style={styles.muteText}>{muted ? 'ALARM MUTED' : 'ALARM ON'}</Text>
+                <Text style={styles.muteText}>{muted ? 'ALARM SESSİZ' : 'ALARM AÇIK'}</Text>
               </Pressable>
             </View>
 
             <TriageSummary survivors={survivors} />
 
             <View style={styles.card}>
-              <Text style={styles.label}>Sensing server (host:port)</Text>
+              <Text style={styles.label}>Algılama sunucusu (sunucu:port)</Text>
               <View style={styles.connectRow}>
                 <TextInput
                   style={styles.input}
@@ -109,18 +109,18 @@ export const MATScreen = () => {
                   placeholderTextColor={colors.textSecondary}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  accessibilityLabel="Sensing server host"
+                  accessibilityLabel="Algılama sunucusu adresi"
                 />
                 <Pressable
                   style={styles.connectBtn}
                   onPress={() => hostInput.trim() && connect(hostInput)}
                   accessibilityRole="button"
                 >
-                  <Text style={styles.connectBtnText}>Connect</Text>
+                  <Text style={styles.connectBtnText}>Bağlan</Text>
                 </Pressable>
               </View>
               <Pressable onPress={startDemo} accessibilityRole="button">
-                <Text style={styles.demoLink}>Start offline demo</Text>
+                <Text style={styles.demoLink}>Çevrimdışı demoyu başlat</Text>
               </Pressable>
             </View>
 
@@ -128,7 +128,7 @@ export const MATScreen = () => {
               <ZoneMap survivors={sorted} selectedId={selected?.id} />
             </View>
 
-            <Text style={styles.sectionTitle}>Survivors ({survivors.length})</Text>
+            <Text style={styles.sectionTitle}>Kazazedeler ({survivors.length})</Text>
           </View>
         }
         renderItem={({ item }) => (
@@ -137,7 +137,7 @@ export const MATScreen = () => {
         ListEmptyComponent={
           <View style={styles.card}>
             <Text style={styles.empty}>
-              No survivors detected. Connect to a sensing node or start the demo.
+              Kazazede tespit edilmedi. Bir algılama düğümüne bağlanın veya demoyu başlatın.
             </Text>
           </View>
         }

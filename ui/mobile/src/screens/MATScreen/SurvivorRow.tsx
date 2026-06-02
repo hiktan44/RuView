@@ -13,17 +13,17 @@ type SurvivorRowProps = {
 const timeSince = (iso: string): string => {
   const then = Date.parse(iso);
   if (Number.isNaN(then)) {
-    return 'unknown';
+    return 'bilinmiyor';
   }
   const s = Math.max(0, Math.floor((Date.now() - then) / 1000));
   if (s < 60) {
-    return `${s}s ago`;
+    return `${s}sn önce`;
   }
   const m = Math.floor(s / 60);
   if (m < 60) {
-    return `${m}m ${s % 60}s ago`;
+    return `${m}dk ${s % 60}sn önce`;
   }
-  return `${Math.floor(m / 60)}h ${m % 60}m ago`;
+  return `${Math.floor(m / 60)}sa ${m % 60}dk önce`;
 };
 
 const fmtVital = (v: number): string => (v > 0 ? String(v) : '--');
@@ -36,14 +36,14 @@ export const SurvivorRow = ({ survivor, onPress }: SurvivorRowProps) => {
         <View style={styles.top}>
           <TriageBadge status={survivor.triage_status} />
           <Text style={styles.id}>{survivor.zone_id || survivor.id}</Text>
-          {survivor.is_deteriorating && <Text style={styles.deteriorating}>▼ DETERIORATING</Text>}
+          {survivor.is_deteriorating && <Text style={styles.deteriorating}>▼ KÖTÜLEŞİYOR</Text>}
         </View>
         <Text style={styles.vitals}>
-          Resp {fmtVital(survivor.breathing_rate)} /min · HR {fmtVital(survivor.heart_rate)} bpm ·{' '}
+          Solunum {fmtVital(survivor.breathing_rate)} /dk · Nabız {fmtVital(survivor.heart_rate)} bpm ·{' '}
           {Math.round(survivor.confidence * 100)}%
         </Text>
         <Text style={styles.meta}>
-          x{survivor.x.toFixed(1)} y{survivor.y.toFixed(1)} · depth {survivor.depth.toFixed(1)}m ·{' '}
+          x{survivor.x.toFixed(1)} y{survivor.y.toFixed(1)} · derinlik {survivor.depth.toFixed(1)}m ·{' '}
           {timeSince(survivor.last_updated)}
         </Text>
       </View>

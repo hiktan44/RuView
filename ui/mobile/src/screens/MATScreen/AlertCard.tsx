@@ -4,7 +4,7 @@ import { colors } from '@/theme/colors';
 import { spacing } from '@/theme/spacing';
 import { AlertPriority, type Alert } from '@/types/mat';
 
-type SeverityLevel = 'URGENT' | 'HIGH' | 'NORMAL';
+type SeverityLevel = 'ACİL' | 'YÜKSEK' | 'NORMAL';
 
 type AlertCardProps = {
   alert: Alert;
@@ -19,7 +19,7 @@ type SeverityMeta = {
 const resolveSeverity = (alert: Alert): SeverityMeta => {
   if (alert.priority === AlertPriority.Critical) {
     return {
-      label: 'URGENT',
+      label: 'ACİL',
       icon: '‼',
       color: colors.danger,
     };
@@ -27,7 +27,7 @@ const resolveSeverity = (alert: Alert): SeverityMeta => {
 
   if (alert.priority === AlertPriority.High) {
     return {
-      label: 'HIGH',
+      label: 'YÜKSEK',
       icon: '⚠',
       color: colors.warn,
     };
@@ -42,13 +42,13 @@ const resolveSeverity = (alert: Alert): SeverityMeta => {
 
 const formatTime = (value?: string): string => {
   if (!value) {
-    return 'Unknown';
+    return 'Bilinmiyor';
   }
 
   try {
     return new Date(value).toLocaleTimeString();
   } catch {
-    return 'Unknown';
+    return 'Bilinmiyor';
   }
 };
 

@@ -32,28 +32,28 @@ export class SensingTab {
 
   _buildDOM() {
     this.container.innerHTML = `
-      <h2>Live WiFi Sensing</h2>
+      <h2>Canlı WiFi Algılama</h2>
 
       <!-- Data-source status banner — updated by _onStateChange -->
       <div id="sensingSourceBanner" class="sensing-source-banner sensing-source-reconnecting"
            role="status" aria-live="polite">
-        RECONNECTING...
+        YENİDEN BAĞLANILIYOR...
       </div>
 
       <div class="sensing-layout">
         <!-- 3D viewport -->
         <div class="sensing-viewport" id="sensingViewport">
-          <div class="sensing-loading">Loading 3D engine...</div>
+          <div class="sensing-loading">3B motor yükleniyor...</div>
         </div>
 
         <!-- Side panel -->
         <div class="sensing-panel">
           <!-- Connection -->
           <div class="sensing-card">
-            <div class="sensing-card-title">Connection</div>
+            <div class="sensing-card-title">Bağlantı</div>
             <div class="sensing-connection">
               <span class="sensing-dot" id="sensingDot"></span>
-              <span id="sensingState">Connecting...</span>
+              <span id="sensingState">Bağlanıyor...</span>
               <span class="sensing-source" id="sensingSource"></span>
             </div>
           </div>
@@ -67,25 +67,25 @@ export class SensingTab {
 
           <!-- Signal Features -->
           <div class="sensing-card">
-            <div class="sensing-card-title">Signal Features</div>
+            <div class="sensing-card-title">Sinyal Özellikleri</div>
             <div class="sensing-meters">
               <div class="sensing-meter">
-                <label>Variance</label>
+                <label>Varyans</label>
                 <div class="sensing-bar"><div class="sensing-bar-fill" id="barVariance"></div></div>
                 <span class="sensing-meter-val" id="valVariance">0</span>
               </div>
               <div class="sensing-meter">
-                <label>Motion Band</label>
+                <label>Hareket Bandı</label>
                 <div class="sensing-bar"><div class="sensing-bar-fill motion" id="barMotion"></div></div>
                 <span class="sensing-meter-val" id="valMotion">0</span>
               </div>
               <div class="sensing-meter">
-                <label>Breathing Band</label>
+                <label>Solunum Bandı</label>
                 <div class="sensing-bar"><div class="sensing-bar-fill breath" id="barBreath"></div></div>
                 <span class="sensing-meter-val" id="valBreath">0</span>
               </div>
               <div class="sensing-meter">
-                <label>Spectral Power</label>
+                <label>Spektral Güç</label>
                 <div class="sensing-bar"><div class="sensing-bar-fill spectral" id="barSpectral"></div></div>
                 <span class="sensing-meter-val" id="valSpectral">0</span>
               </div>
@@ -94,11 +94,11 @@ export class SensingTab {
 
           <!-- Classification -->
           <div class="sensing-card">
-            <div class="sensing-card-title">Classification</div>
+            <div class="sensing-card-title">Sınıflandırma</div>
             <div class="sensing-classification" id="sensingClassification">
-              <div class="sensing-class-label" id="classLabel">ABSENT</div>
+              <div class="sensing-class-label" id="classLabel">YOK</div>
               <div class="sensing-confidence">
-                <label>Confidence</label>
+                <label>Güven</label>
                 <div class="sensing-bar"><div class="sensing-bar-fill confidence" id="barConfidence"></div></div>
                 <span class="sensing-meter-val" id="valConfidence">0%</span>
               </div>
@@ -107,27 +107,27 @@ export class SensingTab {
 
           <!-- Setup info -->
           <div class="sensing-card">
-            <div class="sensing-card-title">About This Data</div>
+            <div class="sensing-card-title">Bu Veri Hakkında</div>
             <p class="sensing-about-text">
-              Metrics are computed from WiFi Channel State Information (CSI).
-              With <strong>1 ESP32</strong> you get presence detection, breathing
-              estimation, and gross motion. Add <strong>3-4+ ESP32 nodes</strong>
-              around the room for spatial resolution and limb-level tracking.
+              Metrikler, WiFi Kanal Durum Bilgisi'nden (CSI) hesaplanır.
+              <strong>1 ESP32</strong> ile mevcudiyet algılama, solunum tahmini
+              ve kaba hareket elde edersiniz. Mekansal çözünürlük ve uzuv düzeyinde
+              takip için odanın çevresine <strong>3-4+ ESP32 düğümü</strong> ekleyin.
             </p>
           </div>
 
           <!-- Extra info -->
           <div class="sensing-card">
-            <div class="sensing-card-title">Details</div>
+            <div class="sensing-card-title">Ayrıntılar</div>
             <div class="sensing-details">
               <div class="sensing-detail-row">
-                <span>Dominant Freq</span><span id="valDomFreq">0 Hz</span>
+                <span>Baskın Frekans</span><span id="valDomFreq">0 Hz</span>
               </div>
               <div class="sensing-detail-row">
-                <span>Change Points</span><span id="valChangePoints">0</span>
+                <span>Değişim Noktaları</span><span id="valChangePoints">0</span>
               </div>
               <div class="sensing-detail-row">
-                <span>Sample Rate</span><span id="valSampleRate">--</span>
+                <span>Örnekleme Hızı</span><span id="valSampleRate">--</span>
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ export class SensingTab {
       });
     } catch (e) {
       console.error('[SensingTab] Failed to init splat renderer:', e);
-      viewport.innerHTML = '<div class="sensing-loading">3D rendering unavailable</div>';
+      viewport.innerHTML = '<div class="sensing-loading">3B render kullanılamıyor</div>';
     }
   }
 
@@ -202,11 +202,11 @@ export class SensingTab {
 
     if (dot && text) {
       const stateLabels = {
-        disconnected: 'Disconnected',
-        connecting:   'Connecting...',
-        connected:    'Connected',
-        reconnecting: 'Reconnecting...',
-        simulated:    'Simulated',
+        disconnected: 'Bağlantı Kesildi',
+        connecting:   'Bağlanıyor...',
+        connected:    'Bağlı',
+        reconnecting: 'Yeniden Bağlanıyor...',
+        simulated:    'Simüle',
       };
       dot.className = 'sensing-dot ' + state;
       text.textContent = stateLabels[state] || state;
@@ -216,10 +216,10 @@ export class SensingTab {
       // Map the service's dataSource to banner text and CSS modifier class.
       const dataSource = sensingService.dataSource;
       const bannerConfig = {
-        'live':              { text: 'LIVE \u2014 ESP32 HARDWARE',           cls: 'sensing-source-live' },
-        'server-simulated':  { text: 'SIMULATED \u2014 NO HARDWARE',        cls: 'sensing-source-server-sim' },
-        'reconnecting':      { text: 'RECONNECTING...',                    cls: 'sensing-source-reconnecting' },
-        'simulated':         { text: 'OFFLINE \u2014 CLIENT SIMULATION',    cls: 'sensing-source-simulated' },
+        'live':              { text: 'CANLI \u2014 ESP32 DONANIMI',          cls: 'sensing-source-live' },
+        'server-simulated':  { text: 'S\u0130M\u00dcLE \u2014 DONANIM YOK',           cls: 'sensing-source-server-sim' },
+        'reconnecting':      { text: 'YEN\u0130DEN BA\u011eLANILIYOR...',            cls: 'sensing-source-reconnecting' },
+        'simulated':         { text: '\u00c7EVR\u0130MDI\u015eI \u2014 \u0130STEMC\u0130 S\u0130M\u00dcLASYONU', cls: 'sensing-source-simulated' },
       };
       const cfg = bannerConfig[dataSource] || bannerConfig.reconnecting;
       banner.textContent = cfg.text;
@@ -246,9 +246,16 @@ export class SensingTab {
     // Classification
     const label = this.container.querySelector('#classLabel');
     if (label) {
-      const level = (c.motion_level || 'absent').toUpperCase();
-      label.textContent = level;
-      label.className = 'sensing-class-label ' + (c.motion_level || 'absent');
+      const motionLevel = c.motion_level || 'absent';
+      const levelLabels = {
+        absent:  'YOK',
+        present: 'VAR',
+        still:   'DURGUN',
+        active:  'HAREKETLİ',
+        motion:  'HAREKET',
+      };
+      label.textContent = levelLabels[motionLevel] || motionLevel.toUpperCase();
+      label.className = 'sensing-class-label ' + motionLevel;
     }
 
     const confPct = ((c.confidence || 0) * 100).toFixed(0);

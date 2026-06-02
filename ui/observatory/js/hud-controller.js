@@ -13,9 +13,9 @@
 // ---- Constants ----
 
 export const SCENARIO_NAMES = [
-  'EMPTY ROOM','VITAL SIGNS','MULTI-PERSON','FALL DETECT',
-  'SLEEP MONITOR','INTRUSION','GESTURE CTRL','CROWD OCCUPANCY',
-  'SEARCH RESCUE','ELDERLY CARE','FITNESS','SECURITY PATROL',
+  'BOŞ ODA','YAŞAMSAL BELİRTİLER','ÇOK KİŞİLİ','DÜŞME ALGILAMA',
+  'UYKU İZLEME','İZİNSİZ GİRİŞ','JEST KONTROLÜ','KALABALIK YOĞUNLUĞU',
+  'ARAMA KURTARMA','YAŞLI BAKIMI','EGZERSİZ','GÜVENLİK DEVRİYESİ',
 ];
 
 export const DEFAULTS = {
@@ -68,50 +68,50 @@ export const PRESETS = {
 
 // Scenario descriptions shown below the dropdown
 const SCENARIO_DESCRIPTIONS = {
-  auto:              'Auto-cycling through all sensing scenarios.',
-  empty_room:        'Baseline calibration with no human presence in the monitored zone.',
-  single_breathing:  'Detecting vital signs through WiFi signal micro-variations.',
-  two_walking:       'Tracking multiple people simultaneously via CSI multiplex separation.',
-  fall_event:        'Sudden posture-change detection using acceleration feature analysis.',
-  sleep_monitoring:  'Monitoring breathing patterns and apnea events during sleep.',
-  intrusion_detect:  'Passive perimeter monitoring -- no cameras, pure RF sensing.',
-  gesture_control:   'DTW-based gesture recognition from hand/arm motion signatures.',
-  crowd_occupancy:   'Estimating room occupancy count from aggregate CSI variance.',
-  search_rescue:     'Through-wall survivor detection using WiFi-MAT multistatic mode.',
-  elderly_care:      'Continuous gait analysis for early mobility-decline detection.',
-  fitness_tracking:  'Rep counting and exercise classification from body kinematics.',
-  security_patrol:   'Multi-zone presence patrol with camera-free motion heatmaps.',
+  auto:              'Tüm algılama senaryoları arasında otomatik döngü.',
+  empty_room:        'İzlenen bölgede insan varlığı olmadan temel kalibrasyon.',
+  single_breathing:  'WiFi sinyalindeki mikro değişimlerle yaşamsal belirtileri algılama.',
+  two_walking:       'CSI çoğullama ayrımı ile birden fazla kişiyi eş zamanlı takip.',
+  fall_event:        'İvme özelliği analiziyle ani duruş değişikliği algılama.',
+  sleep_monitoring:  'Uyku sırasında solunum düzenlerini ve apne olaylarını izleme.',
+  intrusion_detect:  'Pasif çevre izleme -- kamera yok, saf RF algılama.',
+  gesture_control:   'El/kol hareket imzalarından DTW tabanlı jest tanıma.',
+  crowd_occupancy:   'Toplam CSI varyansından oda doluluk sayısını tahmin etme.',
+  search_rescue:     'WiFi-MAT çok statik mod ile duvar arkası hayatta kalan algılama.',
+  elderly_care:      'Erken hareket kaybı algılama için sürekli yürüyüş analizi.',
+  fitness_tracking:  'Vücut kinematiğinden tekrar sayımı ve egzersiz sınıflandırma.',
+  security_patrol:   'Kamerasız hareket ısı haritalarıyla çok bölgeli varlık devriyesi.',
 };
 
 // Edge modules active per scenario
 const SCENARIO_EDGE_MODULES = {
   auto:              [],
   empty_room:        [],
-  single_breathing:  ['VITALS'],
-  two_walking:       ['GAIT', 'TRACKING'],
-  fall_event:        ['FALL', 'VITALS'],
-  sleep_monitoring:  ['VITALS', 'APNEA'],
-  intrusion_detect:  ['PRESENCE', 'ALERT'],
-  gesture_control:   ['GESTURE', 'DTW'],
-  crowd_occupancy:   ['OCCUPANCY'],
-  search_rescue:     ['MAT', 'VITALS', 'PRESENCE'],
-  elderly_care:      ['GAIT', 'VITALS', 'FALL'],
-  fitness_tracking:  ['GESTURE', 'GAIT'],
-  security_patrol:   ['PRESENCE', 'ALERT', 'TRACKING'],
+  single_breathing:  ['YAŞAMSAL'],
+  two_walking:       ['YÜRÜYÜŞ', 'TAKİP'],
+  fall_event:        ['DÜŞME', 'YAŞAMSAL'],
+  sleep_monitoring:  ['YAŞAMSAL', 'APNE'],
+  intrusion_detect:  ['VARLIK', 'UYARI'],
+  gesture_control:   ['JEST', 'DTW'],
+  crowd_occupancy:   ['DOLULUK'],
+  search_rescue:     ['MAT', 'YAŞAMSAL', 'VARLIK'],
+  elderly_care:      ['YÜRÜYÜŞ', 'YAŞAMSAL', 'DÜŞME'],
+  fitness_tracking:  ['JEST', 'YÜRÜYÜŞ'],
+  security_patrol:   ['VARLIK', 'UYARI', 'TAKİP'],
 };
 
 // Edge-module badge colors
 const MODULE_COLORS = {
-  VITALS:    'var(--red-heart)',
-  GAIT:      'var(--green-glow)',
-  FALL:      'var(--red-alert)',
-  GESTURE:   'var(--amber)',
-  PRESENCE:  'var(--blue-signal)',
-  TRACKING:  'var(--green-bright)',
-  OCCUPANCY: 'var(--amber)',
-  ALERT:     'var(--red-alert)',
+  YAŞAMSAL:  'var(--red-heart)',
+  YÜRÜYÜŞ:   'var(--green-glow)',
+  DÜŞME:     'var(--red-alert)',
+  JEST:      'var(--amber)',
+  VARLIK:    'var(--blue-signal)',
+  TAKİP:     'var(--green-bright)',
+  DOLULUK:   'var(--amber)',
+  UYARI:     'var(--red-alert)',
   DTW:       'var(--amber)',
-  APNEA:     'var(--red-heart)',
+  APNE:      'var(--red-heart)',
   MAT:       'var(--blue-signal)',
 };
 
@@ -396,7 +396,7 @@ export class HudController {
     const dot = document.querySelector('#data-source-badge .dot');
     const label = document.getElementById('data-source-label');
     if (dataSource === 'ws' && ws?.readyState === WebSocket.OPEN) {
-      dot.className = 'dot dot--live'; label.textContent = 'LIVE';
+      dot.className = 'dot dot--live'; label.textContent = 'CANLI';
     } else {
       dot.className = 'dot dot--demo'; label.textContent = 'DEMO';
     }
@@ -463,9 +463,9 @@ export class HudController {
     if (presEl) {
       const ml = cls.motion_level || 'absent';
       presEl.className = 'presence-state';
-      if (ml === 'active') { presEl.classList.add('presence--active'); presLabel.textContent = 'ACTIVE'; }
-      else if (cls.presence) { presEl.classList.add('presence--present'); presLabel.textContent = 'PRESENT'; }
-      else { presEl.classList.add('presence--absent'); presLabel.textContent = 'ABSENT'; }
+      if (ml === 'active') { presEl.classList.add('presence--active'); presLabel.textContent = 'HAREKETLİ'; }
+      else if (cls.presence) { presEl.classList.add('presence--present'); presLabel.textContent = 'VAR'; }
+      else { presEl.classList.add('presence--absent'); presLabel.textContent = 'YOK'; }
     }
 
     const fallEl = document.getElementById('fall-alert');

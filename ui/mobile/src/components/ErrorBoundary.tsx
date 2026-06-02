@@ -34,12 +34,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.hasError) {
       return (
         <ThemedView style={styles.container}>
-          <ThemedText preset="displayMd">Something went wrong</ThemedText>
+          <ThemedText preset="displayMd">Bir şeyler ters gitti</ThemedText>
           <ThemedText preset="bodySm" style={styles.message}>
-            {this.state.error?.message ?? 'An unexpected error occurred.'}
+            {this.state.error?.message ?? 'Beklenmeyen bir hata oluştu.'}
           </ThemedText>
           <View style={styles.buttonWrap}>
-            <Button title="Retry" onPress={this.handleRetry} />
+            <Button title="Yeniden Dene" onPress={this.handleRetry} />
           </View>
         </ThemedView>
       );

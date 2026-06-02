@@ -19,7 +19,7 @@ export const ServerUrlInput = ({ value, onChange, onSave }: ServerUrlInputProps)
 
   const handleTest = async () => {
     if (!validation.valid) {
-      setTestResult('✗ Invalid URL');
+      setTestResult('✗ Geçersiz URL');
       return;
     }
 
@@ -28,14 +28,14 @@ export const ServerUrlInput = ({ value, onChange, onSave }: ServerUrlInputProps)
       await apiService.getStatus();
       setTestResult(`✓ ${Date.now() - start}ms`);
     } catch {
-      setTestResult('✗ Failed');
+      setTestResult('✗ Başarısız');
     }
   };
 
   return (
     <View>
       <ThemedText preset="labelMd" style={{ marginBottom: spacing.sm }}>
-        Server URL
+        Sunucu URL'si
       </ThemedText>
       <TextInput
         value={value}
@@ -62,7 +62,7 @@ export const ServerUrlInput = ({ value, onChange, onSave }: ServerUrlInputProps)
       )}
 
       <ThemedText preset="bodySm" style={{ color: colors.textSecondary, marginBottom: spacing.sm }}>
-        {testResult || 'Ready to test connection'}
+        {testResult || 'Bağlantı testine hazır'}
       </ThemedText>
 
       <View style={{ flexDirection: 'row', gap: spacing.sm }}>
@@ -78,7 +78,7 @@ export const ServerUrlInput = ({ value, onChange, onSave }: ServerUrlInputProps)
           }}
         >
           <ThemedText preset="labelMd" style={{ color: colors.textPrimary }}>
-            Test Connection
+            Bağlantıyı Test Et
           </ThemedText>
         </Pressable>
         <Pressable
@@ -93,7 +93,7 @@ export const ServerUrlInput = ({ value, onChange, onSave }: ServerUrlInputProps)
           }}
         >
           <ThemedText preset="labelMd" style={{ color: colors.textPrimary }}>
-            Save
+            Kaydet
           </ThemedText>
         </Pressable>
       </View>

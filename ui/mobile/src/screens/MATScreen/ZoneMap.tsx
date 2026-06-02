@@ -97,11 +97,11 @@ export const ZoneMap = ({ survivors, selectedId, width = 320, height = 200 }: Zo
 
         {survivors.length === 0 && (
           <SvgText x={width / 2} y={height / 2} fill={colors.textSecondary} fontSize={13} textAnchor="middle">
-            No survivors detected
+            Kazazede tespit edilmedi
           </SvgText>
         )}
       </Svg>
-      <Text style={styles.caption}>Top-down zone map · ring width = depth</Text>
+      <Text style={styles.caption}>Üstten bölge haritası · halka genişliği = derinlik</Text>
     </View>
   );
 };

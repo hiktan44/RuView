@@ -41,7 +41,7 @@ export const HeartRateGauge = () => {
   return (
     <View style={styles.container}>
       <ThemedText preset="labelMd" style={styles.label}>
-        HR PROXY
+        KALP ATIŞ HIZI
       </ThemedText>
       <GaugeArc
         value={value}
@@ -53,7 +53,7 @@ export const HeartRateGauge = () => {
         colorTo={colors.success}
       />
       <ThemedText preset="bodySm" color="textSecondary" style={styles.note}>
-        (estimated)
+        (tahmini)
       </ThemedText>
     </View>
   );

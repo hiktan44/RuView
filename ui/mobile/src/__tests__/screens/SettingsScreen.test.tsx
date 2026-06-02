@@ -59,7 +59,7 @@ describe('SettingsScreen', () => {
         <SettingsScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText('SERVER')).toBeTruthy();
+    expect(screen.getByText('SUNUCU')).toBeTruthy();
   });
 
   it('renders the SENSING section', () => {
@@ -69,7 +69,7 @@ describe('SettingsScreen', () => {
         <SettingsScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText('SENSING')).toBeTruthy();
+    expect(screen.getByText('ALGILAMA')).toBeTruthy();
   });
 
   it('renders the ABOUT section with version', () => {
@@ -79,7 +79,7 @@ describe('SettingsScreen', () => {
         <SettingsScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText('ABOUT')).toBeTruthy();
+    expect(screen.getByText('HAKKINDA')).toBeTruthy();
     expect(screen.getByText('WiFi-DensePose Mobile v1.0.0')).toBeTruthy();
   });
 });

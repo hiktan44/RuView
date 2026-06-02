@@ -499,7 +499,7 @@ export class PoseDetectionCanvas {
 
         case 'error':
           this.setConnectionState('error');
-          this.showError(update.error?.message || 'Connection error');
+          this.showError(update.error?.message || 'Bağlantı hatası');
           this.notifyCallback('onError', update.error);
           break;
 
@@ -508,7 +508,7 @@ export class PoseDetectionCanvas {
       }
     } catch (error) {
       this.logger.error('Error handling pose update', { error: error.message, update });
-      this.showError(`Update error: ${error.message}`);
+      this.showError(`Güncelleme hatası: ${error.message}`);
     }
   }
 
@@ -535,7 +535,7 @@ export class PoseDetectionCanvas {
       }
     } catch (error) {
       this.logger.error('Render error', { error: error.message });
-      this.showError(`Render error: ${error.message}`);
+      this.showError(`Render hatası: ${error.message}`);
     }
   }
 
@@ -570,8 +570,16 @@ export class PoseDetectionCanvas {
 
     if (indicator && text) {
       indicator.className = `status-indicator ${this.state.connectionState}`;
-      text.textContent = this.state.connectionState.charAt(0).toUpperCase() + 
-                        this.state.connectionState.slice(1);
+      const stateLabels = {
+        connected: 'Bağlı',
+        connecting: 'Bağlanıyor',
+        disconnected: 'Bağlantı Yok',
+        error: 'Hata',
+        reconnecting: 'Yeniden Bağlanıyor',
+      };
+      text.textContent = stateLabels[this.state.connectionState] ||
+        (this.state.connectionState.charAt(0).toUpperCase() +
+         this.state.connectionState.slice(1));
     }
   }
 
@@ -604,12 +612,12 @@ export class PoseDetectionCanvas {
     // Use textContent instead of innerHTML to prevent XSS
     statsEl.textContent = '';
     const lines = [
-      `Connection: ${this.state.connectionState}`,
-      `Frames: ${this.state.frameCount}`,
+      `Bağlantı: ${this.state.connectionState}`,
+      `Kareler: ${this.state.frameCount}`,
       `FPS: ${fps.toFixed(1)}`,
-      `Persons: ${persons}`,
-      `Zones: ${zones}`,
-      `Uptime: ${uptime}s`
+      `Kişiler: ${persons}`,
+      `Bölgeler: ${zones}`,
+      `Çalışma Süresi: ${uptime}s`
     ];
     lines.forEach((line, index) => {
       if (index > 0) {
@@ -661,7 +669,7 @@ export class PoseDetectionCanvas {
       this.logger.error('Failed to start pose detection', { error: error.message });
       this.state.isActive = false;
       this.updateControls();
-      this.showError(`Failed to start: ${error.message}`);
+      this.showError(`Başlatma başarısız: ${error.message}`);
       this.notifyCallback('onError', error);
     }
   }
@@ -685,7 +693,7 @@ export class PoseDetectionCanvas {
       this.logger.info('Pose detection stopped');
     } catch (error) {
       this.logger.error('Error stopping pose detection', { error: error.message });
-      this.showError(`Stop error: ${error.message}`);
+      this.showError(`Durdurma hatası: ${error.message}`);
     }
   }
 
@@ -695,7 +703,7 @@ export class PoseDetectionCanvas {
       await poseService.reconnectStream();
     } catch (error) {
       this.logger.error('Reconnection failed', { error: error.message });
-      this.showError(`Reconnection failed: ${error.message}`);
+      this.showError(`Yeniden bağlanma başarısız: ${error.message}`);
     }
   }
 
@@ -713,7 +721,7 @@ export class PoseDetectionCanvas {
     const trailBtn = document.getElementById(`trail-btn-${this.containerId}`);
     if (trailBtn) {
       trailBtn.classList.toggle('active', this.showTrail);
-      trailBtn.textContent = this.showTrail ? '\u25CB Trail On' : '\u25CB Trail';
+      trailBtn.textContent = this.showTrail ? '\u25CB \u0130z A\u00E7\u0131k' : '\u25CB \u0130z';
     }
     if (!this.showTrail) {
       this.poseTrail = [];
@@ -849,7 +857,7 @@ export class PoseDetectionCanvas {
     this.startDemoAnimation();
     
     // Show demo notification
-    this.showDemoNotification('🎭 Animated Demo Active - Walking, Waving & Dancing');
+    this.showDemoNotification('🎭 Animasyonlu Demo Aktif - Yürüme, El Sallama ve Dans');
   }
 
   stopDemo() {
@@ -872,7 +880,7 @@ export class PoseDetectionCanvas {
   updateDemoButton(isRunning) {
     const demoBtn = document.getElementById(`demo-btn-${this.containerId}`);
     if (demoBtn) {
-      demoBtn.textContent = isRunning ? 'Stop Demo' : 'Demo';
+      demoBtn.textContent = isRunning ? 'Demoyu Durdur' : 'Demo';
       demoBtn.style.background = isRunning ? '#dc3545' : '#6f42c1';
       demoBtn.style.borderColor = isRunning ? '#dc3545' : '#6f42c1';
     }
@@ -1135,7 +1143,7 @@ export class PoseDetectionCanvas {
     }));
   }
 
-  showDemoNotification(message = '🎭 Demo Mode Active') {
+  showDemoNotification(message = '🎭 Demo Modu Aktif') {
     const notification = document.createElement('div');
     notification.style.cssText = `
       position: absolute;
@@ -1236,7 +1244,7 @@ export class PoseDetectionCanvas {
       <div class="settings-modal-overlay">
         <div class="settings-modal-dialog">
           <div class="settings-modal-header">
-            <h2>⚙️ Pose Detection Settings</h2>
+            <h2>⚙️ Poz Algılama Ayarları</h2>
             <button class="settings-modal-close" type="button">×</button>
           </div>
           <div class="settings-modal-body" id="settings-container-${this.containerId}">

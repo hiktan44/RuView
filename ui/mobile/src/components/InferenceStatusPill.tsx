@@ -12,13 +12,13 @@ type InferenceStatusPillProps = {
 };
 
 const formatAge = (lastUpdated: number | null, now = Date.now()): string => {
-  if (lastUpdated == null) return 'no data';
+  if (lastUpdated == null) return 'veri yok';
   const ageMs = Math.max(0, now - lastUpdated);
-  if (ageMs < 1500) return 'just now';
+  if (ageMs < 1500) return 'az önce';
   const seconds = Math.round(ageMs / 1000);
-  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 60) return `${seconds}sn önce`;
   const minutes = Math.round(seconds / 60);
-  return `${minutes}m ago`;
+  return `${minutes}dk önce`;
 };
 
 /**
@@ -28,14 +28,14 @@ const formatAge = (lastUpdated: number | null, now = Date.now()): string => {
  */
 export const InferenceStatusPill = ({ offline, backend, lastUpdated }: InferenceStatusPillProps) => {
   const accent = offline ? colors.warn : colors.connected;
-  const label = offline ? 'OFFLINE (local inference)' : 'ONLINE (server inference)';
+  const label = offline ? 'ÇEVRİMDIŞI (yerel çıkarım)' : 'ÇEVRİMİÇİ (sunucu çıkarımı)';
   const detail = offline && backend ? `${backend.toUpperCase()} · ${formatAge(lastUpdated)}` : formatAge(lastUpdated);
 
   return (
     <View
       style={[styles.pill, { borderColor: accent, backgroundColor: `${accent}1A` }]}
       accessibilityRole="text"
-      accessibilityLabel={`${label}, updated ${formatAge(lastUpdated)}`}
+      accessibilityLabel={`${label}, güncellendi ${formatAge(lastUpdated)}`}
     >
       <View style={[styles.dot, { backgroundColor: accent }]} />
       <ThemedText preset="labelMd" style={[styles.label, { color: accent }]}>

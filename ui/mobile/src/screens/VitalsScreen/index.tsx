@@ -38,7 +38,12 @@ export default function VitalsScreen() {
   const effectiveMotionLevel = localResult?.presence.motionLevel ?? classification?.motion_level ?? 'absent';
 
   const confidence = clampPercent(effectiveConfidence);
-  const badgeLabel = effectiveMotionLevel.toUpperCase();
+  const motionLabelMap: Record<string, string> = {
+    absent: 'YOK',
+    active: 'HAREKETLİ',
+    present_still: 'SABİT MEVCUT',
+  };
+  const badgeLabel = motionLabelMap[effectiveMotionLevel] ?? effectiveMotionLevel.toUpperCase();
 
   const bannerStatus: ConnectionBannerState = connectionStatus === 'connected' ? 'connected' : connectionStatus === 'simulated' ? 'simulated' : 'disconnected';
 
@@ -88,26 +93,26 @@ export default function VitalsScreen() {
 
         <View style={styles.section}>
           <ThemedText preset="labelLg" color="textSecondary">
-            RSSI HISTORY
+            RSSI GEÇMİŞİ
           </ThemedText>
           <SparklineChart data={rssiHistory.length > 0 ? rssiHistory : [0]} color={colors.accent} />
         </View>
 
-        <MetricCard label="Variance" value={features?.variance ?? 0} unit="" sparklineData={rssiHistory} color={colors.accent} />
+        <MetricCard label="Varyans" value={features?.variance ?? 0} unit="" sparklineData={rssiHistory} color={colors.accent} />
         <MetricCard
-          label="Motion Band"
+          label="Hareket Bandı"
           value={features?.motion_band_power ?? 0}
           unit=""
           color={colors.success}
         />
         <MetricCard
-          label="Breath Band"
+          label="Solunum Bandı"
           value={features?.breathing_band_power ?? 0}
           unit=""
           color={colors.warn}
         />
         <MetricCard
-          label="Spectral Entropy"
+          label="Spektral Entropi"
           value={features?.spectral_entropy ?? 0}
           unit=""
           color={colors.connected}
@@ -115,7 +120,7 @@ export default function VitalsScreen() {
 
         <View style={styles.classificationSection}>
           <ThemedText preset="labelLg" style={styles.rowLabel}>
-            Classification: {badgeLabel}
+            Sınıflandırma: {badgeLabel}
           </ThemedText>
           <View style={[styles.badgePill, { borderColor: classificationColor, backgroundColor: `${classificationColor}18` }]}>
             <ThemedText preset="labelMd" style={{ color: classificationColor }}>
@@ -124,7 +129,7 @@ export default function VitalsScreen() {
           </View>
           <View style={styles.confidenceContainer}>
             <ThemedText preset="bodySm" color="textSecondary">
-              Confidence
+              Güven
             </ThemedText>
             <View style={styles.confidenceBarTrack}>
               <Animated.View style={[styles.confidenceBarFill, animatedConfidenceStyle]} />

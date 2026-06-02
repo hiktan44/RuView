@@ -433,7 +433,7 @@ export class PoseRenderer {
 
     // Add person label
     this.ctx.fillStyle = this.config.boundingBoxColor;
-    this.ctx.fillText(`Person ${personIndex + 1}`, x, y - 15);
+    this.ctx.fillText(`Kişi ${personIndex + 1}`, x, y - 15);
 
     this.ctx.globalAlpha = 1.0;
   }
@@ -461,7 +461,7 @@ export class PoseRenderer {
     }
 
     this.ctx.fillStyle = this.config.confidenceColor;
-    this.ctx.fillText(`Conf: ${(person.confidence * 100).toFixed(1)}%`, x, y);
+    this.ctx.fillText(`Güven: ${(person.confidence * 100).toFixed(1)}%`, x, y);
   }
 
   // Render zones
@@ -470,17 +470,17 @@ export class PoseRenderer {
       const y = 10 + (index * 20);
       
       this.ctx.fillStyle = this.config.zoneColor;
-      this.ctx.fillText(`Zone ${zoneId}: ${count} person(s)`, 10, y);
+      this.ctx.fillText(`Bölge ${zoneId}: ${count} kişi`, 10, y);
     });
   }
 
   // Render debug information
   renderDebugInfo(poseData, metadata) {
     const debugInfo = [
-      `Frame: ${poseData.frame_id || 'N/A'}`,
-      `Timestamp: ${poseData.timestamp || 'N/A'}`,
-      `Persons: ${poseData.persons?.length || 0}`,
-      `Processing: ${poseData.processing_time_ms || 0}ms`,
+      `Kare: ${poseData.frame_id || 'Yok'}`,
+      `Zaman Damgası: ${poseData.timestamp || 'Yok'}`,
+      `Kişiler: ${poseData.persons?.length || 0}`,
+      `İşleme: ${poseData.processing_time_ms || 0}ms`,
       `FPS: ${this.performanceMetrics.averageFps.toFixed(1)}`,
       `Render: ${this.performanceMetrics.renderTime.toFixed(1)}ms`
     ];
@@ -502,7 +502,7 @@ export class PoseRenderer {
     this.ctx.font = '16px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(
-      `Render Error: ${message}`, 
+      `Render Hatası: ${message}`,
       this.canvas.width / 2, 
       this.canvas.height / 2
     );
@@ -516,12 +516,12 @@ export class PoseRenderer {
     this.ctx.font = '16px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(
-      'No pose data available', 
-      this.canvas.width / 2, 
+      'Poz verisi mevcut değil',
+      this.canvas.width / 2,
       this.canvas.height / 2
     );
     this.ctx.fillText(
-      'Click "Demo" to see test poses', 
+      'Test pozlarını görmek için "Demo"ya tıklayın',
       this.canvas.width / 2, 
       this.canvas.height / 2 + 25
     );

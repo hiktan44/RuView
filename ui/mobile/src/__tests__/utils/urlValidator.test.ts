@@ -25,37 +25,37 @@ describe('validateServerUrl', () => {
   it('rejects empty string', () => {
     const result = validateServerUrl('');
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must be a non-empty string.');
+    expect(result.error).toBe('URL boş olmayan bir metin olmalıdır.');
   });
 
   it('rejects whitespace-only string', () => {
     const result = validateServerUrl('   ');
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must be a non-empty string.');
+    expect(result.error).toBe('URL boş olmayan bir metin olmalıdır.');
   });
 
   it('rejects null input', () => {
     const result = validateServerUrl(null as unknown as string);
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must be a non-empty string.');
+    expect(result.error).toBe('URL boş olmayan bir metin olmalıdır.');
   });
 
   it('rejects undefined input', () => {
     const result = validateServerUrl(undefined as unknown as string);
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must be a non-empty string.');
+    expect(result.error).toBe('URL boş olmayan bir metin olmalıdır.');
   });
 
   it('rejects numeric input', () => {
     const result = validateServerUrl(123 as unknown as string);
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must be a non-empty string.');
+    expect(result.error).toBe('URL boş olmayan bir metin olmalıdır.');
   });
 
   it('rejects ftp protocol', () => {
     const result = validateServerUrl('ftp://files.example.com');
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('URL must use http, https, ws, or wss.');
+    expect(result.error).toBe('URL http, https, ws veya wss kullanmalıdır.');
   });
 
   it('rejects file protocol', () => {
@@ -66,7 +66,7 @@ describe('validateServerUrl', () => {
   it('rejects malformed URL', () => {
     const result = validateServerUrl('not-a-url');
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('Invalid URL format.');
+    expect(result.error).toBe('Geçersiz URL biçimi.');
   });
 
   it('rejects URL with no host', () => {

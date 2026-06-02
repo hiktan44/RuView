@@ -9,17 +9,17 @@ const renderWithTheme = (ui: React.ReactElement) =>
 describe('ConnectionBanner', () => {
   it('renders LIVE STREAM text when connected', () => {
     renderWithTheme(<ConnectionBanner status="connected" />);
-    expect(screen.getByText('LIVE STREAM')).toBeTruthy();
+    expect(screen.getByText('CANLI YAYIN')).toBeTruthy();
   });
 
   it('renders DISCONNECTED text when disconnected', () => {
     renderWithTheme(<ConnectionBanner status="disconnected" />);
-    expect(screen.getByText('DISCONNECTED')).toBeTruthy();
+    expect(screen.getByText('BAĞLANTI KESİLDİ')).toBeTruthy();
   });
 
   it('renders SIMULATED DATA text when simulated', () => {
     renderWithTheme(<ConnectionBanner status="simulated" />);
-    expect(screen.getByText('SIMULATED DATA')).toBeTruthy();
+    expect(screen.getByText('SİMÜLE VERİ')).toBeTruthy();
   });
 
   it('renders without crashing for each status', () => {

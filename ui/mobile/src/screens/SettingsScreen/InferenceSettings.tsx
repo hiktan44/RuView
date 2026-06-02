@@ -13,7 +13,7 @@ type InferenceSettingsProps = {
 };
 
 const ENGINE_OPTIONS: { value: InferenceEnginePreference; label: string }[] = [
-  { value: 'auto', label: 'Auto' },
+  { value: 'auto', label: 'Oto' },
   { value: 'js', label: 'JS' },
   { value: 'wasm', label: 'WASM' },
 ];
@@ -34,9 +34,9 @@ export const InferenceSettings = ({
     <View>
       <View style={styles.row}>
         <View style={styles.rowText}>
-          <ThemedText preset="bodyMd">Force local inference</ThemedText>
+          <ThemedText preset="bodyMd">Yerel çıkarımı zorla</ThemedText>
           <ThemedText preset="bodySm" style={styles.help}>
-            Always derive presence and vitals on-device, even when the server is connected.
+            Sunucu bağlı olsa bile mevcudiyet ve yaşamsal belirtileri her zaman cihazda hesapla.
           </ThemedText>
         </View>
         <Switch
@@ -48,7 +48,7 @@ export const InferenceSettings = ({
       </View>
 
       <ThemedText preset="bodyMd" style={{ marginTop: spacing.md }}>
-        Inference engine
+        Çıkarım motoru
       </ThemedText>
       <View style={styles.options}>
         {ENGINE_OPTIONS.map((option) => {
@@ -80,8 +80,8 @@ export const InferenceSettings = ({
       </View>
       <ThemedText preset="bodySm" style={styles.help}>
         {wasmAvailable
-          ? 'WASM runtime detected. A real model can be dropped in; until then WASM falls back to the JS engine.'
-          : 'WASM unavailable in this runtime — the JS engine is used (fully functional offline).'}
+          ? 'WASM çalışma zamanı algılandı. Gerçek bir model eklenebilir; o zamana kadar WASM, JS motoruna geri döner.'
+          : 'Bu çalışma zamanında WASM kullanılamıyor — JS motoru kullanılıyor (çevrimdışı tam işlevsel).'}
       </ThemedText>
     </View>
   );

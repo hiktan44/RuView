@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WiFi DensePose - 3D Visualization</title>
+  <title>WiFi DensePose - 3B Görselleştirme</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -78,7 +78,7 @@
       <div class="loading-bar-track">
         <div class="loading-bar-fill" id="loading-fill"></div>
       </div>
-      <div class="loading-status" id="loading-status">Initializing...</div>
+      <div class="loading-status" id="loading-status">Başlatılıyor...</div>
     </div>
     <!-- Stats.js container -->
     <div id="stats-container"></div>
@@ -145,35 +145,35 @@
       const container = document.getElementById('viz-container');
 
       try {
-        setLoadingProgress(10, 'Creating 3D scene...');
+        setLoadingProgress(10, '3B sahne oluşturuluyor...');
 
         // 1. Scene setup
         state.scene = new Scene(container);
-        setLoadingProgress(25, 'Building environment...');
+        setLoadingProgress(25, 'Ortam oluşturuluyor...');
 
         // 2. Environment (room, grid, APs, zones)
         state.environment = new Environment(state.scene.getScene());
-        setLoadingProgress(40, 'Preparing body models...');
+        setLoadingProgress(40, 'Vücut modelleri hazırlanıyor...');
 
         // 3. Body model manager
         state.bodyModelManager = new BodyModelManager(state.scene.getScene());
-        setLoadingProgress(55, 'Setting up signal visualization...');
+        setLoadingProgress(55, 'Sinyal görselleştirme ayarlanıyor...');
 
         // 4. Signal visualization
         state.signalViz = new SignalVisualization(state.scene.getScene());
-        setLoadingProgress(65, 'Creating HUD...');
+        setLoadingProgress(65, 'Gösterge paneli oluşturuluyor...');
 
         // 5. Dashboard HUD
         state.hud = new DashboardHUD(container);
-        setLoadingProgress(75, 'Initializing data processor...');
+        setLoadingProgress(75, 'Veri işleyici başlatılıyor...');
 
         // 6. Data processor
         state.dataProcessor = new DataProcessor();
-        setLoadingProgress(80, 'Setting up Stats.js...');
+        setLoadingProgress(80, 'Stats.js ayarlanıyor...');
 
         // 7. Stats.js
         state.stats = initStats();
-        setLoadingProgress(85, 'Connecting to server...');
+        setLoadingProgress(85, 'Sunucuya bağlanılıyor...');
 
         // 8. WebSocket client
         state.wsClient = new WebSocketClient({
@@ -185,7 +185,7 @@
 
         // Attempt connection (will fall back to demo mode if server unavailable)
         state.wsClient.connect();
-        setLoadingProgress(95, 'Starting render loop...');
+        setLoadingProgress(95, 'Render döngüsü başlatılıyor...');
 
         // 9. Register the main update loop
         state.scene.onUpdate((delta, elapsed) => {
@@ -194,7 +194,7 @@
 
         // Start rendering
         state.scene.start();
-        setLoadingProgress(100, 'Ready');
+        setLoadingProgress(100, 'Hazır');
 
         // Hide loading after a brief moment
         setTimeout(hideLoading, 400);
@@ -203,7 +203,7 @@
 
       } catch (err) {
         console.error('[VIZ] Initialization failed:', err);
-        setLoadingProgress(100, 'Error: ' + err.message);
+        setLoadingProgress(100, 'Hata: ' + err.message);
       }
     }
 

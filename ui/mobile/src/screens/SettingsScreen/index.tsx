@@ -113,7 +113,7 @@ export const SettingsScreen = () => {
   const handleOpenGitHub = async () => {
     const handled = await Linking.canOpenURL('https://github.com');
     if (!handled) {
-      Alert.alert('Unable to open link', 'Please open https://github.com manually in your browser.');
+      Alert.alert('Bağlantı açılamıyor', 'Lütfen https://github.com adresini tarayıcınızda elle açın.');
       return;
     }
 
@@ -127,27 +127,27 @@ export const SettingsScreen = () => {
           paddingBottom: spacing.xl,
         }}
       >
-        <GlowCard title="SERVER">
+        <GlowCard title="SUNUCU">
           <ServerUrlInput value={draftUrl} onChange={setDraftUrl} onSave={handleSaveUrl} />
         </GlowCard>
 
-        <GlowCard title="SENSING">
+        <GlowCard title="ALGILAMA">
           <RssiToggle enabled={rssiScanEnabled} onChange={setRssiScanEnabled} />
           <ThemedText preset="bodyMd" style={{ marginTop: spacing.md }}>
-            Scan interval
+            Tarama aralığı
           </ThemedText>
           <ScanIntervalPicker value={scanInterval} onChange={setScanInterval} />
           <ThemedText preset="bodySm" style={{ color: colors.textSecondary, marginTop: spacing.sm }}>
-            Active interval: {intervalSummary}
+            Etkin aralık: {intervalSummary}
           </ThemedText>
           {Platform.OS === 'ios' && (
             <ThemedText preset="bodySm" style={{ color: colors.textSecondary, marginTop: spacing.sm }}>
-              iOS: RSSI scanning uses stubbed telemetry in this build.
+              iOS: RSSI taraması bu sürümde örnek telemetri kullanır.
             </ThemedText>
           )}
         </GlowCard>
 
-        <GlowCard title="INFERENCE">
+        <GlowCard title="ÇIKARIM">
           <InferenceSettings
             forceLocal={forceLocalInference}
             engine={inferenceEngine}
@@ -156,11 +156,11 @@ export const SettingsScreen = () => {
           />
         </GlowCard>
 
-        <GlowCard title="APPEARANCE">
+        <GlowCard title="GÖRÜNÜM">
           <ThemePicker value={theme} onChange={setTheme} />
         </GlowCard>
 
-        <GlowCard title="ABOUT">
+        <GlowCard title="HAKKINDA">
           <ThemedText preset="bodyMd" style={{ marginBottom: spacing.xs }}>
             WiFi-DensePose Mobile v1.0.0
           </ThemedText>
@@ -169,11 +169,11 @@ export const SettingsScreen = () => {
             style={{ color: colors.accent, marginBottom: spacing.sm }}
             onPress={handleOpenGitHub}
           >
-            View on GitHub
+            GitHub'da görüntüle
           </ThemedText>
           <ThemedText preset="bodySm">WebSocket: {WS_PATH}</ThemedText>
           <ThemedText preset="bodySm" style={{ color: colors.textSecondary }}>
-            Triage priority mapping: Immediate/Delayed/Minor/Deceased/Unknown
+            Triyaj öncelik eşlemesi: Acil/Gecikmeli/Minör/Vefat/Bilinmiyor
           </ThemedText>
         </GlowCard>
       </ScrollView>

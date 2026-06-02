@@ -77,26 +77,26 @@ export default class ModelPanel {
   async _load(id) {
     this._set({ loading: true, error: null });
     try { await modelService.loadModel(id); await this.refresh(); }
-    catch (e) { this._set({ loading: false, error: `Load failed: ${e.message}` }); }
+    catch (e) { this._set({ loading: false, error: `Yükleme başarısız: ${e.message}` }); }
   }
 
   async _unload() {
     this._set({ loading: true, error: null });
     try { await modelService.unloadModel(); await this.refresh(); }
-    catch (e) { this._set({ loading: false, error: `Unload failed: ${e.message}` }); }
+    catch (e) { this._set({ loading: false, error: `Kaldırma başarısız: ${e.message}` }); }
   }
 
   async _delete(id) {
     this._set({ loading: true, error: null });
     try { await modelService.deleteModel(id); await this.refresh(); }
-    catch (e) { this._set({ loading: false, error: `Delete failed: ${e.message}` }); }
+    catch (e) { this._set({ loading: false, error: `Silme başarısız: ${e.message}` }); }
   }
 
   async _loraChange(modelId, profile) {
     if (!profile) return;
     this._set({ loading: true, error: null });
     try { await modelService.activateLoraProfile(modelId, profile); await this.refresh(); }
-    catch (e) { this._set({ loading: false, error: `LoRA failed: ${e.message}` }); }
+    catch (e) { this._set({ loading: false, error: `LoRA başarısız: ${e.message}` }); }
   }
 
   _set(p) { Object.assign(this.state, p); this.render(); }

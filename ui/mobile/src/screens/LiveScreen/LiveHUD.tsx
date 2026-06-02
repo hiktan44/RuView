@@ -20,10 +20,10 @@ type LiveHUDProps = {
 };
 
 const statusTextMap: Record<ConnectionStatus, string> = {
-  connected: 'Connected',
-  simulated: 'Simulated',
-  connecting: 'Connecting',
-  disconnected: 'Disconnected',
+  connected: 'Bağlı',
+  simulated: 'Simüle',
+  connecting: 'Bağlanıyor',
+  disconnected: 'Bağlantı Kesildi',
 };
 
 const statusDotStatusMap: Record<ConnectionStatus, 'connected' | 'simulated' | 'disconnected' | 'connecting'> = {
@@ -89,11 +89,11 @@ export const LiveHUD = memo(
             </View>
 
             <View style={styles.bottomCellRight}>
-              <ThemedText preset="bodySm">Confidence</ThemedText>
+              <ThemedText preset="bodySm">Güven</ThemedText>
               <ThemedText preset="bodyMd" style={styles.metaText}>
                 {formatConfidence(confidence)}
               </ThemedText>
-              <ThemedText preset="bodySm">People: {personCount}</ThemedText>
+              <ThemedText preset="bodySm">Kişi: {personCount}</ThemedText>
             </View>
           </View>
         </Animated.View>

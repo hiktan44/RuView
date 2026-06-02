@@ -73,7 +73,7 @@ describe('ZonesScreen', () => {
         <ZonesScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText(/Floor Plan/)).toBeTruthy();
+    expect(screen.getByText(/Kat Planı/)).toBeTruthy();
   });
 
   it('renders occupancy count', () => {
@@ -83,7 +83,7 @@ describe('ZonesScreen', () => {
         <ZonesScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText(/0 persons detected/)).toBeTruthy();
+    expect(screen.getByText(/0 kişi tespit edildi/)).toBeTruthy();
   });
 
   it('renders last update text', () => {
@@ -93,6 +93,6 @@ describe('ZonesScreen', () => {
         <ZonesScreen />
       </ThemeProvider>,
     );
-    expect(screen.getByText(/Last update: N\/A/)).toBeTruthy();
+    expect(screen.getByText(/Son güncelleme: N\/A/)).toBeTruthy();
   });
 });

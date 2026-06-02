@@ -42,11 +42,11 @@ export const TRIAGE_PRIORITY: Record<TriageStatus, number> = {
 
 /** START colour labels (RED / YELLOW / GREEN / BLACK) per category. */
 export const TRIAGE_META: Record<TriageStatus, { label: string; short: string; colorKey: string }> = {
-  [TriageStatus.Immediate]: { label: 'IMMEDIATE', short: 'RED', colorKey: 'danger' },
-  [TriageStatus.Delayed]: { label: 'DELAYED', short: 'YELLOW', colorKey: 'warn' },
-  [TriageStatus.Minor]: { label: 'MINOR', short: 'GREEN', colorKey: 'success' },
-  [TriageStatus.Deceased]: { label: 'DECEASED', short: 'BLACK', colorKey: 'muted' },
-  [TriageStatus.Unknown]: { label: 'UNKNOWN', short: 'GREY', colorKey: 'textSecondary' },
+  [TriageStatus.Immediate]: { label: 'ACİL', short: 'KIRMIZI', colorKey: 'danger' },
+  [TriageStatus.Delayed]: { label: 'GECİKMELİ', short: 'SARI', colorKey: 'warn' },
+  [TriageStatus.Minor]: { label: 'MİNÖR', short: 'YEŞİL', colorKey: 'success' },
+  [TriageStatus.Deceased]: { label: 'VEFAT', short: 'SİYAH', colorKey: 'muted' },
+  [TriageStatus.Unknown]: { label: 'BİLİNMİYOR', short: 'GRİ', colorKey: 'textSecondary' },
 };
 
 /** High-contrast hex colours (sunlight-readable) for each START category. */

@@ -37,21 +37,21 @@ export const SurvivorDetail = ({ survivor, onClose }: SurvivorDetailProps) => {
           </View>
           <View style={styles.body}>
             <Text style={styles.line}>ID: {survivor.id}</Text>
-            <Text style={styles.line}>Breathing: {fmt(survivor.breathing_rate)} breaths/min</Text>
-            <Text style={styles.line}>Heart rate: {fmt(survivor.heart_rate)} bpm</Text>
-            <Text style={styles.line}>Confidence: {Math.round(survivor.confidence * 100)}%</Text>
+            <Text style={styles.line}>Solunum: {fmt(survivor.breathing_rate)} soluk/dk</Text>
+            <Text style={styles.line}>Kalp atış hızı: {fmt(survivor.heart_rate)} bpm</Text>
+            <Text style={styles.line}>Güven: {Math.round(survivor.confidence * 100)}%</Text>
             <Text style={styles.line}>
-              Location: x {survivor.x.toFixed(2)}, y {survivor.y.toFixed(2)}, depth{' '}
+              Konum: x {survivor.x.toFixed(2)}, y {survivor.y.toFixed(2)}, derinlik{' '}
               {survivor.depth.toFixed(2)} m
             </Text>
             <Text style={styles.line}>
-              Deteriorating: {survivor.is_deteriorating ? 'yes' : 'no'}
+              Kötüleşiyor: {survivor.is_deteriorating ? 'evet' : 'hayır'}
             </Text>
-            <Text style={styles.line}>First detected: {formatIso(survivor.first_detected)}</Text>
-            <Text style={styles.line}>Last update: {formatIso(survivor.last_updated)}</Text>
+            <Text style={styles.line}>İlk tespit: {formatIso(survivor.first_detected)}</Text>
+            <Text style={styles.line}>Son güncelleme: {formatIso(survivor.last_updated)}</Text>
           </View>
           <Pressable style={styles.close} onPress={onClose}>
-            <Text style={styles.closeText}>Close</Text>
+            <Text style={styles.closeText}>Kapat</Text>
           </Pressable>
         </Pressable>
       </Pressable>

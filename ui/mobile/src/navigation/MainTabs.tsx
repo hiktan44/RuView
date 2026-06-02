@@ -11,9 +11,9 @@ import { MainTabsParamList } from './types';
 const createPlaceholder = (label: string) => {
   const Placeholder = () => (
     <ThemedView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <ThemedText preset="bodyLg">{label} screen not implemented yet</ThemedText>
+      <ThemedText preset="bodyLg">{label} ekranı henüz hazır değil</ThemedText>
       <ThemedText preset="bodySm" color="textSecondary">
-        Placeholder shell
+        Yer tutucu kabuk
       </ThemedText>
     </ThemedView>
   );
@@ -25,7 +25,7 @@ const createPlaceholder = (label: string) => {
         <ThemedView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator color={colors.accent} />
           <ThemedText preset="bodySm" color="textSecondary" style={{ marginTop: 8 }}>
-            Loading {label}
+            {label} yükleniyor
           </ThemedText>
         </ThemedView>
       }
@@ -60,6 +60,14 @@ const VitalsScreen = wrapLazy(() => import('../screens/VitalsScreen'), 'Vitals')
 const ZonesScreen = wrapLazy(() => import('../screens/ZonesScreen'), 'Zones');
 const MATScreen = wrapLazy(() => import('../screens/MATScreen'), 'MAT');
 const SettingsScreen = wrapLazy(() => import('../screens/SettingsScreen'), 'Settings');
+
+const tabLabel: Record<keyof MainTabsParamList, string> = {
+  Live: 'Canlı',
+  Vitals: 'Yaşamsal',
+  Zones: 'Bölgeler',
+  MAT: 'MAT',
+  Settings: 'Ayarlar',
+};
 
 const toIconName = (routeName: keyof MainTabsParamList) => {
   switch (routeName) {
@@ -114,7 +122,7 @@ export const MainTabs = () => {
           textTransform: 'uppercase',
           fontSize: 10,
         },
-        tabBarLabel: ({ children, color }) => <ThemedText style={{ color }}>{children}</ThemedText>,
+        tabBarLabel: ({ color }) => <ThemedText style={{ color }}>{tabLabel[route.name]}</ThemedText>,
       })}
     >
       {screens.map(({ name, component }) => (

@@ -73,7 +73,7 @@ describe('MATScreen', () => {
         <MATScreen />
       </ThemeProvider>,
     );
-    // Simulated status maps to 'simulated' banner -> "SIMULATED DATA"
-    expect(getByText('SIMULATED DATA')).toBeTruthy();
+    // Simulated status maps to 'simulated' banner -> "SİMÜLE VERİ"
+    expect(getByText('SİMÜLE VERİ')).toBeTruthy();
   });
 });

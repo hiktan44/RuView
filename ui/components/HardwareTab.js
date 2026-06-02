@@ -127,9 +127,9 @@ export class HardwareTab {
       return div;
     };
     
-    arrayStatus.appendChild(createInfoDiv('Active TX:', `${txActive}/3`));
-    arrayStatus.appendChild(createInfoDiv('Active RX:', `${rxActive}/6`));
-    arrayStatus.appendChild(createInfoDiv('Signal Quality:', `${this.calculateSignalQuality(txActive, rxActive)}%`));
+    arrayStatus.appendChild(createInfoDiv('Aktif TX:', `${txActive}/3`));
+    arrayStatus.appendChild(createInfoDiv('Aktif RX:', `${rxActive}/6`));
+    arrayStatus.appendChild(createInfoDiv('Sinyal Kalitesi:', `${this.calculateSignalQuality(txActive, rxActive)}%`));
   }
 
   // Calculate signal quality based on active antennas

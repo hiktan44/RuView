@@ -50,7 +50,7 @@ export const ZonesScreen = () => {
           }}
         >
           <ThemedText preset="labelLg" style={{ color: colors.textSecondary, marginBottom: 8 }}>
-            Floor Plan — Occupancy Heatmap
+            Kat Planı — Doluluk Isı Haritası
           </ThemedText>
         </View>
 
@@ -71,8 +71,8 @@ export const ZonesScreen = () => {
             gap: spacing.md,
           }}
         >
-          <ThemedText preset="bodyMd">Occupancy: {personPositions.length} persons detected</ThemedText>
-          <ThemedText preset="bodyMd">Last update: {getLastUpdateSeconds(lastFrame?.timestamp)}</ThemedText>
+          <ThemedText preset="bodyMd">Doluluk: {personPositions.length} kişi tespit edildi</ThemedText>
+          <ThemedText preset="bodyMd">Son güncelleme: {getLastUpdateSeconds(lastFrame?.timestamp)}</ThemedText>
         </View>
       </ScrollView>
     </ThemedView>

@@ -66,7 +66,7 @@ describe('LiveScreen', () => {
         <LiveScreen />
       </ThemeProvider>,
     );
-    // The screen shows "Loading live renderer" when not ready
-    expect(getByText('Loading live renderer')).toBeTruthy();
+    // The screen shows "Canlı oluşturucu yükleniyor" when not ready
+    expect(getByText('Canlı oluşturucu yükleniyor')).toBeTruthy();
   });
 });

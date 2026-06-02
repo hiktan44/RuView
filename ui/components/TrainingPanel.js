@@ -117,7 +117,7 @@ export default class TrainingPanel {
       await trainingService.startRecording({ session_name: `rec_${Date.now()}`, label: 'pose' });
       this._set({ isRecording: true, loading: false });
       await this.refresh();
-    } catch (e) { this._set({ loading: false, error: `Recording failed: ${e.message}` }); }
+    } catch (e) { this._set({ loading: false, error: `Kayıt başarısız: ${e.message}` }); }
   }
 
   async _stopRec() {
@@ -126,7 +126,7 @@ export default class TrainingPanel {
       await trainingService.stopRecording();
       this._set({ isRecording: false, loading: false });
       await this.refresh();
-    } catch (e) { this._set({ loading: false, error: `Stop recording failed: ${e.message}` }); }
+    } catch (e) { this._set({ loading: false, error: `Kayıt durdurma başarısız: ${e.message}` }); }
   }
 
   async _delRec(id) {
@@ -135,7 +135,7 @@ export default class TrainingPanel {
       await trainingService.deleteRecording(id);
       this.config.selectedRecordings = this.config.selectedRecordings.filter(r => r !== id);
       await this.refresh();
-    } catch (e) { this._set({ loading: false, error: `Delete failed: ${e.message}` }); }
+    } catch (e) { this._set({ loading: false, error: `Silme başarısız: ${e.message}` }); }
   }
 
   async _launchTraining(method, extraCfg = {}) {
@@ -154,13 +154,13 @@ export default class TrainingPanel {
       };
       await trainingService[method](payload);
       await this.refresh();
-    } catch (e) { this._set({ loading: false, error: `Training failed: ${e.message}` }); }
+    } catch (e) { this._set({ loading: false, error: `Eğitim başarısız: ${e.message}` }); }
   }
 
   async _stopTraining() {
     this._set({ loading: true, error: null });
     try { await trainingService.stopTraining(); await this.refresh(); }
-    catch (e) { this._set({ loading: false, error: `Stop failed: ${e.message}` }); }
+    catch (e) { this._set({ loading: false, error: `Durdurma başarısız: ${e.message}` }); }
   }
 
   _set(p) { Object.assign(this.state, p); this.render(); }
@@ -325,7 +325,7 @@ export default class TrainingPanel {
     const mc = (l, v) => { const c = this._el('div', 'tp-metric-cell'); c.appendChild(this._el('div', 'tp-metric-label', l)); c.appendChild(this._el('div', 'tp-metric-value', v)); return c; };
     const losses = this.progressData.losses;
     g.appendChild(mc('Son Kayıp', losses.length > 0 ? losses[losses.length - 1].toFixed(4) : '--'));
-    g.appendChild(mc('Best PCK', ts.best_pck != null ? (ts.best_pck * 100).toFixed(1) + '%' : '--'));
+    g.appendChild(mc('En İyi PCK', ts.best_pck != null ? (ts.best_pck * 100).toFixed(1) + '%' : '--'));
     g.appendChild(mc('En İyi Epok', ts.best_epoch != null ? String(ts.best_epoch) : '--'));
     g.appendChild(mc('Toplam Epok', String(losses.length)));
     s.appendChild(g);
@@ -351,7 +351,7 @@ export default class TrainingPanel {
     const p = { t: 20, r: 10, b: 24, l: 44 };
     ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = '#8899aa'; ctx.font = '11px -apple-system,sans-serif'; ctx.fillText(opts.label, p.l, 14);
-    if (!data.length) { ctx.fillStyle = '#6b7a8d'; ctx.fillText('No data', w / 2 - 20, h / 2); return; }
+    if (!data.length) { ctx.fillStyle = '#6b7a8d'; ctx.fillText('Veri yok', w / 2 - 20, h / 2); return; }
     const pw = w - p.l - p.r, ph = h - p.t - p.b;
     let yMin = opts.yMin ?? Math.min(...data), yMax = opts.yMax ?? Math.max(...data);
     if (yMax === yMin) yMax = yMin + 1;

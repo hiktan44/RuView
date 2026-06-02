@@ -13,9 +13,9 @@ export const RssiToggle = ({ enabled, onChange }: RssiToggleProps) => {
     <View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View style={{ flex: 1 }}>
-          <ThemedText preset="bodyMd">RSSI Scan</ThemedText>
+          <ThemedText preset="bodyMd">RSSI Taraması</ThemedText>
           <ThemedText preset="bodySm" style={{ color: colors.textSecondary }}>
-            Scan for nearby Wi-Fi signals from Android devices
+            Android cihazlarda yakındaki Wi-Fi sinyallerini tara
           </ThemedText>
         </View>
         <Switch
@@ -28,7 +28,7 @@ export const RssiToggle = ({ enabled, onChange }: RssiToggleProps) => {
 
       {Platform.OS === 'ios' && (
         <ThemedText preset="bodySm" style={{ color: colors.textSecondary, marginTop: spacing.xs }}>
-          iOS: RSSI scan is currently limited — using stub data.
+          iOS: RSSI taraması şu anda sınırlı — örnek veri kullanılıyor.
         </ThemedText>
       )}
     </View>
