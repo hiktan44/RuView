@@ -13,8 +13,10 @@ WORKDIR /build
 # exit 101). gfortran is still needed for the LAPACK symbols.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential gfortran perl make pkg-config cmake \
-    libopenblas-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libopenblas-dev liblapack-dev libblas-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pkg-config --exists openblas && echo "openblas.pc found: $(pkg-config --modversion openblas)" \
+       || echo "WARNING: openblas.pc not found; will link via -lopenblas"
 
 # Copy workspace files
 COPY rust-port/wifi-densepose-rs/Cargo.toml rust-port/wifi-densepose-rs/Cargo.lock ./
@@ -33,7 +35,12 @@ COPY vendor/ruvector/ /build/vendor/ruvector/
 ENV CARGO_BUILD_JOBS=1
 ENV CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
 ENV CARGO_PROFILE_RELEASE_LTO=off
-RUN cargo build --release -p wifi-densepose-sensing-server 2>&1 \
+# Point openblas-src at the apt-installed library so the "system" feature links
+# the prebuilt OpenBLAS even if the .pc file is missing/oddly named on Debian.
+ENV OPENBLAS_DIR=/usr
+ENV RUST_BACKTRACE=1
+# NOTE: no `2>&1` swallowing — let cargo's real error reach the deploy log.
+RUN cargo build --release -p wifi-densepose-sensing-server \
     && strip target/release/sensing-server
 
 # Stage 2: Runtime
