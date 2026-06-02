@@ -3,7 +3,12 @@
 # Multi-stage build for minimal final image
 
 # Stage 1: Build
-FROM rust:1.85-bookworm AS builder
+# Use the latest stable Rust (>=1.89), NOT 1.85: a transitive dependency
+# (ruvector-core) uses `#[target_feature(enable = "avx512f")]`, which was
+# unstable until Rust 1.89 (error E0658 on 1.85 for x86_64 targets). The build
+# passed locally only because the dev machine runs rustc 1.96; the deploy image
+# pinned 1.85 and failed to compile. `rust:1` always tracks current stable.
+FROM rust:1-bookworm AS builder
 
 WORKDIR /build
 
