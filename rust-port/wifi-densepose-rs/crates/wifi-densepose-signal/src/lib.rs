@@ -42,6 +42,7 @@ pub mod hardware_norm;
 pub mod motion;
 pub mod phase_sanitizer;
 pub mod ruvsense;
+pub mod softbio;
 pub mod spectrogram;
 pub mod subcarrier_selection;
 
@@ -66,6 +67,12 @@ pub use hardware_norm::{
 };
 pub use phase_sanitizer::{
     PhaseSanitizationError, PhaseSanitizer, PhaseSanitizerConfig, UnwrappingMethod,
+};
+// EXPERIMENTAL, opt-in, OFF by default. Re-exported for discoverability only —
+// nothing here is enabled anywhere by default. See [`softbio`] module docs.
+pub use softbio::{
+    GaitConfig, GaitFeatureExtractor, GaitFeatures, GenderGuess, LabeledGaitWindow, Reliability,
+    SoftBioClassifier, SoftBioConfig, SoftBioEstimate, SoftBioModel, DISCLAIMER,
 };
 
 /// Library version

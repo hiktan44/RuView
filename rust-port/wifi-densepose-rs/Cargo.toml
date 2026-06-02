@@ -16,6 +16,7 @@ members = [
     "crates/wifi-densepose-wifiscan",
     "crates/wifi-densepose-vitals",
     "crates/wifi-densepose-bfi",
+    "crates/wifi-densepose-bf",
     "crates/wifi-densepose-ruvector",
     "crates/wifi-densepose-desktop",
 ]
