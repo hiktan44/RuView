@@ -575,6 +575,7 @@ export class PoseDetectionCanvas {
         connecting: 'Bağlanıyor',
         disconnected: 'Bağlantı Yok',
         error: 'Hata',
+        failed: 'Başarısız',
         reconnecting: 'Yeniden Bağlanıyor',
       };
       text.textContent = stateLabels[this.state.connectionState] ||

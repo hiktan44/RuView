@@ -129,7 +129,7 @@ export class WebSocketService {
 
       ws.onerror = (error) => {
         clearTimeout(timeout);
-        reject(new Error(`WebSocket connection failed: ${error.message || 'Unknown error'}`));
+        reject(new Error(`WebSocket bağlantısı başarısız: ${error.message || 'Bilinmeyen hata'}`));
       };
     });
   }

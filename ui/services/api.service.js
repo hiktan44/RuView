@@ -119,10 +119,13 @@ export class ApiService {
   // POST request
   async post(endpoint, data = {}, options = {}) {
     const url = buildApiUrl(endpoint);
+    // Spread caller options FIRST so an empty/foreign `method` in options can
+    // never override POST (that silently turned start-training into a GET and
+    // the server replied 405 Method Not Allowed).
     return this.request(url, {
+      ...options,
       method: 'POST',
-      body: JSON.stringify(data),
-      ...options
+      body: JSON.stringify(data)
     });
   }
 
@@ -130,9 +133,9 @@ export class ApiService {
   async put(endpoint, data = {}, options = {}) {
     const url = buildApiUrl(endpoint);
     return this.request(url, {
+      ...options,
       method: 'PUT',
-      body: JSON.stringify(data),
-      ...options
+      body: JSON.stringify(data)
     });
   }
 
@@ -140,8 +143,8 @@ export class ApiService {
   async delete(endpoint, options = {}) {
     const url = buildApiUrl(endpoint);
     return this.request(url, {
-      method: 'DELETE',
-      ...options
+      ...options,
+      method: 'DELETE'
     });
   }
 }
