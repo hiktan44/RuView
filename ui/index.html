@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WiFi DensePose: Duvar Arkası İnsan Takibi</title>
-    <link rel="stylesheet" href="style.css?v=20260605rescue">
+    <link rel="stylesheet" href="style.css?v=20260606beginner">
 </head>
 <body>
     <div class="container">
@@ -580,6 +580,52 @@
                 <h2>Kurtarma Modları</h2>
                 <p class="howto-intro">Bu rehber, arama-kurtarma ekipleri için yazılmıştır. Hangi algılama modunun nerede kullanılacağını, hangi ek ekipmanın gerektiğini ve uzaktan/uzun-menzil algılamayla ilgili kritik soruların dürüst cevaplarını içerir. Tutarlı sözlük: <strong>Yaşamsal Belirtiler</strong>, <strong>Kalp Atış Hızı</strong>, <strong>Solunum Hızı</strong>, <strong>Canlı Tespiti</strong>.</p>
 
+                <!-- Sıfırdan Anlatım (terim bilmeyenler için) -->
+                <div class="howto-section">
+                    <h3>🟢 Sıfırdan Anlatım — Hiç Bilgisi Olmayanlar İçin</h3>
+                    <p>Bu bölüm hiçbir teknik terim bilmeyen birine, günlük örneklerle anlatır. Acele etmeyin; her kelime açıklanmıştır.</p>
+                    <div class="howto-faq">
+                        <details open>
+                            <summary>1) WiFi ile bir insan nasıl "görülür"?</summary>
+                            <p>Evdeki WiFi aslında <strong>görünmez bir ışık</strong> gibidir. Modem odaya sürekli görünmez dalgalar yayar, telefon da bunları yakalar. Bu dalgalar her yöne gider, duvarlara çarpıp geri döner — tıpkı odaya bağırınca sesin yankılanması gibi.</p>
+                            <p><strong>Kilit nokta:</strong> bir insan odada hareket edince bu dalgaların yankısı değişir. Nefes alıp verirken göğsünüz 1 cm kalkıp iner — bu bile yankıyı azıcık değiştirir. Sistem işte bu <strong>değişimi</strong> okur. Kamera yok, ışık yok; sadece "görünmez dalganın yankısı nasıl bozuldu?" sorusu sorulur ve bundan "odada biri var mı, nefes alıyor mu?" sonucu çıkarılır.</p>
+                            <p><em>Benzetme: Karanlık bir odada suya bakmak gibi. Kimse dokunmazsa dalga düz gider; biri parmağını soksa dalga bozulur. Biz suyu değil, görünmez WiFi dalgasının bozulmasını izleriz.</em></p>
+                        </details>
+                        <details>
+                            <summary>2) "Node" ne demek?</summary>
+                            <p><strong>Node = düğüm = küçük bir cihaz.</strong> Bu kadar basit. Bizim sistemde node, <strong>avuç içi kadar küçük, ucuz bir elektronik karttır</strong> (adı ESP32 — sadece markası gibi düşünün). Bu kart WiFi dalgalarını dinler ve "yankı değişti mi?" diye bakar.</p>
+                            <p><em>Benzetme: Bir bekçi. Odaya bir bekçi koyarsınız, o "burada biri kıpırdadı" diye haber verir. Birden fazla bekçi (node) koyarsanız daha geniş alanı kaplarsınız.</em></p>
+                        </details>
+                        <details>
+                            <summary>3) En önemli kural: "hissetme mesafesi" ile "haber mesafesi" farklıdır</summary>
+                            <p>Kafa karıştıran her şeyin cevabı budur. İki ayrı şey vardır:</p>
+                            <p><strong>A) Hissetme mesafesi</strong> — küçük kart çevresini ne kadar uzaktan hisseder? <strong>Çok kısa, birkaç metre.</strong> Tıpkı bir mum gibi: sadece etrafını aydınlatır, 100 metre öteyi değil. Bunu uzatmak çok zordur çünkü fizik kuralıdır.</p>
+                            <p><strong>B) Haber mesafesi</strong> — node topladığı bilgiyi ne kadar uzağa gönderir? <strong>Sınırsız.</strong> İnternet var; node bilgiyi internete koyar, siz dünyanın öbür ucundan görürsünüz.</p>
+                            <p><em>Benzetme: Bir doktor (node) hastayı muayene eder — bunu yanında yapması lazım, telefonla uzaktan kalp dinleyemez (hissetme yakın olmalı). Ama sonucu WhatsApp'tan başka şehre yollayabilir (haber uzağa gider).</em></p>
+                        </details>
+                        <details>
+                            <summary>4) Neden duvar / moloz / toprak işi zorlaştırır?</summary>
+                            <p>Görünmez WiFi dalgası katı şeylerden geçerken <strong>zayıflar</strong>: El fenerini avucunuza tutarsanız ışık biraz geçer (parmaklar pembe görünür) ama kemikten geçemez. Sesinizi bir duvar arkasından duyarlar, iki-üç duvar arkasından duyamazlar.</p>
+                            <p>WiFi de aynen böyle: <strong>bir duvar tamam, ama metrelerce beton/moloz/toprak = dalga ölür.</strong> Ne kadar pahalı cihaz alırsanız alın, fizik bu.</p>
+                            <p><strong>Frekans</strong> dediğimiz şey dalganın "kalınlığı" gibidir. Yüksek frekans (normal WiFi): keskin görüntü ama duvardan zor geçer. Düşük frekans: detay az ama kalın engelden daha iyi geçer. <em>Bas sesin duvardan geçip "dum dum" duyulması ama şarkı sözlerinin duyulmaması gibi — bas = düşük frekans, geçer; sözler = yüksek frekans, geçmez.</em></p>
+                        </details>
+                        <details>
+                            <summary>5) Modlar nedir? (her biri bir benzetmeyle)</summary>
+                            <p><strong>🔹 Normal Mod:</strong> Ev/oda içi. Küçük kart + WiFi yeter. <em>Gündüz açık havada normal görmek gibi.</em></p>
+                            <p><strong>🔹 Kurtarma Modu:</strong> Sinyal çok zayıfsa (moloz altında soluk nefes), sistem "acele etme, uzun uzun dinle" moduna geçer. <em>Çok sessiz bir fısıltıyı duymak için nefesinizi tutup uzun süre dikkatle kulak vermek gibi. Hız kaybedersiniz ama duyarsınız. Yine de yüzlerce metre kayanın ardını duymaz — fizik.</em></p>
+                            <p><strong>🔹 Sub-GHz Modu:</strong> Düşük frekans, kalın engelden daha iyi geçer; ama sadece "canlı + nefes". <em>Duvardan geçen bas ses gibi — şarkıyı anlamazsınız ama "içeride biri var" anlarsınız.</em></p>
+                            <p><strong>🔹 Breadcrumb (ekmek kırıntısı) Mod:</strong> İçeri ilerleyen kurtarmacı, arkasında küçük röle cihazları bırakır; her biri haberi bir sonrakine fısıldar. <em>Masaldaki gibi yere ekmek kırıntısı bırakıp yol işaretlemek. Mesafeyi değil HABERİ uzatır.</em></p>
+                            <p><strong>🔹 Maden Modu:</strong> Yüzlerce metre derin maden — WiFi kesinlikle çalışmaz. Tamamen başka teknoloji (çok düşük frekanslı manyetik sinyal) gerekir, sadece "yaşıyorum" mesajı taşır. <em>Denizaltıyla konuşmak gibi — normal telsiz su altında çalışmaz.</em></p>
+                        </details>
+                        <details>
+                            <summary>6) Drone ile binanın üstünden içeriyi görür müyüm?</summary>
+                            <p>İki sorun var. <strong>Sorun 1 — yukarıda çok kat var:</strong> Drone tavanın üstünde; içeri bakmak için dalga önce çatıyı sonra her katın betonunu geçmeli. Çatı + bir kat = dalga çoktan öldü. Yani <strong>10 katlı binanın alt katını yukarıdan göremezsiniz</strong>, sadece en üst katı/çatı altını, o da zar zor. <em>Üst üste 10 battaniye gibi — en üsttekinin altını görebilirsiniz belki, 10.'nun altını asla.</em></p>
+                            <p><strong>Sorun 2 — drone titrer:</strong> Sistem ortam sabit olunca yankı değişimini okur; drone uçarken her şey sallanır, sinyal bulanır. <em>Siz de teknede sallanıyorsanız hangi dalga sizden hangisi sudan ayıramazsınız.</em></p>
+                            <p><strong>Drone'un asıl gücü derinlik değil, erişimdir:</strong> Çökmüş/yanan/girilmez bir enkazın üstüne hızla gidip <strong>yüzeydeki / en üst 1-2 metredeki</strong> canlıyı taramak. Bunun için normal WiFi değil, <strong>aşağı bakan özel radar</strong> gerekir. İşi artıran ekipmanlar: aşağı bakan radar, alçak uçmak, yönlü anten (ışığı tek noktaya odaklayan el feneri gibi), hareket düzeltme yazılımı, ve yerdeki node'larla birlikte çalışmak.</p>
+                        </details>
+                    </div>
+                </div>
+
                 <!-- Altın Kural -->
                 <div class="howto-card recommended" style="margin-bottom: var(--space-24);">
                     <div class="howto-card-header">
@@ -642,6 +688,13 @@
                                 <td>TTE verici + önceden yerleştirilmiş (pre-deployed) node'lar</td>
                                 <td>Yüzlerce metre kaya. <strong>Brutal dürüst:</strong> WiFi burada ÇALIŞMAZ — bu ayrı bir mimaridir.</td>
                             </tr>
+                            <tr>
+                                <td><strong>Drone / Havadan Mod</strong></td>
+                                <td>Erişilemez enkazın (çökmüş/yanan/girilmez) üstüne hızla gidip yüzey taraması. Derinlik değil, <strong>erişim</strong> aracı.</td>
+                                <td>Girilemeyen enkaz yığını üstü, geniş alan ön tarama</td>
+                                <td>Aşağı bakan UWB/FMCW radar + yönlü anten + hareket düzeltme (IMU/SAR). Yalnız WiFi yetersiz.</td>
+                                <td>Yalnız <strong>yüzey / en üst ~1-2 metre.</strong> <strong>Dürüst:</strong> çok katlı binanın alt katları havadan GÖRÜLMEZ.</td>
+                            </tr>
                         </tbody>
                     </table>
                     </div>
@@ -676,6 +729,15 @@
                                 <p style="margin:0;"><strong>Maden Modu (TTE)</strong> — WiFi DEĞİL. Manyetik indüksiyon uplink ve önceden kurulu node'lar gerektirir.</p>
                             </div>
                         </div>
+                        <div class="howto-card limited">
+                            <div class="howto-card-header">
+                                <span class="howto-badge-limited">Yüzey Aracı</span>
+                                <h4>🚁 Drone / havadan tarama</h4>
+                            </div>
+                            <div class="howto-card-body">
+                                <p style="margin:0;"><strong>Drone / Havadan Mod</strong> — girilemeyen enkazın üstüne git, yüzey/en üst katmanı tara. Aşağı bakan radar + alçak uçuş gerekir; alt katları havadan göremezsin.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -690,6 +752,11 @@
                         <details>
                             <summary>Açık havada 1 km ötede bir WiFi Box var, sinyalini alıyorum — bina içindeki nesneleri görebilir miyim?</summary>
                             <p><strong>HAYIR (gerçekçi değil).</strong> 1 km mesafede insan bedeninin sinyalde oluşturduğu perturbasyon, yol kaybı (path loss) ve klutter (çevre yansımaları) içinde tamamen gömülür. Duvar-arkası algı yalnızca <strong>metrelerce</strong> mesafede çalışır. Sinyali "almak" (iletişim) ile "o sinyalle içerideki bedeni çözmek" (algı) bambaşka şeylerdir. <strong>Doğru çözüm:</strong> algılama node'unu binaya yakın/içine yerleştirin, sonra veriyi 1 km geriye mesh/IP ile taşıyın. Yine: algı yerelde, iletişim uzakta.</p>
+                        </details>
+                        <details>
+                            <summary>Drone ile binanın üstünden dolaşıp içeridekileri kaç metreden görürüm?</summary>
+                            <p>Havadan algı iki engelle sınırlıdır. <strong>(1) Dikey kat yığını:</strong> Drone'un sinyali önce çatıyı, sonra her katın betonunu geçmeli; çatı + 1 kat çoğu sinyali yutar. Bu yüzden <strong>yalnızca en üst kat / çatı altı</strong> erişilebilir — çok katlı binanın alt katları havadan görülmez. <strong>(2) Drone hareketi:</strong> Uçan platformun titreşimi WiFi yankı okumasını bulandırır; hareket düzeltme (IMU + SAR işleme) şarttır.</p>
+                            <p><strong>Gerçekçi sonuç:</strong> Alçak uçan bir drone, <strong>aşağı bakan UWB/FMCW radar</strong> ile enkaz/çatının <strong>en üst ~1-2 metresinde</strong> nefes/canlı tespiti yapabilir (çığ/enkaz aramada kullanılan gerçek bir yöntem). Drone'un değeri derinlik değil, <strong>erişilemez alanın üstüne hızla gidebilmektir.</strong> Artıran ekipman: aşağı bakan radar, alçak uçuş, yüksek kazançlı yönlü anten, hareket düzeltme yazılımı, yerdeki node'larla bistatik çalışma.</p>
                         </details>
                     </div>
                 </div>
@@ -972,6 +1039,6 @@ make run-api</code></pre>
     </script>
 
     <!-- Load application scripts as modules -->
-    <script type="module" src="app.js?v=20260605rescue"></script>
+    <script type="module" src="app.js?v=20260606beginner"></script>
 </body>
 </html>
