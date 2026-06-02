@@ -151,49 +151,48 @@ export class TrainingService {
     }
   }
 
-  // --- WebSocket progress stream ---
+  // --- Training progress (status polling) ---
+  //
+  // The server exposes training status via GET /api/v1/train/status, not a
+  // dedicated /ws/train/progress WebSocket (that endpoint doesn't exist, so the
+  // old WS attempt always errored). We poll the status endpoint and emit
+  // `progress` events from it, which is what the UI consumes.
 
   connectProgressStream() {
-    if (this.progressSocket) {
-      this.logger.warn('Progress stream already connected');
-      return this.progressSocket;
+    if (this._progressTimer) {
+      this.logger.warn('Progress polling already active');
+      return this._progressTimer;
     }
+    this.logger.info('Connecting progress stream (status polling)');
+    this.emit('progress-connected', {});
 
-    const url = buildWsUrl('/ws/train/progress');
-    this.logger.info('Connecting progress stream', { url });
-
-    const ws = new WebSocket(url);
-
-    ws.onopen = () => {
-      this.logger.info('Progress stream connected');
-      this.emit('progress-connected', {});
-    };
-
-    ws.onmessage = (event) => {
+    const poll = async () => {
       try {
-        const data = JSON.parse(event.data);
-        this.emit('progress', data);
+        const status = await this.getTrainingStatus();
+        this.emit('progress', status);
+        // Stop polling once training is no longer running.
+        if (status && status.status && status.status !== 'running') {
+          this.disconnectProgressStream();
+        }
       } catch (err) {
-        this.logger.warn('Failed to parse progress message', { error: err.message });
+        // Status endpoint hiccup — keep the panel alive, don't spam errors.
+        this.logger.warn('Progress poll failed', { error: err.message });
       }
     };
 
-    ws.onerror = (error) => {
-      this.logger.error('Progress stream error', { error });
-      this.emit('progress-error', { error });
-    };
-
-    ws.onclose = () => {
-      this.logger.info('Progress stream disconnected');
-      this.progressSocket = null;
-      this.emit('progress-disconnected', {});
-    };
-
-    this.progressSocket = ws;
-    return ws;
+    // Poll immediately, then every 2s.
+    poll();
+    this._progressTimer = setInterval(poll, 2000);
+    return this._progressTimer;
   }
 
   disconnectProgressStream() {
+    if (this._progressTimer) {
+      clearInterval(this._progressTimer);
+      this._progressTimer = null;
+      this.emit('progress-disconnected', {});
+    }
+    // Legacy WS cleanup (in case an old socket is still around).
     if (this.progressSocket) {
       this.progressSocket.close();
       this.progressSocket = null;
