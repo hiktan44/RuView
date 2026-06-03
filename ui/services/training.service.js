@@ -1,4 +1,4 @@
-// Training Service for WiFi-DensePose UI
+// Training Service for WIFIEYE UI
 // Manages training lifecycle, progress streaming, and CSI recordings.
 
 import { buildWsUrl } from '../config/api.config.js';

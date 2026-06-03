@@ -1,4 +1,4 @@
-// WiFi DensePose Application - Main Entry Point
+// WIFIEYE Application - Main Entry Point
 
 import { TabManager } from './components/TabManager.js';
 import { DashboardTab } from './components/DashboardTab.js';
@@ -20,7 +20,7 @@ class WiFiDensePoseApp {
   // Initialize application
   async init() {
     try {
-      console.log('WiFi DensePose UI başlatılıyor...');
+      console.log('WIFIEYE UI başlatılıyor...');
       
       // Set up error handling
       this.setupErrorHandling();
@@ -35,7 +35,7 @@ class WiFiDensePoseApp {
       this.setupEventListeners();
       
       this.isInitialized = true;
-      console.log('WiFi DensePose UI başarıyla başlatıldı');
+      console.log('WIFIEYE UI başarıyla başlatıldı');
       
     } catch (error) {
       console.error('Uygulama başlatılamadı:', error);

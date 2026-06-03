@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="WIFIEYE">
+  <title>WIFIEYE</title>
+  <!-- Navy rounded-square background -->
+  <rect x="0" y="0" width="32" height="32" rx="7" fill="#0A1530"/>
+  <!-- Eye outline (cyan) -->
+  <path d="M4 16 C9 9 23 9 28 16 C23 23 9 23 4 16 Z"
+        fill="none" stroke="#2DD4BF" stroke-width="2.4" stroke-linejoin="round"/>
+  <!-- Two WiFi arcs forming the iris -->
+  <g fill="none" stroke="#2DD4BF" stroke-width="2.2" stroke-linecap="round">
+    <path d="M10 19.2 A6.8 6.8 0 0 1 22 19.2"/>
+    <path d="M13 16.6 A4 4 0 0 1 19 16.6"/>
+  </g>
+  <!-- Pupil dot -->
+  <circle cx="16" cy="19.2" r="1.9" fill="#2DD4BF"/>
+</svg>

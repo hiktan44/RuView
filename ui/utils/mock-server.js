@@ -1,4 +1,4 @@
-// Mock Server for Testing WiFi DensePose UI
+// Mock Server for Testing WIFIEYE UI
 
 export class MockServer {
   constructor() {
@@ -41,7 +41,7 @@ export class MockServer {
     }));
 
     this.addEndpoint('GET', '/health/version', () => ({
-      name: 'WiFi-DensePose API',
+      name: 'WIFIEYE API',
       version: '1.0.0',
       environment: 'development',
       build: '2025-01-07-dev'
@@ -49,7 +49,7 @@ export class MockServer {
 
     // API info endpoints
     this.addEndpoint('GET', '/', () => ({
-      name: 'WiFi-DensePose API',
+      name: 'WIFIEYE API',
       version: '1.0.0',
       environment: 'development',
       features: {
@@ -67,7 +67,7 @@ export class MockServer {
     }));
 
     this.addEndpoint('GET', '/api/v1/info', () => ({
-      name: 'WiFi-DensePose API',
+      name: 'WIFIEYE API',
       version: '1.0.0',
       environment: 'development',
       zones: ['zone1', 'zone2', 'living-room'],

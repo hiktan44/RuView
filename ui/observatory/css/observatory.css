@@ -1,5 +1,5 @@
 /* ============================================================
-   RuView Observatory — Foundation Color Scheme
+   WIFIEYE Observatory — Foundation Color Scheme
    Warm dark background, electric green wireframe, amber data
    ============================================================ */
 
@@ -52,6 +52,30 @@ body {
 #brand {
   position: absolute;
   top: 24px; left: 28px;
+}
+
+/* Back-to-app link — re-enable pointer events (parent #hud disables them) */
+#home-link {
+  pointer-events: auto;
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 5px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--green-bright);
+  text-decoration: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+#home-link:hover {
+  color: var(--bg-deep);
+  background: var(--green-glow);
+  border-color: var(--green-glow);
 }
 
 #brand-logo {

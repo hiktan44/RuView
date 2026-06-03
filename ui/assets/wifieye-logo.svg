@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" role="img" aria-label="WIFIEYE">
+  <title>WIFIEYE</title>
+  <!-- Mark: WiFi-signal eye (cyan, reads on light + dark) -->
+  <g transform="translate(2 8)">
+    <path d="M3 16 C9 7 27 7 33 16 C27 25 9 25 3 16 Z"
+          fill="none" stroke="#2DD4BF" stroke-width="2.2" stroke-linejoin="round"/>
+    <g fill="none" stroke="#2DD4BF" stroke-width="1.9" stroke-linecap="round">
+      <path d="M11.5 19.5 A7.2 7.2 0 0 1 24.5 19.5"/>
+      <path d="M14.5 17 A4.7 4.7 0 0 1 21.5 17"/>
+    </g>
+    <circle cx="18" cy="19.5" r="1.9" fill="#2DD4BF"/>
+  </g>
+  <!-- Wordmark: geometric sans, currentColor (neutral on both themes) -->
+  <text x="46" y="33"
+        font-family="'Helvetica Neue', Arial, 'Segoe UI', system-ui, sans-serif"
+        font-size="26" font-weight="700" letter-spacing="2.5"
+        fill="currentColor">WIFI<tspan fill="#2DD4BF">EYE</tspan></text>
+</svg>

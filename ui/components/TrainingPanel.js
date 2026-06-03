@@ -1,4 +1,4 @@
-// TrainingPanel Component for WiFi-DensePose UI
+// TrainingPanel Component for WIFIEYE UI
 // Dark-mode panel for training management, CSI recordings, and progress charts.
 
 import { trainingService } from '../services/training.service.js';

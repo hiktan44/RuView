@@ -1,4 +1,4 @@
-// WebSocket Client for Three.js Visualization - WiFi DensePose
+// WebSocket Client for Three.js Visualization - WIFIEYE
 // Connects to ws://localhost:8000/ws/pose and manages real-time data flow
 
 export class WebSocketClient {

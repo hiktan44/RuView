@@ -1,4 +1,4 @@
-// API Configuration for WiFi-DensePose UI
+// API Configuration for WIFIEYE UI
 
 // Auto-detect the backend URL from the page origin so the UI works whether
 // served from Docker (:3000), local dev (:8080), or any other port.

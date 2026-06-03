@@ -1,4 +1,4 @@
-// ModelPanel Component for WiFi-DensePose UI
+// ModelPanel Component for WIFIEYE UI
 // Dark-mode panel for model management: listing, loading, LoRA profiles.
 
 import { modelService } from '../services/model.service.js';

@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi DensePose: Duvar Arkası İnsan Takibi</title>
-    <link rel="stylesheet" href="style.css?v=20260606beginner">
+    <title>WIFIEYE — WiFi ile Duvar Arkası İnsan Algılama</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260607wifieye">
+    <link rel="alternate icon" type="image/png" href="favicon-32.png?v=20260607wifieye">
+    <link rel="apple-touch-icon" href="favicon-180.png?v=20260607wifieye">
+    <link rel="stylesheet" href="style.css?v=20260607wifieye">
+    <style>
+        /* WIFIEYE brand header — scoped, keeps existing header layout intact */
+        .header h1 { display: inline-flex; align-items: center; gap: 12px; }
+        .header .brand-logo-img { height: 1.1em; width: auto; display: inline-block; }
+        .header .brand-wordmark { letter-spacing: 1px; }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>WiFi DensePose</h1>
-            <p class="subtitle">WiFi Sinyalleri ile Duvar Arkası İnsan Takibi</p>
+            <h1>
+                <img src="assets/wifieye-logo.svg" alt="WIFIEYE" class="brand-logo-img">
+                <span class="brand-wordmark">WIFIEYE</span>
+            </h1>
+            <p class="subtitle">WiFi Sinyalleri ile Duvar Arkası İnsan Algılama</p>
             <div class="header-controls">
                 <button id="themeToggle" class="btn btn--icon" title="Tema Değiştir">
                     <span class="theme-icon">🌙</span>
@@ -388,7 +400,7 @@
             
             <div class="architecture-flow">
                 <img src="https://pplx-res.cloudinary.com/image/upload/v1748813853/gpt4o_images/m7zztcttnue7vaxclvuw.png" 
-                     alt="WiFi DensePose Architecture" class="architecture-image">
+                     alt="WIFIEYE Sistem Mimarisi" class="architecture-image">
                 
                 <div class="flow-steps">
                     <div class="step-card" data-step="1">
@@ -555,7 +567,7 @@
 
             <div class="implementation-note">
                 <h3>Uygulama Dikkat Edilmesi Gerekenler</h3>
-                <p>WiFi DensePose devrim niteliğinde yetenekler sunsa da, başarılı uygulama için ortam kurulumu, veri gizliliği düzenlemeleri ve en iyi performans için sistem kalibrasyonunun dikkatle değerlendirilmesi gerekir.</p>
+                <p>WIFIEYE devrim niteliğinde yetenekler sunsa da, başarılı uygulama için ortam kurulumu, veri gizliliği düzenlemeleri ve en iyi performans için sistem kalibrasyonunun dikkatle değerlendirilmesi gerekir.</p>
             </div>
         </section>
 
@@ -767,7 +779,7 @@
         <section id="howto" class="tab-content">
             <div class="howto-container">
                 <h2>Nasıl Kullanılır</h2>
-                <p class="howto-intro">Bu rehber, RuView uygulamasını gerçek WiFi CSI verisi ile kullanmak için gereken tüm adımları içerir.</p>
+                <p class="howto-intro">Bu rehber, WIFIEYE uygulamasını gerçek WiFi CSI verisi ile kullanmak için gereken tüm adımları içerir.</p>
                 
                 <!-- CSI Nedir? -->
                 <div class="howto-section">
@@ -1039,6 +1051,6 @@ make run-api</code></pre>
     </script>
 
     <!-- Load application scripts as modules -->
-    <script type="module" src="app.js?v=20260606beginner"></script>
+    <script type="module" src="app.js?v=20260607wifieye"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// WebSocket Service for WiFi-DensePose UI
+// WebSocket Service for WIFIEYE UI
 
 import { API_CONFIG, buildWsUrl } from '../config/api.config.js';
 import { backendDetector } from '../utils/backend-detector.js';

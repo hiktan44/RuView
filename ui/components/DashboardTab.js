@@ -757,7 +757,7 @@ export class DashboardTab {
     if (!themeBtn) return;
     
     // Kayıtlı temayı yükle
-    const savedTheme = localStorage.getItem('ruview-theme') || 'light';
+    const savedTheme = localStorage.getItem('wifieye-theme') || 'light';
     this.setTheme(savedTheme);
     
     themeBtn.addEventListener('click', () => {
@@ -773,7 +773,7 @@ export class DashboardTab {
   setTheme(theme) {
     this.theme = theme;
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('ruview-theme', theme);
+    localStorage.setItem('wifieye-theme', theme);
     
     const themeIcon = document.querySelector('.theme-icon');
     if (themeIcon) {
@@ -878,12 +878,12 @@ export class DashboardTab {
     switch (format) {
       case 'csv':
         content = this.convertToCSV(data);
-        filename = 'ruview-data.csv';
+        filename = 'wifieye-data.csv';
         type = 'text/csv';
         break;
       case 'json':
         content = JSON.stringify(data, null, 2);
-        filename = 'ruview-data.json';
+        filename = 'wifieye-data.json';
         type = 'application/json';
         break;
       case 'image':
@@ -917,7 +917,7 @@ export class DashboardTab {
     if (!canvas) return;
     
     const link = document.createElement('a');
-    link.download = 'ruview-pose.png';
+    link.download = 'wifieye-pose.png';
     link.href = canvas.toDataURL();
     link.click();
   }

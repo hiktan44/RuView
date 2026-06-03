@@ -1,4 +1,4 @@
-// PoseDetectionCanvas Component for WiFi-DensePose UI
+// PoseDetectionCanvas Component for WIFIEYE UI
 
 import { PoseRenderer } from '../utils/pose-renderer.js';
 import { poseService } from '../services/pose.service.js';

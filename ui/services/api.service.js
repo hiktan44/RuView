@@ -1,4 +1,4 @@
-// API Service for WiFi-DensePose UI
+// API Service for WIFIEYE UI
 
 import { API_CONFIG, buildApiUrl } from '../config/api.config.js';
 import { backendDetector } from '../utils/backend-detector.js';

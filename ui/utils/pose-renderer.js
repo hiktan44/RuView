@@ -1,4 +1,4 @@
-// Pose Renderer Utility for WiFi-DensePose UI
+// Pose Renderer Utility for WIFIEYE UI
 
 export class PoseRenderer {
   constructor(canvas, options = {}) {

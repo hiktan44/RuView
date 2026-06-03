@@ -1,4 +1,4 @@
-// Health Service for WiFi-DensePose UI
+// Health Service for WIFIEYE UI
 
 import { API_CONFIG } from '../config/api.config.js';
 import { apiService } from './api.service.js';

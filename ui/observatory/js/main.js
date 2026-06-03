@@ -1,5 +1,5 @@
 /**
- * RuView Observatory — Main Scene Orchestrator
+ * WIFIEYE Observatory — Main Scene Orchestrator
  *
  * Room-based WiFi sensing visualization with:
  * - Pool of 4 human wireframe figures (multi-person scenarios)
@@ -42,13 +42,13 @@ class Observatory {
 
     // Load saved settings
     try {
-      const ver = localStorage.getItem('ruview-settings-version');
+      const ver = localStorage.getItem('wifieye-settings-version');
       if (ver === SETTINGS_VERSION) {
-        const saved = localStorage.getItem('ruview-observatory-settings');
+        const saved = localStorage.getItem('wifieye-observatory-settings');
         if (saved) Object.assign(this.settings, JSON.parse(saved));
       } else {
-        localStorage.removeItem('ruview-observatory-settings');
-        localStorage.setItem('ruview-settings-version', SETTINGS_VERSION);
+        localStorage.removeItem('wifieye-observatory-settings');
+        localStorage.setItem('wifieye-settings-version', SETTINGS_VERSION);
       }
     } catch {}
 

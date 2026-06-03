@@ -1,4 +1,4 @@
-// SettingsPanel Component for WiFi-DensePose UI
+// SettingsPanel Component for WIFIEYE UI
 
 import { poseService } from '../services/pose.service.js';
 import { wsService } from '../services/websocket.service.js';

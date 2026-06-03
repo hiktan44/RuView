@@ -1,4 +1,4 @@
-// Model Service for WiFi-DensePose UI
+// Model Service for WIFIEYE UI
 // Manages model loading, listing, LoRA profiles, and lifecycle events.
 
 import { apiService } from './api.service.js';
