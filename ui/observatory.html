@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WIFIEYE Gözlemevi</title>
+  <title>WIFIEYE Observatory</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260607wifieye">
   <link rel="alternate icon" type="image/png" href="favicon-32.png?v=20260607wifieye">
   <link rel="apple-touch-icon" href="favicon-180.png?v=20260607wifieye">
@@ -19,47 +19,47 @@
 
     <!-- Top-left: Branding -->
     <div id="brand">
-      <a id="home-link" href="index.html" title="Ana Sayfa">&#8592; Ana Sayfa</a>
+      <a id="home-link" href="index.html" title="Ana Sayfa" data-i18n="common.back_home">&#8592; Ana Sayfa</a>
       <div id="brand-logo"><span class="pi">&pi;</span> WIFIEYE</div>
-      <div id="brand-tagline">WiFi Algılama Gözlemevi</div>
+      <div id="brand-tagline" data-i18n="header.observatory_tagline">WiFi Algılama Gözlemevi</div>
     </div>
 
     <!-- Top-right: Connection + status + gear -->
     <div id="status-bar">
       <div id="data-source-badge">
         <span class="dot dot--demo"></span>
-        <span id="data-source-label">DEMO</span>
+        <span id="data-source-label" data-i18n="common.demo">DEMO</span>
       </div>
       <div id="scenario-area">
-        <span id="autoplay-icon" title="Otomatik döngü">&#9654;</span>
-        <select id="scenario-quick-select" title="Senaryo değiştir">
-          <option value="auto">Otomatik Döngü</option>
-          <option value="empty_room">Boş Oda</option>
-          <option value="single_breathing">Yaşamsal Belirtiler</option>
-          <option value="two_walking">Çok Kişili</option>
-          <option value="fall_event">Düşme Algılama</option>
-          <option value="sleep_monitoring">Uyku İzleme</option>
-          <option value="intrusion_detect">İzinsiz Giriş</option>
-          <option value="gesture_control">Jest Kontrolü</option>
-          <option value="crowd_occupancy">Kalabalık (4 kişi)</option>
-          <option value="search_rescue">Arama Kurtarma</option>
-          <option value="elderly_care">Yaşlı Bakımı</option>
-          <option value="fitness_tracking">Egzersiz</option>
-          <option value="security_patrol">Güvenlik Devriyesi</option>
+        <span id="autoplay-icon" title="Otomatik döngü" data-i18n-title="observatory.autoplay">&#9654;</span>
+        <select id="scenario-quick-select" title="Senaryo değiştir" data-i18n-title="observatory.change_scenario">
+          <option value="auto" data-i18n="observatory.auto_loop">Otomatik Döngü</option>
+          <option value="empty_room" data-i18n="observatory.empty_room">Boş Oda</option>
+          <option value="single_breathing" data-i18n="observatory.vital_signs">Yaşamsal Belirtiler</option>
+          <option value="two_walking" data-i18n="observatory.multi_person">Çok Kişili</option>
+          <option value="fall_event" data-i18n="observatory.fall_detection">Düşme Algılama</option>
+          <option value="sleep_monitoring" data-i18n="observatory.sleep_monitoring">Uyku İzleme</option>
+          <option value="intrusion_detect" data-i18n="observatory.intrusion_detection">İzinsiz Giriş</option>
+          <option value="gesture_control" data-i18n="observatory.gesture_control">Jest Kontrolü</option>
+          <option value="crowd_occupancy" data-i18n="observatory.crowd_occupancy">Kalabalık (4 kişi)</option>
+          <option value="search_rescue" data-i18n="observatory.search_rescue">Arama Kurtarma</option>
+          <option value="elderly_care" data-i18n="observatory.elderly_care">Yaşlı Bakımı</option>
+          <option value="fitness_tracking" data-i18n="observatory.fitness_tracking">Egzersiz</option>
+          <option value="security_patrol" data-i18n="observatory.security_patrol">Güvenlik Devriyesi</option>
         </select>
       </div>
       <div id="scenario-description"></div>
       <div id="fps-counter" style="display:none">60 FPS</div>
-      <button id="settings-btn" title="Ayarlar">&#9881;</button>
+      <button id="settings-btn" title="Ayarlar" data-i18n-title="common.settings">&#9881;</button>
     </div>
 
     <!-- Left panel: Vital Signs -->
     <div id="panel-vitals" class="data-panel">
-      <div class="panel-header">Yaşamsal Belirtiler</div>
+      <div class="panel-header" data-i18n="dashboard.vital_signs">Yaşamsal Belirtiler</div>
       <div class="vital-row">
         <div class="vital-icon">&#9825;</div>
         <div class="vital-data">
-          <div class="vital-label">Kalp Atış Hızı</div>
+          <div class="vital-label" data-i18n="dashboard.heart_rate">Kalp Atış Hızı</div>
           <div class="vital-value"><span id="hr-value">--</span> <span class="vital-unit">BPM</span></div>
           <div class="vital-bar"><div id="hr-bar" class="vital-bar-fill vital-bar--hr"></div></div>
         </div>
@@ -340,6 +340,11 @@
     }
   }
   </script>
+
+  <!-- Load i18n scripts -->
+  <script type="module" src="lib/use-lang.js?v=20260607wifieye"></script>
+  <script type="module" src="lib/i18n.js?v=20260607wifieye"></script>
+  <script type="module" src="lib/LangSwitch.js?v=20260607wifieye"></script>
 
   <!-- Cache-bust query so the latest JS (figure-pool, hud-controller, …) loads
        after each deploy instead of a stale cached copy. Bump on UI changes. -->

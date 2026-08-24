@@ -23,12 +23,12 @@
                 <img src="assets/wifieye-logo.svg" alt="WIFIEYE" class="brand-logo-img">
                 <span class="brand-wordmark">WIFIEYE</span>
             </h1>
-            <p class="subtitle">WiFi Sinyalleri ile Duvar Arkası İnsan Algılama</p>
+            <p class="subtitle" data-i18n="header.subtitle">WiFi Sinyalleri ile Duvar Arkası İnsan Algılama</p>
             <div class="header-controls">
-                <button id="themeToggle" class="btn btn--icon" title="Tema Değiştir">
+                <button id="themeToggle" class="btn btn--icon" data-i18n-title="header.theme_toggle" title="Tema Değiştir">
                     <span class="theme-icon">🌙</span>
                 </button>
-                <button id="exportData" class="btn btn--icon" title="Veri Dışa Aktar">
+                <button id="exportData" class="btn btn--icon" data-i18n-title="header.export_data" title="Veri Dışa Aktar">
                     <span class="export-icon">📥</span>
                 </button>
             </div>
@@ -41,58 +41,58 @@
 
         <!-- Navigation -->
         <nav class="nav-tabs">
-            <button class="nav-tab active" data-tab="dashboard">Kontrol Paneli</button>
-            <button class="nav-tab" data-tab="hardware">Donanım</button>
-            <button class="nav-tab" data-tab="demo">Canlı Demo</button>
-            <button class="nav-tab" data-tab="architecture">Mimari</button>
-            <button class="nav-tab" data-tab="performance">Performans</button>
-            <button class="nav-tab" data-tab="applications">Uygulamalar</button>
-            <button class="nav-tab" data-tab="sensing">Algılama</button>
-            <button class="nav-tab" data-tab="training">Eğitim</button>
-            <button class="nav-tab" data-tab="rescue">Kurtarma Modları</button>
-            <button class="nav-tab" data-tab="howto">Nasıl Kullanılır</button>
-            <a href="observatory.html" class="nav-tab" style="text-decoration:none">Gözlemevi</a>
+            <button class="nav-tab active" data-tab="dashboard" data-i18n="nav.dashboard">Kontrol Paneli</button>
+            <button class="nav-tab" data-tab="hardware" data-i18n="nav.hardware">Donanım</button>
+            <button class="nav-tab" data-tab="demo" data-i18n="nav.demo">Canlı Demo</button>
+            <button class="nav-tab" data-tab="architecture" data-i18n="nav.architecture">Mimari</button>
+            <button class="nav-tab" data-tab="performance" data-i18n="nav.performance">Performans</button>
+            <button class="nav-tab" data-tab="applications" data-i18n="nav.applications">Uygulamalar</button>
+            <button class="nav-tab" data-tab="sensing" data-i18n="nav.sensing">Algılama</button>
+            <button class="nav-tab" data-tab="training" data-i18n="nav.training">Eğitim</button>
+            <button class="nav-tab" data-tab="rescue" data-i18n="nav.rescue">Kurtarma Modları</button>
+            <button class="nav-tab" data-tab="howto" data-i18n="nav.howto">Nasıl Kullanılır</button>
+            <a href="observatory.html" class="nav-tab" style="text-decoration:none" data-i18n="nav.observatory">Gözlemevi</a>
         </nav>
 
         <!-- Dashboard Tab -->
         <section id="dashboard" class="tab-content active">
             <div class="hero-section">
-                <h2>Devrim Niteliğinde WiFi Tabanlı İnsan Poz Algılama</h2>
-                <p class="hero-description">
+                <h2 data-i18n="dashboard.hero_title">Devrim Niteliğinde WiFi Tabanlı İnsan Poz Algılama</h2>
+                <p class="hero-description" data-i18n="dashboard.hero_desc">
                     Yapay zeka, sadece WiFi sinyallerini kullanarak duvarların arkasından tam vücut hareketlerinizi takip edebilir.
                     Carnegie Mellon araştırmacıları, temel WiFi sinyallerini insan vücudunun detaylı tel kafes modellerine dönüştüren
                     bir sinir ağı eğitti.
                 </p>
-                
+
                 <!-- Error container -->
                 <div class="error-container" style="display: none;"></div>
 
                 <!-- Live Status Panel -->
                 <div class="live-status-panel">
-                    <h3>Sistem Durumu</h3>
+                    <h3 data-i18n="dashboard.system_status">Sistem Durumu</h3>
                     <div class="status-grid">
                         <div class="component-status" data-component="api">
-                            <span class="component-name">API Sunucusu</span>
+                            <span class="component-name" data-i18n="dashboard.api_server">API Sunucusu</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="hardware">
-                            <span class="component-name">Donanım</span>
+                            <span class="component-name" data-i18n="dashboard.hardware">Donanım</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="inference">
-                            <span class="component-name">Çıkarım</span>
+                            <span class="component-name" data-i18n="dashboard.inference">Çıkarım</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="streaming">
-                            <span class="component-name">Yayın</span>
+                            <span class="component-name" data-i18n="dashboard.streaming">Yayın</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
                         <div class="component-status" data-component="datasource" id="dashboard-datasource">
-                            <span class="component-name">Veri Kaynağı</span>
+                            <span class="component-name" data-i18n="dashboard.data_source">Veri Kaynağı</span>
                             <span class="status-text">-</span>
                             <span class="status-message"></span>
                         </div>
@@ -101,24 +101,24 @@
 
                 <!-- System Metrics -->
                 <div class="system-metrics-panel">
-                    <h3>Sistem Metrikleri</h3>
+                    <h3 data-i18n="dashboard.system_metrics">Sistem Metrikleri</h3>
                     <div class="metrics-grid">
                         <div class="metric-item">
-                            <span class="metric-label">İşlemci Kullanımı</span>
+                            <span class="metric-label" data-i18n="dashboard.cpu_usage">İşlemci Kullanımı</span>
                             <div class="progress-bar" data-type="cpu">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
                             <span class="cpu-usage">0%</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">Bellek Kullanımı</span>
+                            <span class="metric-label" data-i18n="dashboard.memory_usage">Bellek Kullanımı</span>
                             <div class="progress-bar" data-type="memory">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
                             <span class="memory-usage">0%</span>
                         </div>
                         <div class="metric-item">
-                            <span class="metric-label">Disk Kullanımı</span>
+                            <span class="metric-label" data-i18n="dashboard.disk_usage">Disk Kullanımı</span>
                             <div class="progress-bar" data-type="disk">
                                 <div class="progress-fill normal" style="width: 0%"></div>
                             </div>
@@ -129,60 +129,60 @@
 
                 <!-- Features Status -->
                 <div class="features-panel">
-                    <h3>Özellikler</h3>
+                    <h3 data-i18n="dashboard.features">Özellikler</h3>
                     <div class="features-status"></div>
                 </div>
 
                 <!-- Live Statistics -->
                 <div class="live-stats-panel">
-                    <h3>Canlı İstatistikler</h3>
+                    <h3 data-i18n="dashboard.live_stats">Canlı İstatistikler</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-label">Aktif Kişiler</span>
+                            <span class="stat-label" data-i18n="dashboard.active_people">Aktif Kişiler</span>
                             <span class="person-count">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Ort. Güven</span>
+                            <span class="stat-label" data-i18n="dashboard.avg_confidence">Ort. Güven</span>
                             <span class="avg-confidence">0%</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Toplam Algılama</span>
+                            <span class="stat-label" data-i18n="dashboard.total_detections">Toplam Algılama</span>
                             <span class="detection-count">0</span>
                         </div>
                     </div>
-                    
+
                     <div class="zones-panel">
-                        <h4>Bölge Doluluk</h4>
+                        <h4 data-i18n="dashboard.zone_occupancy">Bölge Doluluk</h4>
                         <div class="zones-summary"></div>
                     </div>
                 </div>
 
                 <!-- Isı Haritası Paneli -->
                 <div class="heatmap-panel">
-                    <h3>Hareket Isı Haritası</h3>
+                    <h3 data-i18n="dashboard.movement_heatmap">Hareket Isı Haritası</h3>
                     <div class="heatmap-container">
                         <canvas id="heatmapCanvas" width="400" height="300"></canvas>
                         <div class="heatmap-legend">
-                            <span class="legend-low">Düşük</span>
+                            <span class="legend-low" data-i18n="dashboard.low">Düşük</span>
                             <div class="legend-gradient"></div>
-                            <span class="legend-high">Yüksek</span>
+                            <span class="legend-high" data-i18n="dashboard.high">Yüksek</span>
                         </div>
                     </div>
                     <div class="heatmap-controls">
-                        <button id="resetHeatmap" class="btn btn--secondary">Sıfırla</button>
-                        <span class="heatmap-info">Aktivite yoğunluğu</span>
+                        <button id="resetHeatmap" class="btn btn--secondary" data-i18n="dashboard.reset">Sıfırla</button>
+                        <span class="heatmap-info" data-i18n="dashboard.activity_intensity">Aktivite yoğunluğu</span>
                     </div>
                 </div>
 
                 <!-- Vital İşaretler Paneli -->
                 <div class="vital-signs-panel">
-                    <h3>Yaşamsal Belirtiler</h3>
+                    <h3 data-i18n="dashboard.vital_signs">Yaşamsal Belirtiler</h3>
                     <div class="vital-grid">
                         <div class="vital-item">
                             <div class="vital-icon">🫁</div>
                             <div class="vital-info">
-                                <span class="vital-label">Solunum Hızı</span>
-                                <span class="vital-value" id="breathingRate">-- BPM</span>
+                                <span class="vital-label" data-i18n="dashboard.breathing_rate">Solunum Hızı</span>
+                                <span class="vital-value" id="breathingRate">-- <span data-i18n="dashboard.bpm">BPM</span></span>
                             </div>
                             <div class="vital-wave">
                                 <canvas id="breathingWave" width="150" height="40"></canvas>
@@ -191,8 +191,8 @@
                         <div class="vital-item">
                             <div class="vital-icon">❤️</div>
                             <div class="vital-info">
-                                <span class="vital-label">Kalp Atış Hızı</span>
-                                <span class="vital-value" id="heartRate">-- BPM</span>
+                                <span class="vital-label" data-i18n="dashboard.heart_rate">Kalp Atış Hızı</span>
+                                <span class="vital-value" id="heartRate">-- <span data-i18n="dashboard.bpm">BPM</span></span>
                             </div>
                             <div class="vital-wave">
                                 <canvas id="heartWave" width="150" height="40"></canvas>
@@ -203,42 +203,42 @@
 
                 <!-- Çöp Adam Görselleştirme -->
                 <div class="stickman-panel">
-                    <h3>Poz Görselleştirme</h3>
+                    <h3 data-i18n="dashboard.pose_visualization">Poz Görselleştirme</h3>
                     <div class="stickman-container">
                         <canvas id="stickmanCanvas" width="300" height="400"></canvas>
                         <div class="pose-info">
                             <div class="pose-stat">
-                                <span class="pose-label">Güven:</span>
+                                <span class="pose-label" data-i18n="dashboard.confidence">Güven:</span>
                                 <span class="pose-value" id="poseConfidence">--%</span>
                             </div>
                             <div class="pose-stat">
-                                <span class="pose-label">Kişi:</span>
+                                <span class="pose-label" data-i18n="dashboard.person">Kişi:</span>
                                 <span class="pose-value" id="posePerson">--</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="key-benefits">
                     <div class="benefit-card">
                         <div class="benefit-icon">🏠</div>
-                        <h3>Duvar Arkası</h3>
-                        <p>Görüş hattı gerektirmeden katı engellerin arkasından çalışır</p>
+                        <h3 data-i18n="dashboard.through_wall">Duvar Arkası</h3>
+                        <p data-i18n="dashboard.through_wall_desc">Görüş hattı gerektirmeden katı engellerin arkasından çalışır</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">🔒</div>
-                        <h3>Gizlilik Koruyan</h3>
-                        <p>Kamera veya görsel kayıt yok - sadece WiFi sinyal analizi</p>
+                        <h3 data-i18n="dashboard.privacy_preserving">Gizlilik Koruyan</h3>
+                        <p data-i18n="dashboard.privacy_preserving_desc">Kamera veya görsel kayıt yok - sadece WiFi sinyal analizi</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">⚡</div>
-                        <h3>Gerçek Zamanlı</h3>
-                        <p>100Hz örnekleme hızında 24 vücut bölgesini gerçek zamanlı eşler</p>
+                        <h3 data-i18n="dashboard.realtime">Gerçek Zamanlı</h3>
+                        <p data-i18n="dashboard.realtime_desc">100Hz örnekleme hızında 24 vücut bölgesini gerçek zamanlı eşler</p>
                     </div>
                     <div class="benefit-card">
                         <div class="benefit-icon">💰</div>
-                        <h3>Düşük Maliyet</h3>
-                        <p>30 dolarlık ticari WiFi donanımı ile yapıldı</p>
+                        <h3 data-i18n="dashboard.low_cost">Düşük Maliyet</h3>
+                        <p data-i18n="dashboard.low_cost_desc">30 dolarlık ticari WiFi donanımı ile yapıldı</p>
                     </div>
                 </div>
 
@@ -265,12 +265,12 @@
 
         <!-- Hardware Tab -->
         <section id="hardware" class="tab-content">
-            <h2>Donanım Yapılandırması</h2>
-            
+            <h2 data-i18n="hardware.config_title">Donanım Yapılandırması</h2>
+
             <div class="hardware-grid">
                 <div class="antenna-section">
-                    <h3>3×3 Anten Dizisi</h3>
-                    <p class="help-text">Antenleri değiştirmek için tıklayın</p>
+                    <h3 data-i18n="hardware.antenna_array">3×3 Anten Dizisi</h3>
+                    <p class="help-text" data-i18n="hardware.click_to_change">Antenleri değiştirmek için tıklayın</p>
                     <div class="antenna-array">
                         <div class="antenna-grid">
                             <div class="antenna tx active" data-type="TX1"></div>
@@ -286,11 +286,11 @@
                         <div class="antenna-legend">
                             <div class="legend-item">
                                 <div class="legend-color tx"></div>
-                                <span>Vericiler (3)</span>
+                                <span data-i18n="hardware.transmitters">Vericiler (3)</span>
                             </div>
                             <div class="legend-item">
                                 <div class="legend-color rx"></div>
-                                <span>Alıcılar (6)</span>
+                                <span data-i18n="hardware.receivers">Alıcılar (6)</span>
                             </div>
                         </div>
                         <div class="array-status"></div>
@@ -298,38 +298,38 @@
                 </div>
 
                 <div class="config-section">
-                    <h3>WiFi Yapılandırması</h3>
+                    <h3 data-i18n="hardware.wifi_config">WiFi Yapılandırması</h3>
                     <div class="config-grid">
                         <div class="config-item">
-                            <label>Frekans</label>
+                            <label data-i18n="hardware.frequency">Frekans</label>
                             <div class="config-value">2.4GHz ± 20MHz</div>
                         </div>
                         <div class="config-item">
-                            <label>Taşıyıcılar</label>
+                            <label data-i18n="hardware.carriers">Taşıyıcılar</label>
                             <div class="config-value">30</div>
                         </div>
                         <div class="config-item">
-                            <label>Örnekleme Hızı</label>
+                            <label data-i18n="hardware.sampling_rate">Örnekleme Hızı</label>
                             <div class="config-value">100 Hz</div>
                         </div>
                         <div class="config-item">
-                            <label>Toplam Maliyet</label>
+                            <label data-i18n="hardware.total_cost">Toplam Maliyet</label>
                             <div class="config-value">$30</div>
                         </div>
                     </div>
 
                     <div class="csi-data">
-                        <h4>Gerçek Zamanlı CSI Verisi</h4>
+                        <h4 data-i18n="hardware.realtime_csi">Gerçek Zamanlı CSI Verisi</h4>
                         <div class="csi-display">
                             <div class="csi-row">
-                                <span>Genlik:</span>
+                                <span data-i18n="hardware.amplitude">Genlik:</span>
                                 <div class="csi-bar">
                                     <div class="csi-fill amplitude" style="width: 75%"></div>
                                 </div>
                                 <span class="csi-value">0.75</span>
                             </div>
                             <div class="csi-row">
-                                <span>Faz:</span>
+                                <span data-i18n="hardware.phase">Faz:</span>
                                 <div class="csi-bar">
                                     <div class="csi-fill phase" style="width: 60%"></div>
                                 </div>
@@ -343,50 +343,50 @@
 
         <!-- Demo Tab -->
         <section id="demo" class="tab-content">
-            <h2>Canlı Demonstrasyon</h2>
-            
+            <h2 data-i18n="demo.title">Canlı Demonstrasyon</h2>
+
             <div class="demo-controls">
-                <button id="startDemo" class="btn btn--primary">Yayını Başlat</button>
-                <button id="stopDemo" class="btn btn--secondary" disabled>Yayını Durdur</button>
+                <button id="startDemo" class="btn btn--primary" data-i18n="demo.start_stream">Yayını Başlat</button>
+                <button id="stopDemo" class="btn btn--secondary" disabled data-i18n="demo.stop_stream">Yayını Durdur</button>
                 <div class="demo-status">
-                    <span class="status status--info" id="demoStatus">Hazır</span>
+                    <span class="status status--info" id="demoStatus" data-i18n="demo.ready">Hazır</span>
                 </div>
             </div>
 
             <div class="demo-grid">
                 <div class="signal-panel">
-                    <h3>WiFi Sinyal Analizi</h3>
+                    <h3 data-i18n="demo.wifi_analysis">WiFi Sinyal Analizi</h3>
                     <div class="signal-display">
                         <canvas id="signalCanvas" width="400" height="200"></canvas>
                     </div>
                     <div class="signal-metrics">
                         <div class="metric">
-                            <span>Sinyal Gücü:</span>
-                            <span id="signalStrength">-45 dBm</span>
+                            <span data-i18n="demo.signal_strength">Sinyal Gücü:</span>
+                            <span id="signalStrength">-45 <span data-i18n="demo.dbm">dBm</span></span>
                         </div>
                         <div class="metric">
-                            <span>İşlem Gecikmesi:</span>
-                            <span id="latency">12 ms</span>
+                            <span data-i18n="demo.processing_latency">İşlem Gecikmesi:</span>
+                            <span id="latency">12 <span data-i18n="demo.ms">ms</span></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="pose-panel">
-                    <h3>İnsan Poz Algılama</h3>
+                    <h3 data-i18n="demo.pose_detection">İnsan Poz Algılama</h3>
                     <div class="pose-display">
                         <canvas id="poseCanvas" width="400" height="300"></canvas>
                     </div>
                     <div class="detection-info">
                         <div class="info-item">
-                            <span>Algılanan Kişi:</span>
+                            <span data-i18n="demo.detected_people">Algılanan Kişi:</span>
                             <span id="personCount">0</span>
                         </div>
                         <div class="info-item">
-                            <span>Güven:</span>
+                            <span data-i18n="demo.confidence">Güven:</span>
                             <span id="confidence">0.0%</span>
                         </div>
                         <div class="info-item">
-                            <span>Anahtar Noktalar:</span>
+                            <span data-i18n="demo.keypoints">Anahtar Noktalar:</span>
                             <span id="keypoints">0/0</span>
                         </div>
                     </div>
@@ -396,7 +396,7 @@
 
         <!-- Architecture Tab -->
         <section id="architecture" class="tab-content">
-            <h2>Sistem Mimarisi</h2>
+            <h2 data-i18n="architecture.title">Sistem Mimarisi</h2>
             
             <div class="architecture-flow">
                 <img src="https://pplx-res.cloudinary.com/image/upload/v1748813853/gpt4o_images/m7zztcttnue7vaxclvuw.png" 
@@ -1049,6 +1049,11 @@ make run-api</code></pre>
         });
     });
     </script>
+
+    <!-- Load i18n scripts -->
+    <script type="module" src="lib/use-lang.js?v=20260607wifieye"></script>
+    <script type="module" src="lib/i18n.js?v=20260607wifieye"></script>
+    <script type="module" src="lib/LangSwitch.js?v=20260607wifieye"></script>
 
     <!-- Load application scripts as modules -->
     <script type="module" src="app.js?v=20260607wifieye"></script>

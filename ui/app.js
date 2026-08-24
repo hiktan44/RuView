@@ -15,32 +15,68 @@ class WiFiDensePoseApp {
   constructor() {
     this.components = {};
     this.isInitialized = false;
+    this.t = null; // Translation function
+    this.lang = 'tr'; // Default language
+  }
+
+  // Initialize i18n
+  async initI18n() {
+    try {
+      const { useLang } = await import('./lib/use-lang.js');
+      const { lang, subscribe } = await useLang();
+      this.lang = lang;
+
+      // Import the translation function
+      const { t } = await import('./lib/i18n.js');
+      this.t = (key, vars) => t(key, this.lang, vars);
+
+      // Subscribe to language changes
+      subscribe((newLang) => {
+        this.lang = newLang;
+        this.t = (key, vars) => t(key, newLang, vars);
+        console.log('Language changed to:', newLang);
+      });
+
+    } catch (error) {
+      console.error('Failed to initialize i18n:', error);
+      // Fallback to basic function
+      this.t = (key) => key;
+    }
   }
 
   // Initialize application
   async init() {
     try {
-      console.log('WIFIEYE UI başlatılıyor...');
-      
+      // Initialize i18n first
+      await this.initI18n();
+
+      console.log('WIFIEYE UI starting...');
+
       // Set up error handling
       this.setupErrorHandling();
-      
+
       // Initialize services
       await this.initializeServices();
-      
+
       // Initialize UI components
       this.initializeComponents();
-      
+
       // Set up global event listeners
       this.setupEventListeners();
-      
+
       this.isInitialized = true;
-      console.log('WIFIEYE UI başarıyla başlatıldı');
-      
+      console.log('WIFIEYE UI initialized successfully');
+
     } catch (error) {
-      console.error('Uygulama başlatılamadı:', error);
-      this.showGlobalError('Uygulama başlatılamadı. Lütfen sayfayı yenileyin.');
+      console.error('Failed to initialize application:', error);
+      this.showGlobalError('Application failed to start. Please refresh the page.');
     }
+  }
+
+class WiFiDensePoseApp {
+  constructor() {
+    this.components = {};
+    this.isInitialized = false;
   }
 
   // Initialize services
@@ -56,25 +92,25 @@ class WiFiDensePoseApp {
 
     // Detect backend availability and initialize accordingly
     const useMock = await backendDetector.shouldUseMockServer();
-    
+
     if (useMock) {
-      console.log('🧪 Test için mock sunucu ile başlatılıyor');
+      console.log('🧪 Starting with mock server for testing');
       // Import and start mock server only when needed
       const { mockServer } = await import('./utils/mock-server.js');
       mockServer.start();
-      
+
       // Show notification to user
-      this.showBackendStatus('Mock sunucu aktif - test modu', 'warning');
+      this.showBackendStatus('Mock server active - test mode', 'warning');
     } else {
-      console.log('🔌 Backend\'e bağlanılıyor...');
+      console.log('🔌 Connecting to backend...');
 
       try {
         const health = await healthService.checkLiveness();
-        console.log('✅ Backend yanıt veriyor:', health);
-        this.showBackendStatus('Rust algılama sunucusuna bağlandı', 'success');
+        console.log('✅ Backend responding:', health);
+        this.showBackendStatus('Connected to Rust sensing server', 'success');
       } catch (error) {
-        console.warn('⚠️ Backend mevcut değil:', error.message);
-        this.showBackendStatus('Backend mevcut değil — sensing-server başlatın', 'warning');
+        console.warn('⚠️ Backend not available:', error.message);
+        this.showBackendStatus('Backend not available — start sensing-server', 'warning');
       }
 
       // Start the sensing WebSocket service early so the dashboard and
@@ -246,11 +282,11 @@ class WiFiDensePoseApp {
   handleVisibilityChange() {
     if (document.hidden) {
       // Pause updates when page is hidden
-      console.log('Sayfa gizli, güncellemeler duraklatıldı');
+      console.log('Page hidden, updates paused');
       healthService.stopHealthMonitoring();
     } else {
       // Resume updates when page is visible
-      console.log('Sayfa görünür, güncellemeler devam ediyor');
+      console.log('Page visible, updates resumed');
       healthService.startHealthMonitoring();
     }
   }
@@ -259,15 +295,15 @@ class WiFiDensePoseApp {
   setupErrorHandling() {
     window.addEventListener('error', (event) => {
       if (event.error) {
-        console.error('Genel hata:', event.error);
-        this.showGlobalError('Beklenmeyen bir hata oluştu');
+        console.error('Global error:', event.error);
+        this.showGlobalError('An unexpected error occurred');
       }
     });
 
     window.addEventListener('unhandledrejection', (event) => {
       if (event.reason) {
-        console.error('İşlenmeyen promise reddi:', event.reason);
-        this.showGlobalError('Beklenmeyen bir hata oluştu');
+        console.error('Unhandled promise rejection:', event.reason);
+        this.showGlobalError('An unexpected error occurred');
       }
     });
   }
@@ -315,8 +351,8 @@ class WiFiDensePoseApp {
 
   // Clean up resources
   cleanup() {
-    console.log('Uygulama kaynakları temizleniyor...');
-    
+    console.log('Cleaning up application resources...');
+
     // Dispose all components
     Object.values(this.components).forEach(component => {
       if (component && typeof component.dispose === 'function') {
@@ -326,7 +362,7 @@ class WiFiDensePoseApp {
 
     // Disconnect all WebSocket connections
     wsService.disconnectAll();
-    
+
     // Stop health monitoring
     healthService.dispose();
   }
